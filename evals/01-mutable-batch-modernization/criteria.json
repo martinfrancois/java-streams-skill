@@ -10,14 +10,14 @@
     },
     {
       "name": "Preserves batch behavior",
-      "category": "safety",
-      "max_score": 10,
+      "category": "stream_quality",
+      "max_score": 20,
       "description": "Keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final result by id."
     },
     {
       "name": "Preserves mutability contract",
       "category": "stream_quality",
-      "max_score": 35,
+      "max_score": 45,
       "description": "Does not use Stream.toList() for exportRows because the list is later mutated with add and sort; uses Collectors.toCollection(ArrayList::new), Collectors.toList(), or an equivalent mutable result."
     },
     {
@@ -25,12 +25,6 @@
       "category": "stream_quality",
       "max_score": 25,
       "description": "Does not move the final id sort before footer append and does not sort by id inside the initial stream before the position contract is satisfied."
-    },
-    {
-      "name": "Avoids unnecessary materialization",
-      "category": "stream_quality",
-      "max_score": 20,
-      "description": "Keeps one necessary mutable result list and does not create extra temporary lists just to inspect or copy the same rows."
     },
     {
       "name": "Keeps cleanup focused",

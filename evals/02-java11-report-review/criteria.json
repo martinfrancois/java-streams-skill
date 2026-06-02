@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: Stream.toList is Java 16+ and returns an unmodifiable list, so this Java 11 change is both incompatible and behavior-breaking.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects proposed change",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Clearly says the proposed refactor should not be accepted as written."
+    },
+    {
+      "name": "Catches Java baseline violation",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Explains that Stream.toList() is unavailable on the Java 11 baseline because it was added in Java 16."
+    },
+    {
+      "name": "Catches mutability violation",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Explains that Stream.toList() returns an unmodifiable list and the code later mutates it with add and sort."
+    },
+    {
+      "name": "Suggests compatible mutable replacement",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Recommends Collectors.toCollection(ArrayList::new), Collectors.toList(), or another Java 11-compatible mutable result."
+    },
+    {
+      "name": "Keeps review concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated style feedback."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "context": "Headline review: Java 8 cannot use Optional.stream, takeWhile, or Stream.toList; the prefix behavior must still be preserved.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects proposed change",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Clearly says the proposed refactor should not be accepted on a Java 8 project."
+    },
+    {
+      "name": "Catches Optional.stream incompatibility",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Explains that Optional.stream() is Java 9+, not Java 8."
+    },
+    {
+      "name": "Catches takeWhile incompatibility",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Explains that Stream.takeWhile() is Java 9+, not Java 8."
+    },
+    {
+      "name": "Catches Stream.toList incompatibility",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Explains that Stream.toList() is Java 16+, not Java 8."
+    },
+    {
+      "name": "Preserves prefix semantics in alternative",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Suggests keeping the break-based loop or another Java 8-compatible implementation that stops at the first invisible event rather than filtering all events."
+    },
+    {
+      "name": "Keeps review concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated modernization feedback."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

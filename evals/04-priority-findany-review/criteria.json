@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: findAny and parallelStream can break first-configured-value semantics on ordered inputs.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects proposed change",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Clearly says the proposed change should not be accepted because it changes ordering semantics."
+    },
+    {
+      "name": "Identifies findAny priority bug",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Explains that findAny may return any matching contact and does not preserve the first configured priority match."
+    },
+    {
+      "name": "Identifies parallel ordering risk",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Explains that parallelStream is not justified and makes the findAny nondeterminism especially visible for this ordered lookup."
+    },
+    {
+      "name": "Suggests ordered replacement",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Recommends contacts.stream().filter(...).findFirst() or keeping the loop."
+    },
+    {
+      "name": "Keeps review concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated API redesign."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

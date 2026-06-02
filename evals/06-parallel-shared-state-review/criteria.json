@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: parallelStream with forEach mutating a shared HashMap is unsafe; collector-owned accumulation is the correct stream shape.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects proposed change",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Clearly says the proposed parallelStream change should not be accepted."
+    },
+    {
+      "name": "Catches shared HashMap race",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Explains that parallel forEach mutates a shared HashMap and can race, corrupt state, or lose entries."
+    },
+    {
+      "name": "Rejects unjustified parallelism",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Notes that no CPU-heavy stateless work or measured benefit justifies parallelStream here."
+    },
+    {
+      "name": "Suggests collector-owned accumulation",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Recommends a sequential stream with Collectors.toMap(Shipment::id, Function.identity(), merge) or another collector-owned accumulation shape."
+    },
+    {
+      "name": "Keeps review concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated concurrency redesign."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

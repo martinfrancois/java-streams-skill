@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: toMap needs explicit null and duplicate-key handling to preserve loop behavior.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects proposed change",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Clearly says the proposed toMap refactor should not be accepted as written."
+    },
+    {
+      "name": "Catches null-key behavior change",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Explains that null categories were skipped and must be filtered or handled before collecting."
+    },
+    {
+      "name": "Catches duplicate-key failure",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Explains that duplicate categories are expected and two-argument toMap throws without a merge function."
+    },
+    {
+      "name": "Preserves cheapest merge semantics",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Recommends filtering category != null and using a merge function such as BinaryOperator.minBy(Comparator.comparing(Product::price))."
+    },
+    {
+      "name": "Keeps review concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated collector commentary."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}
