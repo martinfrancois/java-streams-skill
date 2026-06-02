@@ -1,0 +1,94 @@
+{
+  "context": "Headline audit: applies the hard-stop marker scan across a dense Java 17 class and classifies both required fixes and legitimate markers.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear hard-stop audit."
+    },
+    {
+      "name": "Flags count existence check",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags filter(...).count() > 0 in hasActive and recommends anyMatch."
+    },
+    {
+      "name": "Flags collect-isEmpty existence check",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags collect(toList()).isEmpty() in missingPrimary and recommends noneMatch or !anyMatch."
+    },
+    {
+      "name": "Flags sorted-findFirst extreme",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags sorted(...).findFirst() in newest and recommends max with the same comparator semantics."
+    },
+    {
+      "name": "Flags collect-then-join",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags collecting display names only to pass them to String.join and recommends Collectors.joining."
+    },
+    {
+      "name": "Flags Stream.toList mutability break",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags activeIds because Stream.toList() returns an unmodifiable list that is later mutated."
+    },
+    {
+      "name": "Flags parallel findAny priority break",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags configuredPrimary because parallelStream plus findAny can ignore configured encounter-order priority; recommends stream().findFirst() or the loop."
+    },
+    {
+      "name": "Flags duplicate toMap risk",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags byEmail because duplicate emails are possible and toMap needs an explicit merge policy."
+    },
+    {
+      "name": "Flags nullable groupingBy classifier",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags byRegion because region can be null and null classifier keys must be filtered or mapped explicitly."
+    },
+    {
+      "name": "Flags nullable natural sort",
+      "category": "stream_quality",
+      "max_score": 8,
+      "description": "Flags sortedDiscountCodes because null discount codes can reach Comparator.naturalOrder."
+    },
+    {
+      "name": "Flags top-N limit ordering",
+      "category": "stream_quality",
+      "max_score": 6,
+      "description": "Flags topThreeBySpend because limit occurs before sorting, so it does not compute the global top three."
+    },
+    {
+      "name": "Flags Optional get pattern",
+      "category": "stream_quality",
+      "max_score": 4,
+      "description": "Flags filter(Optional::isPresent).map(Optional::get) and recommends flatMap(Optional::stream) on Java 17."
+    },
+    {
+      "name": "Classifies BigDecimal reduce as acceptable",
+      "category": "stream_quality",
+      "max_score": 4,
+      "description": "Mentions totalSpend as a scan-adjacent reduction that should remain BigDecimal reduce rather than primitive aggregation."
+    },
+    {
+      "name": "Keeps audit concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Does not rewrite the class wholesale or add unrelated Java style feedback."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review"
+  }
+}

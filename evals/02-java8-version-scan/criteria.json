@@ -1,0 +1,76 @@
+{
+  "context": "Headline audit: classifies Java-version drift from hard-stop markers on a Java 8 baseline.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a Java 8 compatibility audit."
+    },
+    {
+      "name": "Flags Optional.stream",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags Optional::stream as Java 9+ and suggests a Java 8-compatible flatMap/list stream alternative."
+    },
+    {
+      "name": "Flags Stream.toList",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags Stream.toList() as Java 16+ and recommends collecting with Collectors.toList or an explicit collection."
+    },
+    {
+      "name": "Flags Stream.ofNullable",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags Stream.ofNullable as Java 9+ and suggests an explicit null check or Stream.empty/Stream.of branch."
+    },
+    {
+      "name": "Flags takeWhile",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Flags takeWhile as Java 9+ and notes Java 8 should keep the break-based prefix loop or equivalent."
+    },
+    {
+      "name": "Flags dropWhile",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Flags dropWhile as Java 9+ and notes Java 8 should keep explicit prefix state or equivalent."
+    },
+    {
+      "name": "Flags Collectors.flatMapping",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags Collectors.flatMapping as Java 9+ and suggests flattening before grouping or another Java 8-compatible collector shape."
+    },
+    {
+      "name": "Flags Collectors.teeing",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags Collectors.teeing as Java 12+ and suggests two reductions or a custom Java 8 collector if worthwhile."
+    },
+    {
+      "name": "Flags mapMulti",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Flags mapMulti as Java 16+ and suggests map/filter/flatMap for Java 8."
+    },
+    {
+      "name": "Classifies count as allowed",
+      "category": "stream_quality",
+      "max_score": 6,
+      "description": "Mentions activeCount uses count() as the requested numeric result, not count() > 0, so it is acceptable."
+    },
+    {
+      "name": "Keeps audit concise",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Focuses on version drift and directly related Java 8 replacements."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

@@ -1,0 +1,1 @@
+java stream hard-stop scan
