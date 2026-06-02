@@ -23,7 +23,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | `Stream.ofNullable` | 9 | Nullable-to-stream bridge. |
 | `takeWhile`, `dropWhile` | 9 | Prefix operations on ordered streams; not general filters. |
 | `Optional.stream` | 9 | Flatten `Stream<Optional<T>>` with `flatMap(Optional::stream)`. |
-| `Stream.toList()` | 16 | Returns an unmodifiable list; not equivalent to mutable `Collectors.toList()`. |
+| `Stream.toList()` | 16 | Returns an unmodifiable list; not equivalent to mutable `Collectors.toList()`. Do not use when callers or later code mutate the list. |
 | `mapMulti` and primitive `mapMulti` variants | 16 | Efficient one-to-few mapping when clearer than `flatMap`. |
 | `Stream.gather(Gatherer)` / built-in gatherers | 24 | Advanced extension point; `Gatherers.mapConcurrent` can help blocking per-element work. |
 
@@ -34,7 +34,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | `Collectors.toList`, `toSet` | 8 | `toList` mutability is unspecified; use explicit collection if required. |
 | `Collectors.joining` | 8 | Join mapped text in one terminal. |
 | `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Keys must not be null. |
-| `Collectors.groupingBy` | 8 | Key maps to a list or downstream aggregate. |
+| `Collectors.groupingBy` | 8 | Key maps to a list or downstream aggregate. Null classifier keys are not accepted. |
 | `Collectors.mapping` | 8 | Project values inside downstream collectors. |
 | `Collectors.counting` | 8 | Count elements, often downstream of `groupingBy`. |
 | `Collectors.summingInt`, `summingLong`, `summingDouble` | 8 | Primitive totals, often downstream. |

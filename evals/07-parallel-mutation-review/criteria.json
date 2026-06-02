@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: parallel streams with shared mutable HashMap state are unsafe; collectors should own accumulation.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision."
+    },
+    {
+      "name": "Rejects unsafe proposal",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Clearly says the proposed parallelStream change should not be accepted."
+    },
+    {
+      "name": "Identifies shared mutable state bug",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Explains that mutating a shared HashMap from parallel forEach is a data race and can corrupt or lose entries."
+    },
+    {
+      "name": "Explains parallelism is unjustified",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Notes there is no evidence of CPU-heavy stateless work and that parallel overhead is not justified for this cache-building operation."
+    },
+    {
+      "name": "Suggests collector-owned accumulation",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Recommends products.stream().filter(Product::enabled).collect(Collectors.toMap(Product::id, Function.identity(), ...)) or another collector-owned accumulation shape rather than shared mutable forEach."
+    },
+    {
+      "name": "Review is concise and focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the review focused on stream safety and the replacement shape."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

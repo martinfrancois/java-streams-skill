@@ -19,7 +19,9 @@ Fix these before finalizing:
   clearer.
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
 - `toMap` without a merge function when duplicate keys are possible.
+- `toMap` or `groupingBy` where null keys can reach the collector.
 - `sorted()` or `Comparator.naturalOrder()` where null elements or keys can reach the comparator.
+- `Stream.toList()` where a mutable result is required or later code mutates the list.
 - `parallelStream()` or `.parallel()` added without checking CPU-bound work, data size, ordering,
   shared state, blocking calls, and collector safety.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
@@ -54,7 +56,7 @@ Use parallel streams only after checking:
 Run a hard-stop scan over touched Java files before finalizing:
 
 ```bash
-rg -n "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\.isEmpty\\(|collect\\([^;]+\\)\\.size\\(|sorted\\([^;]*\\)\\.findFirst\\(|sorted\\(\\)\\.findFirst\\(|filter\\(Optional::isPresent\\)\\s*\\.map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(\\)|Collectors\\.toMap\\(|Comparator\\.naturalOrder\\(\\)|\\.toList\\(\\)|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
+rg -n "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\.isEmpty\\(|collect\\([^;]+\\)\\.size\\(|sorted\\([^;]*\\)\\.findFirst\\(|sorted\\(\\)\\.findFirst\\(|filter\\(Optional::isPresent\\)\\s*\\.map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(\\)|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|\\.toList\\(\\)|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix

@@ -1,0 +1,46 @@
+{
+  "context": "Headline cleanup: takeWhile/dropWhile are prefix operations; filter would silently change packet-window behavior.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates PacketWindow.java with requested methods, record, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves before-prefix behavior",
+      "category": "safety",
+      "max_score": 5,
+      "description": "beforeFirstLossSpike stops at the first packet above threshold and excludes later packets even if they are below threshold."
+    },
+    {
+      "name": "Preserves after-prefix behavior",
+      "category": "safety",
+      "max_score": 5,
+      "description": "afterInitialHealthyPrefix removes only the initial healthy prefix and includes all packets from the first spike onward."
+    },
+    {
+      "name": "Uses takeWhile or equivalent prefix-preserving loop",
+      "category": "stream_quality",
+      "max_score": 40,
+      "description": "Implements beforeFirstLossSpike with takeWhile(packet -> packet.loss() <= threshold) or keeps an equivalent break-based loop; does not use filter."
+    },
+    {
+      "name": "Uses dropWhile or equivalent prefix-skipping loop",
+      "category": "stream_quality",
+      "max_score": 40,
+      "description": "Implements afterInitialHealthyPrefix with dropWhile(packet -> packet.loss() <= threshold) or keeps an equivalent prefix-skipping loop; does not use filter."
+    },
+    {
+      "name": "Keeps refactor focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated state, sorting, or packet API changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

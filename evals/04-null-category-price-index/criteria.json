@@ -1,0 +1,46 @@
+{
+  "context": "Headline implementation: collectors must preserve null-skip and duplicate-key behavior; naive toMap/groupingBy can throw or change semantics.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates PriceIndex.java with requested methods, record, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves null and duplicate behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Skips null categories, accepts duplicate categories, keeps cheapest products, and preserves encounter order of names in grouped lists."
+    },
+    {
+      "name": "Filters null categories before collectors",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Filters product.category() != null before toMap or groupingBy so null keys do not reach collectors."
+    },
+    {
+      "name": "Uses explicit merge for cheapest product",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Uses Collectors.toMap with a merge function such as BinaryOperator.minBy(Comparator.comparing(Product::price)), or an equivalent grouping/min collector, so duplicate categories cannot throw."
+    },
+    {
+      "name": "Uses groupingBy with mapping for names",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Uses groupingBy(Product::category, mapping(Product::name, toList())) or equivalent collector-based grouping without manual computeIfAbsent."
+    },
+    {
+      "name": "Keeps implementation readable",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps helpers small if used and avoids unrelated abstractions."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup"
+  }
+}

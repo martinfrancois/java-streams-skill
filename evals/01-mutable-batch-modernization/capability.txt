@@ -1,0 +1,1 @@
+Modernize Java stream code without breaking mutable list contracts.

@@ -20,19 +20,18 @@ side effects, mutability expectations, and Java-version compatibility.
 
 ## Hard Stops
 
-Before finalizing touched stream flow, check these rules (see
-[hard-stops.md](references/hard-stops.md) for the full antipattern list and marker scan):
+Before finalizing touched stream flow, run the full scan in
+[hard-stops.md](references/hard-stops.md). Keep these rules in view:
 
-- Do not collect just to inspect one fact. Use `findAny`/`findFirst`, `anyMatch`/`noneMatch`/
-  `allMatch`, `count`, `min`, `max`, `sum`, `joining`, or a collector that computes the result.
-- Do not change `findFirst()` to `findAny()` unless every matching element is equivalent and no
-  priority, display order, first configured value, or short-circuit order is part of the contract.
-- Do not sort a whole stream just to get one extreme; use `min` or `max`.
-- Do not use `count() > 0` or `collect(...).isEmpty()` for existence; use match/find terminals.
-- Do not use `parallelStream()` as a default optimization. Confirm large enough data, stateless
-  CPU-bound work, no ordering reliance, no shared mutable state, and no blocking IO.
-- Do not call `sorted()` on possibly-null elements or keys without handling nulls.
-- Do not use Java 9+ or Java 16+ stream APIs unless the project baseline supports them.
+- Preserve behavior contracts: encounter order, first-match semantics, null handling, duplicate-key
+  handling, mutability expectations, and Java-version compatibility.
+- Use terminals and collectors that encode the requested result directly instead of collecting,
+  sorting, or counting just to inspect one fact.
+- Treat `parallelStream()`, `findAny()`, `Stream.toList()`, `groupingBy`, and `toMap` as semantic
+  choices; only use them when their ordering, mutability, null, merge, and thread-safety contracts
+  match the existing code.
+- Keep loops where they express complex state, checked IO, prompting, mutation-heavy code, or early
+  exits more clearly than a stream pipeline.
 
 ## Core Workflow
 
@@ -47,8 +46,8 @@ Before finalizing touched stream flow, check these rules (see
    - transformed list/set: `map`/`filter` then collect;
    - concatenated text: `Collectors.joining`;
    - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive terminals;
-   - grouping/indexing: `groupingBy`, `mapping`, `counting`, `summing*`, `summarizing*`,
-     `partitioningBy`, or `toMap` with a merge function.
+   - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
+     explicit merge/null handling.
 2. Prefer stream terminals that encode the intent directly:
 
    ```java
@@ -68,21 +67,14 @@ Before finalizing touched stream flow, check these rules (see
    `mapToDouble(...).average()`, `Collectors.summingInt`, or `Collectors.summarizingInt` over
    boxed `reduce` when computing primitive totals or statistics. Use `reduce(identity, op)` for
    immutable non-primitive accumulation such as `BigDecimal`.
-5. Choose collectors by map semantics:
-   - `toSet` when duplicates are irrelevant and order is not part of the contract;
-   - `distinct().sorted()` when producing a sorted unique list, filtering nulls first if natural
-     ordering would see nulls;
-   - `toMap(key, value)` only when keys are unique, or provide a merge function such as
-     `BinaryOperator.minBy(...)`;
-   - `groupingBy` when a key maps to many values;
-   - `mapping` downstream when grouped values should be projected;
-   - `counting`, `summing*`, or `summarizing*` downstream when grouped values should be aggregated;
-   - `partitioningBy` for a boolean split where both `true` and `false` keys should exist;
-   - `teeing` for two independent reductions over the same stream on Java 12+.
-6. Preserve ordering and short-circuit behavior. `sorted`, `distinct`, `limit`, `takeWhile`, and
-   `dropWhile` are order-sensitive; changing their order can change results or performance. For
-   top-N pipelines, sort before `limit`; for null-sensitive sort keys, filter nulls or use
-   `Comparator.nullsFirst/nullsLast`.
+5. Choose collectors by result semantics. Use `toMap` only with unique keys or an explicit merge
+   function, `groupingBy` when one key maps to many values, downstream collectors for projections
+   and aggregates, `partitioningBy` for a complete boolean split, and `teeing` for two independent
+   reductions on Java 12+.
+6. Preserve ordering, mutability, and short-circuit behavior. `sorted`, `distinct`, `limit`,
+   `takeWhile`, and `dropWhile` are order-sensitive. For top-N pipelines, sort before `limit`; for
+   nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep
+   `Collectors.toCollection(ArrayList::new)` or `Collectors.toList()`.
 7. Keep imperative code when it is the clearer boundary. Stateful sequence output, checked IO,
    prompts, mutation-heavy code, or complex early exits may be better as a loop. If a loop remains,
    still use small stream helpers for real lookups or aggregates when that improves clarity.

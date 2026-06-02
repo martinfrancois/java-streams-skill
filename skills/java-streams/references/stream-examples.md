@@ -101,6 +101,10 @@ List<String> discountCodes = orders.stream()
 Pitfall: natural sorting throws if null reaches the comparator. Filter nulls first or use
 `Comparator.nullsFirst(...)` / `Comparator.nullsLast(...)`.
 
+Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList()` or use
+`Collectors.toCollection(ArrayList::new)` when the result is sorted, appended to, or otherwise
+mutated later.
+
 ## Collectors
 
 ```java
@@ -109,6 +113,7 @@ Set<String> uniqueCodes = orders.stream()
         .collect(Collectors.toSet());
 
 Map<String, Product> cheapestByCategory = products.stream()
+        .filter(product -> product.getCategory() != null)
         .collect(Collectors.toMap(
                 Product::getCategory,
                 Function.identity(),

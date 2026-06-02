@@ -1,0 +1,46 @@
+{
+  "context": "Headline cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates ExportBatch.java with the requested class, record, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves batch behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final result by id."
+    },
+    {
+      "name": "Preserves mutability contract",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Does not use Stream.toList() for exportRows because the list is later mutated with add and sort; uses Collectors.toCollection(ArrayList::new), Collectors.toList(), or an equivalent mutable result."
+    },
+    {
+      "name": "Keeps ordering operations in the right places",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Does not move the final id sort before footer append and does not sort by id inside the initial stream before the position contract is satisfied."
+    },
+    {
+      "name": "Avoids unnecessary materialization",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Keeps one necessary mutable result list and does not create extra temporary lists just to inspect or copy the same rows."
+    },
+    {
+      "name": "Keeps cleanup focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated API redesign, dependencies, or broad rewrites."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup"
+  }
+}

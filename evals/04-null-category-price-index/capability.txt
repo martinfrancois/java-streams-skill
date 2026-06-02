@@ -1,0 +1,1 @@
+Convert Java map-building loops to collectors while preserving null and duplicate-key behavior.
