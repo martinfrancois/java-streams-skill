@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible problem in the Java Optional skill, evals, docs, or automation.
+description: Report a reproducible problem in the Java Streams skill, evals, docs, or automation.
 title: "bug: "
 labels: ["bug"]
 body:
@@ -8,7 +8,7 @@ body:
       value: |
         Thanks for taking the time to report a bug. Don't include Tessl tokens, GitHub tokens, package manager tokens, private repository links, private eval artifacts, private registry/workspace links, local host paths, proprietary Java source, or screenshots/logs containing those values.
 
-        For suspected vulnerabilities, don't open a public issue. Use [private vulnerability reporting](https://github.com/martinfrancois/java-optionals-skill/security/advisories/new).
+        For suspected vulnerabilities, don't open a public issue. Use [private vulnerability reporting](https://github.com/martinfrancois/java-streams-skill/security/advisories/new).
   - type: textarea
     id: summary
     attributes:
@@ -69,7 +69,7 @@ body:
     id: java-example
     attributes:
       label: Minimal Java example
-      description: If the bug is about Optional guidance, paste the smallest sanitized Java example that shows it.
+      description: If the bug is about stream guidance, paste the smallest sanitized Java example that shows it.
       render: java
   - type: textarea
     id: logs
@@ -82,7 +82,7 @@ body:
     attributes:
       label: Tessl plugin version
       description: Paste the published plugin version, `tessl` output, or the commit SHA if known.
-      placeholder: "martinfrancois/java-optionals version or commit SHA: "
+      placeholder: "martinfrancois/java-streams version or commit SHA: "
   - type: input
     id: model
     attributes:

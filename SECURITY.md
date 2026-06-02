@@ -1,6 +1,6 @@
 # Security Policy
 
-If you believe you've found a security issue in Java Optional Skill for AI Agents, report it
+If you believe you've found a security issue in Java Streams Skill for AI Agents, report it
 privately first.
 
 This policy gives reporters a clear path and explains what maintainers treat as a security issue.
@@ -22,7 +22,7 @@ announces a different support window in the release notes.
 Don't open a public issue for a suspected vulnerability.
 
 Use GitHub private vulnerability reporting through
-[Report a Vulnerability](https://github.com/martinfrancois/java-optionals-skill/security/advisories/new).
+[Report a Vulnerability](https://github.com/martinfrancois/java-streams-skill/security/advisories/new).
 If GitHub private vulnerability reporting isn't working for you, contact the maintainers privately
 through GitHub and share only the minimum information needed to start triage.
 
@@ -87,7 +87,7 @@ These reports should usually be handled privately:
 
 These reports usually belong in a normal public issue or pull request:
 
-- disagreement with Java `Optional` style guidance, wording, examples, or eval scoring;
+- disagreement with Java Stream or Collector style guidance, wording, examples, or eval scoring;
 - an AI agent producing bad Java code when there's no secret exposure, unsafe instruction
   compromise, CI/release bypass, or other security impact;
 - prompt injection against a downstream agent by itself, unless it also shows a secret leak, tool
@@ -115,7 +115,7 @@ details by mistake.
 
 ## Credential Handling
 
-Java Optional Skill for AI Agents is a Tessl skill and eval suite, not a runtime application.
+Java Streams Skill for AI Agents is a Tessl skill and eval suite, not a runtime application.
 Security reports are most likely to involve credential exposure, unsafe skill instructions, eval
 fixtures or criteria, GitHub Actions logs, release/publish automation, repository settings, or the
 published Tessl plugin.

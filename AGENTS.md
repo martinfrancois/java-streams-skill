@@ -1,7 +1,7 @@
 # Agent Instructions
 
-Java Optionals is a Tessl-compatible skill that helps AI coding agents write and clean up Java
-`Optional` code without replacing one bad pattern with another.
+Java Streams is a Tessl-compatible skill that helps AI coding agents write, review, and clean up
+Java Stream and Collector code without common stream antipatterns.
 
 Before starting any task, open [Workflow](docs/agents/workflow.md) and follow it.
 

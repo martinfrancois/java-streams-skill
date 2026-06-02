@@ -1,0 +1,1 @@
+Review Java stream lookup code and choose findAny or findFirst based on ordering semantics.

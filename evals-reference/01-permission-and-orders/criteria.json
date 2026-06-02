@@ -1,0 +1,40 @@
+{
+  "context": "Reference coverage for flatMap permission lookup, IntStream.range mapToObj, BigDecimal reduce, and primitive DoubleStream sum.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates StreamHelpers.java with requested methods and nested types."
+    },
+    {
+      "name": "Uses flatMap for permissions",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Uses user.roles().stream().flatMap(role -> role.permissions().stream()) with findAny/orElseThrow or equivalent."
+    },
+    {
+      "name": "Uses IntStream range mapping",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Creates orders with IntStream.range(0, 50).mapToObj(...) or equivalent range stream."
+    },
+    {
+      "name": "Uses reduce for BigDecimal",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Sums order totals with map(Order::totalAmount).reduce(BigDecimal.ZERO, BigDecimal::add) or equivalent immutable reduction."
+    },
+    {
+      "name": "Uses primitive sum for radii",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Filters/casts Circle values safely and uses mapToDouble(Circle::radius).sum(), not boxed reduce."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

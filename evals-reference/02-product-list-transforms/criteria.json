@@ -1,0 +1,40 @@
+{
+  "context": "Reference coverage for sorted, limit, toSet, and partitioningBy stream patterns.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates ProductListTransforms.java with the requested methods and nested records."
+    },
+    {
+      "name": "Uses filter and sorted for favorites",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Filters in-stock favorites and sorts with Comparator.comparing(Product::name)."
+    },
+    {
+      "name": "Uses sorted then limit for top products",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Sorts by rating descending before limit(3), avoiding subList after full materialization."
+    },
+    {
+      "name": "Uses toSet for unique codes",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Maps orders to discount codes and collects directly to a set."
+    },
+    {
+      "name": "Uses partitioningBy for availability",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Uses Collectors.partitioningBy(product -> product.stock() > 0) or equivalent boolean partition that returns both keys."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

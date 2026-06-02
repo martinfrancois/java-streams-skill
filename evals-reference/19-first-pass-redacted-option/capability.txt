@@ -1,1 +1,0 @@
-Preserve stream ordering and real collection semantics while simplifying Optional-heavy Java code.

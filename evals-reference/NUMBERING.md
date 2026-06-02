@@ -1,5 +1,3 @@
-# Scenario Numbering
-
-Reference scenarios keep historical numbers from earlier suites. Gaps are intentional when a case
-was removed, renamed, promoted to headline coverage, or moved between headline and reference
-coverage.
+Reference scenarios are intentionally numbered by coverage area, not by public benchmark priority.
+They cover stream patterns from the JFokus source that are useful regression coverage but should not
+automatically drive headline lift claims.

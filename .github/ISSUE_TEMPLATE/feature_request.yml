@@ -16,7 +16,7 @@ body:
       label: Area
       options:
         - Skill behavior
-        - Optional example or reference material
+        - Stream example or reference material
         - Evals or scoring
         - README or docs
         - Tessl install or plugin metadata
@@ -35,7 +35,7 @@ body:
     id: examples
     attributes:
       label: Examples
-      description: Add a small Java Optional example, prompt, eval idea, or link if it helps explain the request.
+      description: Add a small Java Streams example, prompt, eval idea, or link if it helps explain the request.
       render: text
   - type: textarea
     id: alternatives

@@ -1,0 +1,34 @@
+{
+  "context": "Reference review coverage for appropriate parallel stream use on CPU-bound stateless work.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear review decision."
+    },
+    {
+      "name": "Allows parallelism for this shape",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Recognizes the work is CPU-heavy, stateless, and has a primitive sum reduction, so parallelism can be reasonable."
+    },
+    {
+      "name": "Mentions overhead and measurement",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Says the performance should be measured because parallel stream overhead can outweigh benefits."
+    },
+    {
+      "name": "Mentions common pool",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Notes that parallel streams use the common fork-join pool by default and may contend with other work."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

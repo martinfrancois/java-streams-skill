@@ -1,0 +1,34 @@
+{
+  "context": "Reference review coverage for findAny/findFirst and collect-then-first cleanup.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear recommendation."
+    },
+    {
+      "name": "Rejects collect-then-first",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Says collecting all primary addresses just to inspect emptiness/read the first result is unnecessary."
+    },
+    {
+      "name": "Chooses findAny when matches are equivalent",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Recommends filter(Address::primary).findAny().orElse(null) if any primary address is acceptable."
+    },
+    {
+      "name": "Names the findFirst exception",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Says findFirst is appropriate only if encounter order defines which primary address should win."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review"
+  }
+}

@@ -1,31 +1,22 @@
-# Java Optional Skill for AI Agents
+# Java Streams Skill for AI Agents
 
-[![tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fmartinfrancois%2Fjava-optionals)](https://tessl.io/registry/martinfrancois/java-optionals)
+[![tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fmartinfrancois%2Fjava-streams)](https://tessl.io/registry/martinfrancois/java-streams)
 
-AI agents often know enough Java to reach for `Optional`, but not enough to use it well.
+AI agents often know Java streams well enough to chain `filter`, `map`, and `collect`, but not
+enough to choose the right stream operation for the job.
 
-They write code that looks modern at first glance, then leaves you with `isPresent()` plus `get()`,
-`orElse(null)`, fallback code that runs too early, fake one-item lists, or a clear stream rewritten
-as a noisy loop.
+They write code that looks modern at first glance, then materializes a list just to check whether
+anything matched, sorts a whole stream to get one newest item, counts for existence, uses boxed
+numeric reductions, changes `findFirst()` to `findAny()` without noticing the order contract, or
+adds `parallelStream()` where it makes the code slower or less predictable.
 
-This skill gives the agent a small decision guide before it writes or changes Optional code: choose
-the Optional shape, run fallback work only when needed, keep real collection streams readable, and
-use a plain branch when checked IO makes that clearer.
+This skill gives the agent a compact decision guide before it writes or changes stream code: choose
+the terminal that matches the result, preserve ordering and null behavior, pick collectors by map
+semantics, use primitive streams for primitive totals, and treat parallel streams as a design choice
+rather than a default optimization.
 
-It also tells the agent to check the project Java version first. The right Optional code for a
-Java 8 project may be different from the right code for Java 17 or Java 21.
-
-## Contents
-
-- [Getting Started](#getting-started)
-- [Why This Exists](#why-this-exists)
-- [What Good Looks Like](#what-good-looks-like)
-- [What It Helps With](#what-it-helps-with)
-- [Examples](#examples)
-- [How It's Evaluated](#how-its-evaluated)
-- [Contributing](#contributing)
-- [Origin](#origin)
-- [License](#license)
+It also tells the agent to check the project Java version first. The right stream code for Java 8
+may be different from the right code for Java 17, Java 21, or Java 24.
 
 ## Getting Started
 
@@ -35,288 +26,163 @@ Install the published Tessl plugin using the option that fits your setup:
 
 | Tool | Command |
 | --- | --- |
-| npm | `npx tessl i martinfrancois/java-optionals` |
-| yarn | `yarn dlx tessl i martinfrancois/java-optionals` |
-| pnpm | `pnpx tessl i martinfrancois/java-optionals` |
-| bun | `bunx tessl i martinfrancois/java-optionals` |
-| Tessl CLI | `tessl i martinfrancois/java-optionals` |
-
-Use one of the package-runner commands if you want to try the skill without installing the Tessl CLI
-first.
+| npm | `npx tessl i martinfrancois/java-streams` |
+| yarn | `yarn dlx tessl i martinfrancois/java-streams` |
+| pnpm | `pnpx tessl i martinfrancois/java-streams` |
+| bun | `bunx tessl i martinfrancois/java-streams` |
+| Tessl CLI | `tessl i martinfrancois/java-streams` |
 
 ### 2. Use It
 
 Agents that support skill auto-selection, such as
 [Codex](https://developers.openai.com/codex/skills) and
 [Claude Code](https://code.claude.com/docs/en/skills), can choose this skill automatically from the
-task or code context. The task doesn't need to say `Optional` by name.
+task or code context. The task does not need to say `stream` by name.
 
-It can also trigger when Java code deals with missing values, values that may be `null`,
-fallback/default values, `isPresent()`, `orElse(null)`, `optional.stream()`,
-`findFirst()` / `findAny()`, or similar code paths for values that may or may not exist.
+It can trigger when Java code uses streams, collectors, primitive streams, `findFirst()` /
+`findAny()`, match terminals, `flatMap`, `mapMulti`, `joining`, `min` / `max`, `sum`,
+`groupingBy`, `toMap`, `partitioningBy`, `teeing`, `takeWhile` / `dropWhile`, or parallel stream
+behavior.
 
-For important Optional-heavy work, you can still name the skill explicitly:
+For important stream-heavy work, you can still name the skill explicitly:
 
 ```text
-Use $java-optionals to implement this Java feature with Optional best practices.
+Use $java-streams to implement this Java feature with stream and collector best practices.
 ```
 
 For cleanup work:
 
 ```text
-Use $java-optionals to clean up this Java method without changing its outputs or error handling.
+Use $java-streams to clean up this Java stream pipeline without changing behavior.
 ```
 
 For reviews:
 
 ```text
-Use $java-optionals to review this Java Optional code and suggest any cleanups.
+Use $java-streams to review this Java stream code and suggest any fixes.
 ```
 
 ## Why This Exists
 
-The motivation was real AI-written Java code. The agent already used `Optional`, but didn't follow
-best practices.
+The motivation is AI-written Java code that technically uses streams, but misses what streams are
+good at expressing.
 
-Sometimes the agent introduced weak Optional code while writing a new feature:
+Common failures include:
 
-```java
-// what an unassisted AI would write in new code
-Optional<Coupon> coupon = findCoupon(code);
-if (coupon.isPresent()) {
-    return applyCoupon(cart, coupon.get());
-}
-return cart;
-```
-
-Other times, when asked to clean up the code and follow Optional best practices, it swapped one bad
-pattern for another:
-
-- replacing `isPresent()` / `get()` with `orElse(null)` and local null checks;
-- using `isPresent()` or `isEmpty()` and then reading the same value with `get()` or
-  `orElseThrow()`;
-- running fallback work too early by using `orElse(...)` where `orElseGet(...)` is required;
-- turning one optional value into a fake list, then reading the first item;
-- replacing a clear collection stream with a long manual loop;
-- hiding checked IO or user prompts behind clever helper code;
-- changing the meaning of `findFirst()` / `findAny()` by accident.
-
-The examples below are anti-examples. They show Java `Optional` code an AI agent would write,
-followed by what it would change that code to when asked to follow Optional best practices without
-this skill.
-
-For example, one cleanup would have changed a simple coupon branch into a fake list:
-
-```java
-// before the AI cleanup request
-if (selectedCoupon.isPresent()) {
-    return applyCoupon(cart, selectedCoupon.get());
-}
-return cart;
-
-// what an unassisted AI would have changed it to
-List<Coupon> coupons = selectedCoupon.stream().toList();
-if (!coupons.isEmpty()) {
-    return applyCoupon(cart, coupons.get(0));
-}
-return cart;
-```
-
-Another would have changed a product discount fallback into local null checks:
-
-```java
-// before the AI cleanup request
-if (discount.isPresent()) {
-    return price.minus(discount.get());
-}
-return price;
-
-// what an unassisted AI would have changed it to
-Money value = discount.orElse(null);
-if (value != null) {
-    return price.minus(value);
-}
-return price;
-```
-
-And another would have changed a delivery-slot lookup into a harder-to-read loop:
-
-```java
-// before the AI cleanup request
-for (DeliveryWindow preferredWindow : preferredWindows) {
-    Optional<DeliverySlot> match = availableSlots.stream()
-            .filter(slot -> slot.fits(preferredWindow))
-            .findFirst();
-    if (match.isPresent()) {
-        return Optional.of(match.orElseThrow());
-    }
-}
-return Optional.empty();
-
-// what an unassisted AI would have changed it to
-for (DeliveryWindow preferredWindow : preferredWindows) {
-    for (DeliverySlot slot : availableSlots) {
-        if (slot.fits(preferredWindow)) {
-            return Optional.of(slot);
-        }
-    }
-}
-return Optional.empty();
-```
-
-The goal isn't to force every branch into a method chain. The goal is simpler: understand what the
-`Optional` is doing, keep the important effects in the same places, and choose the clearest code.
+- collecting filtered elements into a list, then checking `isEmpty()` or reading the first item;
+- using `count() > 0` instead of `anyMatch(...)`;
+- using `sorted(...).findFirst()` instead of `min(...)` or `max(...)`;
+- mapping to a list and then calling `String.join(...)` instead of using `Collectors.joining(...)`;
+- using boxed `reduce(...)` where a primitive stream terminal is clearer;
+- building nested sets or lists inside a `map(...)`, then flattening afterward;
+- using `toMap(...)` without a merge function when duplicate keys are possible;
+- forgetting that natural sorting throws when `null` reaches the comparator;
+- making casual `parallelStream()` changes without checking data size, CPU cost, shared state,
+  ordering, or blocking IO.
 
 ## What Good Looks Like
 
-Without this skill, agents may "clean up" Optional code but still leave the same control-flow
-problem:
+Without this skill, an agent may write stream code that works but hides the intent:
 
 ```java
-Coupon coupon = cart.coupon().orElse(null);
-
-if (coupon != null) {
-    return totalWithCoupon(cart, coupon);
-}
-return totalWithoutCoupon(cart);
+List<Item> outOfStock = order.getItems().stream()
+        .filter(item -> item.getStock() == 0)
+        .collect(Collectors.toList());
+return !outOfStock.isEmpty();
 ```
 
-With this skill, the agent is pushed toward using the `Optional` for the actual decision:
+With this skill, the agent is pushed toward the terminal operation that says what the code means:
 
 ```java
-Money total(Cart cart) {
-    return cart.coupon()
-            .map(coupon -> totalWithCoupon(cart, coupon))
-            .orElseGet(() -> totalWithoutCoupon(cart));
-}
+return order.getItems().stream()
+        .anyMatch(item -> item.getStock() == 0);
 ```
+
+The goal is not to force every loop into a stream. The goal is to use streams and collectors when
+they make the operation clearer, safer, or easier to verify.
 
 ## What It Helps With
 
 Good fit:
 
-- replacing `isPresent()` or `isEmpty()` followed by `get()` or `orElseThrow()`;
-- choosing APIs that fit the project Java baseline instead of assuming the newest JDK;
-- avoiding `orElse(null)` followed by local null checks;
-- choosing between `orElse(...)` and `orElseGet(...)`;
-- using `OptionalInt`, `OptionalLong`, and `OptionalDouble` without boxing or `getAs*()` reopening;
-- keeping checked exceptions, user prompts, IO, and side effects in the right place;
-- deciding whether `findFirst()` or `findAny()` keeps the same result;
-- keeping real collection streams instead of rewriting them as noisy loops;
-- avoiding `optional.stream().toList()` loops for a single `Optional`;
-- handling old APIs that really use `null` for missing values;
-- writing new Optional code directly instead of cleaning up hard-to-read branches later.
+- replacing collect-then-inspect, count-for-existence, or sort-then-first patterns;
+- choosing `findFirst()` or `findAny()` without changing ordering semantics;
+- using `flatMap` for nested collections and `Optional::stream` for `Stream<Optional<T>>`;
+- using `Collectors.joining`, `groupingBy`, `mapping`, `counting`, `summing*`,
+  `summarizing*`, `partitioningBy`, `toMap`, and `teeing` correctly;
+- selecting primitive streams and primitive terminals for primitive aggregation;
+- avoiding null-sensitive sorting and duplicate-key `toMap` failures;
+- deciding whether `parallelStream()` is actually appropriate;
+- choosing Java-version-compatible APIs such as `takeWhile`, `mapMulti`, `Stream.toList()`, and
+  gatherers.
 
 Poor fit:
 
-- broad Java style enforcement unrelated to `Optional`;
-- large API redesigns, data object changes, or new dependencies without maintainer agreement;
-- changing business behavior just to make code look more functional;
-- replacing every readable branch with a method chain.
+- broad Java style enforcement unrelated to streams or collectors;
+- replacing straightforward stateful loops with hard-to-read stream tricks;
+- large API redesigns or new dependencies without maintainer agreement;
+- changing business behavior just to make code look more functional.
 
 ## Examples
 
-Simple fallback:
+Newest order:
 
 ```java
-String customerName(Optional<Customer> customer) {
-    return customer.map(Customer::name).orElse("Guest");
-}
+Optional<Order> newestOrder = orders.stream()
+        .max(Comparator.comparing(Order::createdAt));
 ```
 
-Create only when needed:
+Product categories:
 
 ```java
-Cart cart(String cartId) {
-    return carts.find(cartId).orElseGet(() -> createCart(cartId));
-}
+String categories = products.stream()
+        .map(Product::category)
+        .collect(Collectors.joining(", "));
 ```
 
-Side-effect branch:
+Cheapest product per category:
 
 ```java
-void sendReceipt(Order order, Optional<Email> email) {
-    email.ifPresentOrElse(
-            address -> sendEmail(address, order),
-            () -> printReceipt(order));
-}
+Map<String, Product> cheapestByCategory = products.stream()
+        .collect(Collectors.toMap(
+                Product::category,
+                Function.identity(),
+                BinaryOperator.minBy(Comparator.comparing(Product::price))));
 ```
 
-Checked IO case where a plain branch is clearer:
+Item quantity summary:
 
 ```java
-String shippingAddress(Checkout checkout, Console console) throws IOException {
-    Optional<String> saved = checkout.savedShippingAddress();
-    // Presence read is intentional here because the empty branch performs checked IO.
-    if (!saved.isPresent()) {
-        return console.readLine("Shipping address: ");
-    }
-    return saved.get();
-}
-```
-
-This is a narrow checked-IO boundary exception. Don't copy this shape for ordinary in-memory value
-flow; use `map`, `flatMap`, `orElseGet`, or `orElseThrow` when both branches are ordinary Optional
-value flow.
-
-Real collection lookup:
-
-```java
-Optional<DeliverySlot> deliverySlot(DeliveryWindow preferredWindow) {
-    return availableSlots.stream()
-            .filter(slot -> slot.fits(preferredWindow))
-            .findFirst();
-}
+IntSummaryStatistics stats = orders.stream()
+        .flatMap(order -> order.items().stream())
+        .collect(Collectors.summarizingInt(Item::quantity));
 ```
 
 ## How It's Evaluated
 
-The skill is tested on implementation tasks based on real AI-written `Optional` mistakes. The tasks
-cover both writing new Optional code and cleaning up existing Optional code. The headline suite uses
-a documented mix of natural prompts and explicit `Use $java-optionals` prompts. Each task is run
-without the skill and with the skill, then scored mainly on Optional-specific quality, with compile
-and behavior checks included as safety checks.
+The headline eval suite focuses on tasks where the stream-specific context should make the agent
+better than the same agent without the skill. It includes natural activation prompts and explicit
+`Use $java-streams` prompts, implementation tasks and review tasks, and criteria weighted toward
+stream quality rather than just compilation.
 
-The evals check that agents:
-
-- produce coherent Java for the stated baseline;
-- preserve exact outputs, errors, prompts, side effects, ordering, and fallback timing;
-- avoid `isPresent()` / `get()` for ordinary value reads;
-- don't replace `Optional` with `orElse(null)`;
-- run fallback work only when needed;
-- keep checked IO and user prompts clear;
-- keep real collection streams readable;
-- handle primitive Optionals and Optional-producing stream/collector APIs correctly.
-
-Compile and behavior checks make regressions visible in the score, but the headline score is
-intentionally weighted toward Optional quality: whether the agent keeps the same behavior while
-avoiding Optional antipatterns and readability regressions.
-
-Results should be read by subset:
-
-- natural activation scenarios do not name the skill;
-- explicit invocation scenarios directly ask for `$java-optionals`;
-- Optional-quality subtotal shows the skill-specific effect;
-- the focused headline suite reports the representative mix;
-- `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
-  already solve.
-
-Current published scores are shown on the
-[Tessl plugin](https://tessl.io/registry/martinfrancois/java-optionals).
-
-## Contributing
-
-Want to improve the skill, evals, or package metadata? See [CONTRIBUTING.md](CONTRIBUTING.md).
+Reference evals cover the rest of the stream pattern catalog from the source material. Those
+scenarios are useful for regression and review, but they are not automatically promoted into the
+headline benchmark when the baseline model already solves them.
 
 ## Origin
 
-This skill is based on real-world failures where coding agents wrote weak Java `Optional` code or
-changed existing Optional code into different bad shapes while working on production-style tasks. The
-motivating discussion is
-[`martin-francois/symphony-trello#96`](https://github.com/martin-francois/symphony-trello/issues/96).
+The stream examples and pattern catalog are based on the public JFokus 2026 Java streams examples:
+<https://github.com/martinfrancois/jfokus-2026/blob/main/code.md>.
 
-The skill is self-contained: using it doesn't require access to that issue, the original repository,
-development drafts, or any external article.
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local validation, eval design rules, commit-message
+format, and release workflow details.
+
+AI-assisted contributions are welcome when they are transparent, reviewed, and owned by a human. See
+[AI_CONTRIBUTION_POLICY.md](AI_CONTRIBUTION_POLICY.md).
+
+For suspected vulnerabilities, use the private reporting path in [SECURITY.md](SECURITY.md).
 
 ## License
 

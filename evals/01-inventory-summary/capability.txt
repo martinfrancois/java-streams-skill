@@ -1,0 +1,1 @@
+Refactor Java stream summary code to direct terminals without materializing intermediate lists.

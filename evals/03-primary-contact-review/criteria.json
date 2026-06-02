@@ -1,0 +1,46 @@
+{
+  "context": "Headline review: reject a proposed findAny and parallelStream change that loses priority ordering.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear review decision about the proposed change."
+    },
+    {
+      "name": "Rejects behavior-changing proposal",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Clearly says the proposed change should not be accepted because it can return a different contact."
+    },
+    {
+      "name": "Identifies priority ordering contract",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Explains that sorted by Contact::priority followed by findFirst means the lowest-priority verified contact wins, and findAny does not preserve that contract."
+    },
+    {
+      "name": "Flags unjustified parallelStream",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Explains that parallelStream is not justified here and makes ordered selection less predictable or more expensive without evidence of CPU-bound work."
+    },
+    {
+      "name": "Suggests safe stream shape",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Suggests keeping sorted(...).filter(...).findFirst(), or filtering before sorting only if that preserves the same lowest-priority verified contact behavior."
+    },
+    {
+      "name": "Review is concise and focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the review focused on stream ordering and parallelism rather than unrelated style."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review"
+  }
+}

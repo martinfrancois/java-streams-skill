@@ -1,0 +1,52 @@
+{
+  "context": "Headline implementation: Java 17 mapMulti is a strong fit for conditional developer email extraction, and takeWhile is required for prefix semantics.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates TrainingAndPackets.java with the requested methods, nested interface/records, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves helper behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Returns only developers with incomplete training as a set of emails and returns only the packet prefix before the first loss spike."
+    },
+    {
+      "name": "Flattens company employees directly",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Uses companies.stream().flatMap(company -> company.employees().stream()) or equivalent direct flattening rather than collecting nested employee sets before flattening."
+    },
+    {
+      "name": "Uses mapMulti or equivalent conditional emission cleanly",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Uses Java 17 mapMulti with pattern matching for Developer, or an equivalently concise filter/cast/map pipeline, without unsafe casts before type checks."
+    },
+    {
+      "name": "Uses takeWhile for prefix semantics",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Implements packetsBeforeFirstLossSpike with takeWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-preserving loop, not filter."
+    },
+    {
+      "name": "Uses appropriate collectors",
+      "category": "stream_quality",
+      "max_score": 5,
+      "description": "Collects emails to a Set and packets to a List with Java 17-compatible collection terminals."
+    },
+    {
+      "name": "Keeps implementation compact",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated abstractions, mutable class state, or behavior not requested."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

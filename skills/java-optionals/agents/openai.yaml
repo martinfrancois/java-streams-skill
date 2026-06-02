@@ -1,4 +1,0 @@
-interface:
-  display_name: "Java Optional Skill"
-  short_description: "Optional best practices and antipattern prevention"
-  default_prompt: "Use $java-optionals when writing, reviewing, or refactoring Java code that introduces, changes, or reasons about Optional or missing/fallback values."

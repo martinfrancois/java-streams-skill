@@ -1,11 +1,11 @@
 {
-  "name": "martinfrancois/java-optionals",
-  "version": "1.0.0",
-  "description": "Help AI coding agents use Java Optional well in new code and cleanups, without replacing one antipattern with another.",
-  "summary": "Help AI coding agents use Java Optional well in new code and cleanups, without replacing one antipattern with another.",
-  "repository": "https://github.com/martinfrancois/java-optionals-skill",
-  "homepage": "https://github.com/martinfrancois/java-optionals-skill#readme",
+  "name": "martinfrancois/java-streams",
+  "version": "0.1.0",
+  "description": "Help AI coding agents write, review, and refactor Java Stream and Collector code without common stream antipatterns.",
+  "summary": "Help AI coding agents write, review, and refactor Java Stream and Collector code without common stream antipatterns.",
+  "repository": "https://github.com/martinfrancois/java-streams-skill",
+  "homepage": "https://github.com/martinfrancois/java-streams-skill#readme",
   "license": "MIT",
   "entrypoint": "README.md",
-  "private": false
+  "private": true
 }

@@ -1,0 +1,1 @@
+Implement Java stream list transforms with sorting, limit, distinct, toSet, and partitioningBy.

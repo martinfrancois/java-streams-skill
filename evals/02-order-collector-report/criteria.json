@@ -1,0 +1,52 @@
+{
+  "context": "Headline implementation: choose stream collectors that express map and aggregate semantics without manual mutable loops.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates OrderCollectorReport.java with the requested build method, nested records, imports for BigDecimal, List, Map, IntSummaryStatistics, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves requested report behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Returns the four requested report values with correct handling for empty orders or products, duplicate categories, duplicate item names, and multiple line item quantities."
+    },
+    {
+      "name": "Uses toMap with merge for cheapest products",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Computes cheapestByCategory with Collectors.toMap(Product::category, Function.identity(), BinaryOperator.minBy or an equivalent merge based on Product::price), avoiding duplicate-key failure."
+    },
+    {
+      "name": "Uses groupingBy with mapping for product names",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Computes productNamesByCategory with Collectors.groupingBy(Product::category, Collectors.mapping(Product::name, Collectors.toList())) or equivalent downstream mapping."
+    },
+    {
+      "name": "Uses flatMap and counting for item sales",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Flattens orders to line items and computes salesByItemName with groupingBy(Item::name, counting()) or an equivalent collector, rather than nested manual map updates."
+    },
+    {
+      "name": "Uses summarizingInt for quantity stats",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Computes quantityStats with a flattened item stream and Collectors.summarizingInt(Item::quantity) or an equivalent IntSummaryStatistics stream terminal."
+    },
+    {
+      "name": "Keeps implementation readable",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps helper code small if used and avoids unrelated abstractions or dependencies."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

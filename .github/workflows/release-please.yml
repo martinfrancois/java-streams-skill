@@ -53,7 +53,7 @@ jobs:
 
           pr_json="$(gh pr list \
             --state open \
-            --head release-please--branches--main--components--java-optionals \
+            --head release-please--branches--main--components--java-streams \
             --json title,headRefName \
             --jq '.[0] // empty')"
 
@@ -115,7 +115,7 @@ jobs:
           set_status pending "Release PR validation is running"
           trap 'code=$?; if [ "$code" -eq 0 ]; then set_status success "Release PR validation passed"; else set_status failure "Release PR validation failed"; fi' EXIT
 
-          python3 scripts/validate_skill.py skills/java-optionals
+          python3 scripts/validate_skill.py skills/java-streams
           python3 scripts/validate_eval_criteria.py evals evals-reference
           python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
           bash -n scripts/check_publish_dry_run.sh

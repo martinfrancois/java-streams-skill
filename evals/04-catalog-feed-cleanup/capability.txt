@@ -1,0 +1,1 @@
+Refactor Java stream feed code with Optional flattening, null-safe distinct sorting, and safe toMap merging.

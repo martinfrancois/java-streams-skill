@@ -1,0 +1,52 @@
+{
+  "context": "Headline review: parallelStream is a weak answer for blocking remote calls; Java 24 allows discussing Gatherers.mapConcurrent.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear decision and recommendation."
+    },
+    {
+      "name": "Preserves required output behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Recognizes that the final product list must still contain only in-stock favorites sorted by Product::name."
+    },
+    {
+      "name": "Does not endorse parallelStream for blocking IO",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Explains that parallelStream uses the common fork-join pool, remains blocking, and is not the right default for remote API calls."
+    },
+    {
+      "name": "Recommends Java 24 mapConcurrent or explicit async boundary",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Recommends Gatherers.mapConcurrent with a bounded concurrency value, or an explicit executor/async design, rather than casual parallelStream."
+    },
+    {
+      "name": "Keeps sorting after stock checks",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Keeps or recommends extracting products after the concurrent stock check and sorting by name before toList."
+    },
+    {
+      "name": "Mentions concurrency controls and failure behavior",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Notes the need to choose a bounded concurrency level and consider remote API errors/timeouts rather than unlimited or implicit concurrency."
+    },
+    {
+      "name": "Review is concise and actionable",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the review focused on the stream/concurrency decision and gives a concrete path forward."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

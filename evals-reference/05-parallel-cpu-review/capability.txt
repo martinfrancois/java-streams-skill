@@ -1,0 +1,1 @@
+Review Java parallel stream usage for CPU-bound stateless work.

@@ -6,22 +6,21 @@ Use this when naming the repository, skill, package, workspace, or public source
 
 ## Rules
 
-- Repository name: `java-optionals-skill`.
-- Skill name: `java-optionals`.
-- Tessl package name: `martinfrancois/java-optionals`.
+- Repository name: `java-streams-skill`.
+- Skill name: `java-streams`.
+- Tessl package name: `martinfrancois/java-streams`.
 - Tessl workspace: `martinfrancois`.
+- The GitHub repository is private until the maintainer explicitly makes it public.
+- The repository should still remain open-source ready: MIT license, security policy, contributor
+  docs, public-safe README, public-safe metadata, and no private transcript or secret references.
 - If the Tessl project needs to be recreated, use:
 
   ```bash
-  tessl project create --workspace martinfrancois java-optionals-skill
+  tessl project create --workspace martinfrancois java-streams-skill
   ```
 
-- The GitHub repository is public. Keep public docs free of private paths, local transcript paths,
-  unpublished workspace details, and secret references.
-- Keep the project independent of company naming. Don't add company names to the repo name, package
-  name, README, or public metadata unless the user asks.
-- Don't mention private gists or secret references in public docs. Public origin links should point
-  to `martin-francois/symphony-trello#96`.
+- Public origin links may point to
+  `https://github.com/martinfrancois/jfokus-2026/blob/main/code.md`.
 
 ## References
 

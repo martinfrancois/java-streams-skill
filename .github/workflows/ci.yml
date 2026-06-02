@@ -29,7 +29,7 @@ jobs:
           version: "0.81.2"
 
       - name: Validate skill metadata
-        run: python3 scripts/validate_skill.py skills/java-optionals
+        run: python3 scripts/validate_skill.py skills/java-streams
 
       - name: Validate eval criteria
         run: python3 scripts/validate_eval_criteria.py evals evals-reference

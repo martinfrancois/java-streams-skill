@@ -15,7 +15,7 @@ on:
       - "README.md"
       - "CONTRIBUTING.md"
       - "docs/agents/**"
-      - "skills/java-optionals/**"
+      - "skills/java-streams/**"
 
 concurrency:
   group: skill-review-${{ github.workflow }}-${{ github.ref }}
@@ -44,4 +44,4 @@ jobs:
 
       - name: Review skill
         if: ${{ env.TESSL_TOKEN != '' }}
-        run: tessl skill review --threshold 90 skills/java-optionals/SKILL.md
+        run: tessl skill review --threshold 90 skills/java-streams/SKILL.md

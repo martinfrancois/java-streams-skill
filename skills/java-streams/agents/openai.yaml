@@ -1,0 +1,4 @@
+interface:
+  display_name: "Java Streams Skill"
+  short_description: "Stream and Collector best practices"
+  default_prompt: "Use $java-streams when writing, reviewing, or refactoring Java code that uses streams, collectors, primitive streams, or stream terminal operations."

@@ -1,0 +1,1 @@
+Review Java stream changes that would break encounter-order semantics.

@@ -44,12 +44,12 @@ BEHAVIOR_WORDS = (
     "parse",
     "redact",
 )
-CRITERION_CATEGORIES = {"safety", "optional_quality", "maintainability"}
+CRITERION_CATEGORIES = {"safety", "stream_quality", "maintainability"}
 EXPLICIT_INVOCATION_PATTERNS = (
-    r"\$java-optionals\b",
-    r"\buse\s+java-optionals\b",
-    r"\buse\s+the\s+java-optionals\s+skill\b",
-    r"\bjava-optionals\s+skill\b",
+    r"\$java-streams\b",
+    r"\buse\s+java-streams\b",
+    r"\buse\s+the\s+java-streams\s+skill\b",
+    r"\bjava-streams\s+skill\b",
 )
 
 
@@ -156,7 +156,7 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
         if is_headline and category not in CRITERION_CATEGORIES:
             failures.append(
                 f"{criteria_file}: headline checklist item {index} needs category "
-                f"safety, optional_quality, or maintainability"
+                f"safety, stream_quality, or maintainability"
             )
         total_score += max_score
         if category in category_scores:
@@ -192,10 +192,10 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
             failures.append(f"{criteria_file}: headline implementation scenario needs compile/artifact criteria")
         if behavior_score <= 0:
             failures.append(f"{criteria_file}: headline implementation scenario needs behavior criteria")
-        if category_scores["optional_quality"] <= 0:
-            failures.append(f"{criteria_file}: headline implementation scenario needs optional_quality criteria")
-    elif is_headline and task_type == "cleanup" and category_scores["optional_quality"] <= 0:
-        failures.append(f"{criteria_file}: headline cleanup scenario needs optional_quality criteria")
+        if category_scores["stream_quality"] <= 0:
+            failures.append(f"{criteria_file}: headline implementation scenario needs stream_quality criteria")
+    elif is_headline and task_type == "cleanup" and category_scores["stream_quality"] <= 0:
+        failures.append(f"{criteria_file}: headline cleanup scenario needs stream_quality criteria")
 
     if "optionalint" in task_text.lower() or "optionalint" in str(data).lower():
         primitive_text = (task_text + json.dumps(data)).lower()
@@ -207,7 +207,7 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
 
 def validate_runtime_references() -> list[str]:
     failures: list[str] = []
-    root = Path("skills/java-optionals/references")
+    root = Path("skills/java-streams/references")
     if not root.exists():
         return failures
     for path in sorted(root.glob("*.md")):
@@ -215,8 +215,8 @@ def validate_runtime_references() -> list[str]:
         for marker in ANSWER_KEY_MARKERS:
             if marker.lower() in text.lower():
                 failures.append(f"{path}: runtime reference contains answer-key marker {marker!r}")
-    if Path("skills/java-optionals/evals/evals.json").exists():
-        failures.append("skills/java-optionals/evals/evals.json: stale runtime-adjacent legacy eval file")
+    if Path("skills/java-streams/evals/evals.json").exists():
+        failures.append("skills/java-streams/evals/evals.json: stale runtime-adjacent legacy eval file")
     return failures
 
 
@@ -292,13 +292,13 @@ def main() -> int:
             )
         headline_total = sum(headline_category_scores.values())
         if headline_total:
-            optional_quality = headline_category_scores["optional_quality"]
+            stream_quality = headline_category_scores["stream_quality"]
             safety = headline_category_scores["safety"]
             maintainability = headline_category_scores["maintainability"]
-            if optional_quality < headline_total * 0.8:
+            if stream_quality < headline_total * 0.8:
                 failures.append(
-                    "evals: headline suite should be primarily Optional-quality scoring "
-                    f"({optional_quality}/{headline_total})"
+                    "evals: headline suite should be primarily Stream-quality scoring "
+                    f"({stream_quality}/{headline_total})"
                 )
             if safety < headline_total * 0.05:
                 failures.append(

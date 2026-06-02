@@ -1,0 +1,52 @@
+{
+  "context": "Headline stream cleanup: materialized intermediate lists and manual joining should become direct stream terminals while preserving Java 8 compatibility.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 8 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates InventorySummary.java with the requested class and no APIs newer than Java 8, such as Stream.toList(), Predicate.not(), records, or List.getFirst()."
+    },
+    {
+      "name": "Preserves summary behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Preserves true when any product has stock 0, exact unread count, null newest for an empty product list, newest by updatedAt otherwise, and product categories joined in encounter order with comma-space separators."
+    },
+    {
+      "name": "Uses anyMatch for existence",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Replaces the collected out-of-stock list with products.stream().anyMatch(product -> product.stock() == 0) or an equivalent direct match terminal."
+    },
+    {
+      "name": "Uses count without unread materialization",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Counts unread messages with filter(...).count() or equivalent direct counting without collecting unread messages only to read size."
+    },
+    {
+      "name": "Uses max instead of sorted temporary list",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Computes newest with max(Comparator.comparing(Product::updatedAt)).orElse(null) or an equivalent max terminal rather than sorting all products and reading index 0."
+    },
+    {
+      "name": "Uses Collectors.joining",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Builds the category string with products.stream().map(Product::category).collect(Collectors.joining(\", \")) or an equivalent joining collector."
+    },
+    {
+      "name": "Keeps cleanup focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the existing class shape and avoids unrelated abstractions, dependencies, or behavior changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup"
+  }
+}
