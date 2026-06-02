@@ -1,0 +1,35 @@
+{
+  "context": "Primitive Optional coverage from the real cleanup: OptionalInt should use its terminal operations instead of isPresent() plus getAsInt() for a side-effect branch.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised priority class",
+      "max_score": 4,
+      "description": "Creates PriorityLabelConfig.java with the requested imports, class, labels method, positiveInteger method, and normalize method."
+    },
+    {
+      "name": "Uses OptionalInt terminal",
+      "max_score": 42,
+      "description": "Uses positiveInteger(value).ifPresent(...) or an equivalent OptionalInt terminal to add valid priorities."
+    },
+    {
+      "name": "Removes primitive value-read guard",
+      "max_score": 28,
+      "description": "Does not keep OptionalInt.isPresent() followed by getAsInt() for the priority value."
+    },
+    {
+      "name": "Preserves valid priority writes",
+      "max_score": 12,
+      "description": "Still normalizes each key and stores the parsed positive priority in the values map."
+    },
+    {
+      "name": "Preserves invalid priority behavior",
+      "max_score": 14,
+      "description": "Still ignores malformed, zero, and negative priority values by leaving positiveInteger(...) as an OptionalInt-returning parser."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

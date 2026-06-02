@@ -1,0 +1,30 @@
+{
+  "context": "The skill should reject replacing an absence-as-error Optional boundary with local null control flow.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Rejects proposed cleanup",
+      "max_score": 10,
+      "description": "Says the proposed change should not be accepted."
+    },
+    {
+      "name": "Identifies null-control-flow workaround",
+      "max_score": 10,
+      "description": "Explains that orElse(null) plus value == null is null-style control flow, not an Optional cleanup."
+    },
+    {
+      "name": "Keeps absence-as-error boundary",
+      "max_score": 12,
+      "description": "Recommends keeping orElseThrow for the true absence-as-error boundary."
+    },
+    {
+      "name": "Preserves exception behavior",
+      "max_score": 8,
+      "description": "Preserves IllegalArgumentException and the Missing config message."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

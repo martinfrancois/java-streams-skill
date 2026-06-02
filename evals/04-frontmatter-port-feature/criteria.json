@@ -1,0 +1,52 @@
+{
+  "context": "Representative front-matter cleanup: add parsing behavior while moving repeated Optional value reads into a helper/Optional boundary.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Compiles and creates requested artifact",
+      "category": "safety",
+      "max_score": 3,
+      "description": "Creates a coherent Java 8-compatible WorkflowPortLookup.java with workflowServerPortReservation(Optional<Map<String,Object>>, Path)."
+    },
+    {
+      "name": "Implements Number and String behavior",
+      "category": "safety",
+      "max_score": 6,
+      "description": "Returns Optional.of(number.intValue()) for Number values and Optional.of(parsed) for trimmed numeric String values."
+    },
+    {
+      "name": "Handles absent and invalid values",
+      "category": "safety",
+      "max_score": 3,
+      "description": "Returns Optional.empty() without throwing for absent front matter, missing key, null values, blank strings, malformed strings, and unsupported types."
+    },
+    {
+      "name": "Preserves public contract",
+      "category": "safety",
+      "max_score": 3,
+      "description": "Does not expose workflowPath in output and keeps the method signature and Optional<Integer> return contract."
+    },
+    {
+      "name": "Uses Optional boundary without reopening",
+      "category": "optional_quality",
+      "max_score": 55,
+      "description": "Moves map access into an Optional map/flatMap helper or equivalent value-binding shape instead of guarding then reading frontMatter.get()."
+    },
+    {
+      "name": "Avoids null or fake collection workarounds",
+      "category": "optional_quality",
+      "max_score": 25,
+      "description": "Does not use orElse(null), local null branching, Optional.stream().toList(), or a loop over one Optional."
+    },
+    {
+      "name": "Keeps parser readable",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps parsing small and local, with clear Number/String handling and no broad exception swallowing beyond malformed numeric input."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

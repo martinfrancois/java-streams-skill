@@ -1,0 +1,40 @@
+{
+  "context": "Optional<Boolean> coverage from the real cleanup: an optional mode flag can have true, false, and absent branches, so absent must not be collapsed to false.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised configurator",
+      "max_score": 4,
+      "description": "Creates GiftWrapConfigurator.java with the requested imports, class, resolve method, interfaces, and enum."
+    },
+    {
+      "name": "Preserves explicit false branch",
+      "max_score": 20,
+      "description": "Keeps Optional.of(false) as an immediate disabled/skipped result with the terminal info message."
+    },
+    {
+      "name": "Preserves explicit true branch",
+      "max_score": 22,
+      "description": "Keeps Optional.of(true) as the enabled path and still checks non-interactive prerequisites before enabling."
+    },
+    {
+      "name": "Preserves absent branch",
+      "max_score": 24,
+      "description": "Keeps Optional.empty() distinct from false and preserves accountAlreadyConfigured, nonInteractive, and terminal.confirm fallback behavior."
+    },
+    {
+      "name": "Avoids value-read antipattern",
+      "max_score": 26,
+      "description": "Does not keep giftWrapMode().isPresent() followed by giftWrapMode().orElseThrow(), get(), or repeated Optional reads for the mode value."
+    },
+    {
+      "name": "Does not collapse absent to false",
+      "max_score": 24,
+      "description": "Does not use giftWrapMode().orElse(false) or another shape that treats absent mode the same as explicit false before fallback logic runs."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

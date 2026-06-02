@@ -1,0 +1,35 @@
+{
+  "context": "The skill should write priority fallback code with Optional as the selection boundary, not presence-check/value-read control flow.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates requested resolver",
+      "max_score": 4,
+      "description": "Creates WorkspaceResolver.java with resolve(Optional<String>, Optional<String>, String)."
+    },
+    {
+      "name": "Uses direct priority boundary",
+      "max_score": 14,
+      "description": "Uses cliWorkspace.or(() -> environmentWorkspace).orElse(defaultWorkspace), map/orElseGet, or an equivalent direct Optional priority boundary."
+    },
+    {
+      "name": "No presence-check value read",
+      "max_score": 10,
+      "description": "Does not use isPresent()/isEmpty() followed by get() or orElseThrow() for ordinary fallback."
+    },
+    {
+      "name": "No null or fake collection workaround",
+      "max_score": 6,
+      "description": "Does not use orElse(null), local null branching, Optional.stream().toList(), lists, or loops to unwrap either Optional."
+    },
+    {
+      "name": "Preserves priority behavior",
+      "max_score": 6,
+      "description": "Returns CLI before environment before default, without evaluating a later value as the winner when an earlier one is present."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

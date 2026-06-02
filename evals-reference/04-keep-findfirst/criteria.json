@@ -1,0 +1,25 @@
+{
+  "context": "The skill must avoid mechanically replacing findFirst when encounter order is part of the contract.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Keeps findFirst",
+      "max_score": 10,
+      "description": "Does not replace findFirst with findAny."
+    },
+    {
+      "name": "Identifies order contract",
+      "max_score": 8,
+      "description": "Explains that firstEnabledRoute and list order imply first-match priority."
+    },
+    {
+      "name": "No unnecessary rewrite",
+      "max_score": 4,
+      "description": "Does not introduce a manual loop or unrelated refactor."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

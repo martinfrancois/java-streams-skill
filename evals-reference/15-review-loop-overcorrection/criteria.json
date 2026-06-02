@@ -1,0 +1,30 @@
+{
+  "context": "The skill should reject a manual-loop rewrite when the original is a readable stream over a real collection.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Rejects unnecessary rewrite",
+      "max_score": 10,
+      "description": "Says the proposed loop rewrite is unnecessary or should not be accepted for this cleanup."
+    },
+    {
+      "name": "Recognizes real collection stream",
+      "max_score": 8,
+      "description": "Identifies REDACTED_VALUE_OPTIONS as a real Set/collection source, not a single Optional forced through stream syntax."
+    },
+    {
+      "name": "Keeps findAny",
+      "max_score": 6,
+      "description": "Keeps or recommends the stream with findAny because any matching redacted option is equivalent."
+    },
+    {
+      "name": "Avoids overgeneralization",
+      "max_score": 6,
+      "description": "Does not claim all Optional-returning streams should become loops or that Optional terminal operations are inherently bad."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "context": "The skill should keep boolean-only selector validation while removing value-read branches and avoiding fake collection/null workarounds.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Preserves mutual exclusion",
+      "max_score": 3,
+      "description": "Keeps the board/workflow mutual-exclusion check and preserves the exception message."
+    },
+    {
+      "name": "Classifies boolean-only validation",
+      "max_score": 3,
+      "description": "Recognizes that the conflict check may remain as isPresent() checks because no Optional value is read there."
+    },
+    {
+      "name": "Uses Optional selector boundaries",
+      "max_score": 4,
+      "description": "Replaces selector branches with board.map(...).orElseGet(...) and a nested workflow Optional boundary, or an equivalent direct Optional/value-binding shape."
+    },
+    {
+      "name": "No null workaround",
+      "max_score": 2,
+      "description": "Does not introduce orElse(null), value != null checks, or local null control flow."
+    },
+    {
+      "name": "No fake collection workaround",
+      "max_score": 2,
+      "description": "Does not convert either single Optional selector to stream().toList(), a list, or a loop."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

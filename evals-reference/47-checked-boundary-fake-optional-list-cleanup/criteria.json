@@ -1,0 +1,45 @@
+{
+  "context": "Transcript-derived cleanup: remove fake one-Optional stream/list flow while preserving checked prompt and YAML parsing boundaries.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Compiles and creates requested artifact",
+      "max_score": 15,
+      "description": "Creates a coherent StoreSetup.java with the requested class, constructor, interfaces, method signatures, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves warehouse prompt behavior",
+      "max_score": 20,
+      "description": "warehouseId returns the configured warehouse id when present, calls terminal.readLine(\"Warehouse: \") only when absent, and preserves IOException."
+    },
+    {
+      "name": "Preserves requested port behavior",
+      "max_score": 15,
+      "description": "serverPort validates and returns the requested port when present, and only searches for the next available port when absent."
+    },
+    {
+      "name": "Preserves YAML parsing behavior",
+      "max_score": 20,
+      "description": "readYamlFrontMatter returns Optional.empty() when absent, parses present text with yaml.readValue(...), and preserves IOException without wrapping it."
+    },
+    {
+      "name": "Uses direct Optional flow for ordinary values",
+      "max_score": 10,
+      "description": "Uses map(...).orElseGet(...) or an equivalent value-binding Optional shape for the server-port branch where no checked exception prevents it."
+    },
+    {
+      "name": "Keeps checked boundaries narrow",
+      "max_score": 10,
+      "description": "Uses plain branching only where terminal.readLine(...) or yaml.readValue(...) can throw IOException, without turning that into a generic Optional abstraction."
+    },
+    {
+      "name": "Avoids fake Optional collections and helpers",
+      "max_score": 10,
+      "description": "Does not use Optional.stream().toList(), stream()::iterator, optionalValues, presentValues, OptionalSupport, OptionalValues, CheckedOptionals, UncheckedIOException, or another helper/dependency to make one Optional iterable or to tunnel checked exceptions."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup"
+  }
+}

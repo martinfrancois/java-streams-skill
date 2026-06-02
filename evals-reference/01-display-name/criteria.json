@@ -1,0 +1,30 @@
+{
+  "context": "The skill should convert a simple Optional presence-check/value-read into a direct Optional boundary without introducing null or fake collections.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses Optional map/orElse boundary",
+      "max_score": 3,
+      "description": "Replaces isPresent() plus get() with user.map(User::displayName).orElse(\"Anonymous\") or a directly equivalent Optional expression."
+    },
+    {
+      "name": "No null workaround",
+      "max_score": 2,
+      "description": "Does not introduce orElse(null), null assignment, or value != null branching."
+    },
+    {
+      "name": "No fake collection workaround",
+      "max_score": 2,
+      "description": "Does not convert the single Optional into a stream, list, loop, or collection."
+    },
+    {
+      "name": "Behavior preserved",
+      "max_score": 1,
+      "description": "Preserves the fallback string \"Anonymous\" and the present-value displayName behavior."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

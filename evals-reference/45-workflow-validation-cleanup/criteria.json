@@ -1,0 +1,50 @@
+{
+  "context": "Transcript-derived maintainability cleanup from Symphony for Trello: preserve workflow validation behavior while replacing repeated Optional reopening in a real implementation.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised validation class",
+      "max_score": 4,
+      "description": "Creates WorkflowConfigValidation.java with the requested class, imports, records, validate method, boardId method, and serverPort method."
+    },
+    {
+      "name": "Uses Optional as validation boundary",
+      "max_score": 56,
+      "description": "Uses boardId(yaml).map(...).orElseGet(...) and serverPort(yaml).map(...).orElseGet(...) or an equivalent direct Optional boundary for validation."
+    },
+    {
+      "name": "Removes Optional reopening",
+      "max_score": 42,
+      "description": "Does not keep isPresent()/isEmpty() followed by get() or orElseThrow() for configured board id or configured server port value reads."
+    },
+    {
+      "name": "Avoids null/list workaround",
+      "max_score": 24,
+      "description": "Does not replace the Optionals with orElse(null), local null branching, Optional.stream().toList(), lists, or loops over a single Optional."
+    },
+    {
+      "name": "Keeps readable helpers",
+      "max_score": 16,
+      "description": "Extracts or uses clear helper methods for board-id validation and server-port validation, rather than embedding repeated warning construction and value reads in one long method."
+    },
+    {
+      "name": "Preserves board-id behavior",
+      "max_score": 14,
+      "description": "Accepts both board.boardId() and board.boardKey(), returns the missing tracker.board_id warning for absent/blank values, and returns the mismatch warning with expected id/key and found value."
+    },
+    {
+      "name": "Preserves server-port behavior",
+      "max_score": 14,
+      "description": "Accepts Number values and trimmed numeric String values, returns the missing server.port warning for absent/blank/malformed/unsupported values, and returns the mismatch warning with expected and found ports."
+    },
+    {
+      "name": "Preserves success result",
+      "max_score": 6,
+      "description": "Returns WorkflowValidation.valid() when both board id and server port match."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

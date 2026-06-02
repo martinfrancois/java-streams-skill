@@ -1,0 +1,30 @@
+{
+  "context": "The skill should reject converting one Optional into a list and loop as a local cleanup.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Rejects proposed cleanup",
+      "max_score": 10,
+      "description": "Says the proposed stream().toList() loop should not be accepted."
+    },
+    {
+      "name": "Identifies fake collection workaround",
+      "max_score": 10,
+      "description": "Explains that assignee is a single Optional, not a real collection source, so converting it to a list/loop is the wrong shape."
+    },
+    {
+      "name": "Suggests direct Optional boundary",
+      "max_score": 12,
+      "description": "Suggests assignee.map(User::displayName).orElse(\"unassigned\") or an equivalent direct Optional boundary."
+    },
+    {
+      "name": "No null workaround",
+      "max_score": 8,
+      "description": "Does not suggest orElse(null) plus local null branching as the alternative."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

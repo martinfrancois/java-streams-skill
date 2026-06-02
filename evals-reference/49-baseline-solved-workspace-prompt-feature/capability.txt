@@ -1,0 +1,1 @@
+Handle checked-IO prompt fallback without forcing it into fake fluent Optional helpers.

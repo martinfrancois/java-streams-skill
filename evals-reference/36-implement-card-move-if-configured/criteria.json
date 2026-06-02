@@ -1,0 +1,40 @@
+{
+  "context": "This mirrors repeated Optional value reads in configured move logic: the selected target should be bound once.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates requested mover",
+      "max_score": 6,
+      "description": "Creates CardMover.java with moveToTargetIfConfigured(Card, BoardContext, Config) and the requested records."
+    },
+    {
+      "name": "Composes configured target lookup",
+      "max_score": 16,
+      "description": "Uses config.targetListName().flatMap/name lookup or an equivalent direct Optional composition to find the target BoardList."
+    },
+    {
+      "name": "Binds target once",
+      "max_score": 14,
+      "description": "Once the target list is selected, uses that BoardList directly rather than repeatedly reopening an Optional with get() or orElseThrow()."
+    },
+    {
+      "name": "No null or fake collection workaround",
+      "max_score": 12,
+      "description": "Does not use orElse(null), local null branching, Optional.stream().toList(), lists, or loops to unwrap one Optional."
+    },
+    {
+      "name": "Preserves move behavior",
+      "max_score": 22,
+      "description": "Returns no move for absent config, missing list, and already-current cards; returns Move.toList for a different configured target."
+    },
+    {
+      "name": "Uses real collection stream appropriately",
+      "max_score": 10,
+      "description": "Keeps the BoardContext list lookup as a real collection stream or an equally readable collection lookup."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

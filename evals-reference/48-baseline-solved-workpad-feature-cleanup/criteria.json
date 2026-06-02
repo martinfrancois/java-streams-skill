@@ -1,0 +1,46 @@
+{
+  "context": "Representative implementation cleanup from the issue: add behavior while replacing AI-written isPresent/get upsert flow with a lazy Optional boundary.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Compiles and creates requested artifact",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Creates a coherent WorkpadService.java with required imports, methods, records, and code that compiles for the task as written."
+    },
+    {
+      "name": "Implements required workpad behavior",
+      "category": "safety",
+      "max_score": 15,
+      "description": "Returns missing_action_id for existing workpad comments with null or blank id, comment_window_incomplete only when no workpad exists and the comment window has at least 1000 comments, and preserves updated:id:text and created:cardId:text status formats."
+    },
+    {
+      "name": "Preserves update/create branch timing",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Updates only the existing workpad branch, creates only the absent-workpad branch, keeps create-side checks lazy, and does not run create or window checks when an existing workpad comment is present."
+    },
+    {
+      "name": "Uses Optional as update/create boundary",
+      "category": "optional_quality",
+      "max_score": 30,
+      "description": "Uses a direct Optional boundary such as findFirst().map(...).orElseGet(...) or an equivalent value-binding shape for the update-or-create decision."
+    },
+    {
+      "name": "Avoids Optional antipatterns",
+      "category": "optional_quality",
+      "max_score": 30,
+      "description": "Does not keep isPresent()/isEmpty() followed by get()/orElseThrow(), or replace the Optional with orElse(null), local null branching, Optional.stream().toList(), or a loop over one Optional."
+    },
+    {
+      "name": "Keeps lookup readable and single-purpose",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the workpad lookup readable, avoids duplicate lookup work, and uses helper methods only where they clarify behavior."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

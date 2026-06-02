@@ -1,0 +1,52 @@
+{
+  "context": "Transcript-derived first-pass implementation scenario from Symphony for Trello: the agent introduced isPresent()/get() while writing retry backoff code with an optional Retry-After header.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Compiles and creates requested artifact",
+      "category": "safety",
+      "max_score": 3,
+      "description": "Creates a coherent RetryBackoff.java with RetryBackoff, backoff(Config, int, HttpResponse<?>), parseRetryAfter(String), the nested Config record, and imports compatible with the stated Java 17 baseline."
+    },
+    {
+      "name": "Implements fallback behavior exactly",
+      "category": "safety",
+      "max_score": 6,
+      "description": "Returns the Retry-After duration only when response is non-null and the header parses as valid; otherwise returns config.baseDelay().multipliedBy(1L << Math.min(attempt - 1, 8))."
+    },
+    {
+      "name": "Parses only positive whole seconds",
+      "category": "safety",
+      "max_score": 3,
+      "description": "parseRetryAfter returns Optional.of(Duration.ofSeconds(seconds)) only for positive whole-number seconds and Optional.empty() for null, blank, zero, negative, malformed, fractional, or non-numeric values."
+    },
+    {
+      "name": "Preserves lazy fallback timing",
+      "category": "safety",
+      "max_score": 3,
+      "description": "Does not compute or return fallback work as the selected result when a valid Retry-After duration is present."
+    },
+    {
+      "name": "Uses Optional boundary for header and parse flow",
+      "category": "optional_quality",
+      "max_score": 60,
+      "description": "Uses Optional.ofNullable(response).flatMap(...).flatMap(this::parseRetryAfter).orElseGet(...) or an equivalent direct Optional boundary for the header and parsed duration."
+    },
+    {
+      "name": "Avoids Optional antipatterns",
+      "category": "optional_quality",
+      "max_score": 20,
+      "description": "Does not use isPresent()/isEmpty() followed by get()/orElseThrow(), or use orElse(null), local null branching, Optional.stream().toList(), lists, or loops to unwrap one Optional."
+    },
+    {
+      "name": "Keeps implementation readable",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps parsing and fallback helpers small and clear without unrelated abstractions or behavior changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

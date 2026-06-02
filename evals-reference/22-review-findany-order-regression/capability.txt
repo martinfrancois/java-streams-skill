@@ -1,0 +1,1 @@
+Review Java Optional cleanup proposals without replacing real streams or API boundaries with worse patterns.

@@ -1,0 +1,50 @@
+{
+  "context": "Representative repeated-read cleanup: add behavior while binding the selected target list once instead of reopening the Optional.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised mover",
+      "max_score": 6,
+      "description": "Creates CardMover.java with moveToTargetIfConfigured and the requested records."
+    },
+    {
+      "name": "Composes configured target lookup",
+      "max_score": 18,
+      "description": "Uses config.targetListName().flatMap(...) or an equivalent direct Optional composition for the real list lookup."
+    },
+    {
+      "name": "Binds target once",
+      "max_score": 20,
+      "description": "Uses target.map(...).orElse(...), a helper, or another direct value-binding shape rather than keeping target.get() after a guard."
+    },
+    {
+      "name": "Avoids null/list workaround",
+      "max_score": 14,
+      "description": "Does not use orElse(null), local null branching, Optional.stream().toList(), lists, or loops to unwrap one Optional."
+    },
+    {
+      "name": "Preserves missing-target behavior",
+      "max_score": 12,
+      "description": "Returns Move.none when no target is configured or no matching list exists."
+    },
+    {
+      "name": "Adds already-current no-op",
+      "max_score": 14,
+      "description": "Returns Move.none when card.listId() already equals the selected target list id."
+    },
+    {
+      "name": "Preserves move behavior",
+      "max_score": 10,
+      "description": "Returns Move.toList(card.id(), targetList.id()) when the configured target differs."
+    },
+    {
+      "name": "Uses collection lookup appropriately",
+      "max_score": 6,
+      "description": "Keeps the BoardContext list lookup readable as a real collection lookup."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

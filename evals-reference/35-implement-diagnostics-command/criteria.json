@@ -1,0 +1,45 @@
+{
+  "context": "This combines the issue's diagnostics selector and output-path side-effect cases in an implementation task.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates requested command",
+      "max_score": 6,
+      "description": "Creates DiagnosticsCommand.java with select(...), finish(...), write, print, and the requested records."
+    },
+    {
+      "name": "Keeps boolean-only conflict check",
+      "max_score": 8,
+      "description": "Preserves the mutual-exclusion check and exact exception message without reading either value there."
+    },
+    {
+      "name": "Uses selector Optional boundaries",
+      "max_score": 18,
+      "description": "Uses board.map(...).orElseGet(...) with a nested workflow boundary, binds values once, or otherwise avoids presence-check/value-read selector branches."
+    },
+    {
+      "name": "Uses side-effect boundary",
+      "max_score": 14,
+      "description": "Uses output.ifPresentOrElse(...) or an equivalent Optional side-effect boundary for write vs print."
+    },
+    {
+      "name": "No fake collection or null workaround",
+      "max_score": 12,
+      "description": "Does not unwrap single Optionals via stream().toList(), lists, loops, or orElse(null) plus local null branching."
+    },
+    {
+      "name": "Preserves selection behavior",
+      "max_score": 14,
+      "description": "Returns board, workflow, and all selections with the required values and configDir.resolve(workflowValue)."
+    },
+    {
+      "name": "Preserves output behavior",
+      "max_score": 8,
+      "description": "Calls write only when output is present and print only when absent."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

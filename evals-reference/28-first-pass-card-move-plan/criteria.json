@@ -1,0 +1,35 @@
+{
+  "context": "The skill should write Optional value-reading code that binds the selected value once instead of repeatedly reopening the Optional.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates requested planner",
+      "max_score": 4,
+      "description": "Creates CardMovePlanner.java with moveIfNeeded(Optional<ListRef>, Card) and the requested records."
+    },
+    {
+      "name": "Uses direct value binding",
+      "max_score": 12,
+      "description": "Uses target.map(...).orElse(card), a helper, or another direct shape that binds the ListRef once for value-reading logic."
+    },
+    {
+      "name": "No repeated Optional reopening",
+      "max_score": 10,
+      "description": "Does not use target.get() or target.orElseThrow() repeatedly after an isPresent()/isEmpty() guard."
+    },
+    {
+      "name": "No null or fake collection workaround",
+      "max_score": 6,
+      "description": "Does not use orElse(null), local null branching, Optional.stream().toList(), or a loop over one Optional."
+    },
+    {
+      "name": "Preserves move behavior",
+      "max_score": 8,
+      "description": "Returns the original card when target is absent or already current, and returns a new Card with the target id otherwise."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

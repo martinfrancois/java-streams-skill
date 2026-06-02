@@ -1,0 +1,74 @@
+name: Commitlint
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_title:
+        description: Pull request title to lint.
+        required: true
+        type: string
+      base_ref:
+        description: Base branch to compare against.
+        required: false
+        default: main
+        type: string
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: commitlint-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  commitlint:
+    name: Commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "24"
+
+      - name: Prepare commitlint
+        run: |
+          set -euo pipefail
+          commitlint_home="$RUNNER_TEMP/commitlint"
+          mkdir -p "$commitlint_home"
+          printf '{"private":true}\n' > "$commitlint_home/package.json"
+          cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
+          npm --prefix "$commitlint_home" install --silent \
+            @commitlint/cli@21.0.1 \
+            @commitlint/config-conventional@21.0.1
+          echo "COMMITLINT_BIN=$commitlint_home/node_modules/.bin/commitlint" >> "$GITHUB_ENV"
+          echo "COMMITLINT_CONFIG=$commitlint_home/commitlint.config.cjs" >> "$GITHUB_ENV"
+
+      - name: Lint pull request title
+        env:
+          PR_TITLE: ${{ github.event_name == 'pull_request' && github.event.pull_request.title || inputs.pr_title }}
+        run: printf '%s\n' "$PR_TITLE" | "$COMMITLINT_BIN" --config "$COMMITLINT_CONFIG"
+
+      - name: Lint pull request commits
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_REF: ${{ inputs.base_ref || 'main' }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            "$COMMITLINT_BIN" --config "$COMMITLINT_CONFIG" \
+              --from "$PR_BASE_SHA" --to "$PR_HEAD_SHA" --verbose
+          else
+            git fetch origin "$BASE_REF"
+            "$COMMITLINT_BIN" --config "$COMMITLINT_CONFIG" \
+              --from "origin/$BASE_REF" --to HEAD --verbose
+          fi

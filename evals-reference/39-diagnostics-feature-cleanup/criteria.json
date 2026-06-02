@@ -1,0 +1,45 @@
+{
+  "context": "Representative diagnostics implementation cleanup: boolean-only conflict checks may stay, but value-reading selector and output branches should use Optional boundaries.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised diagnostics command",
+      "max_score": 6,
+      "description": "Creates DiagnosticsCommand.java with select, finish, write, print, Manifest, and Selection."
+    },
+    {
+      "name": "Preserves conflict check",
+      "max_score": 10,
+      "description": "Keeps the mutual-exclusion behavior and exact --board/--workflow exception message."
+    },
+    {
+      "name": "Uses selector Optional boundaries",
+      "max_score": 24,
+      "description": "Uses board.map(...).orElseGet(...) with a nested workflow boundary, binds values once, or otherwise avoids presence-check/value-read selector branches."
+    },
+    {
+      "name": "Uses output side-effect boundary",
+      "max_score": 18,
+      "description": "Uses output.ifPresentOrElse(...) or an equivalent Optional side-effect boundary instead of isPresent() plus orElseThrow()/get()."
+    },
+    {
+      "name": "Avoids null/list workaround",
+      "max_score": 14,
+      "description": "Does not unwrap single Optionals with orElse(null), local null branching, stream().toList(), lists, or loops."
+    },
+    {
+      "name": "Preserves selection behavior",
+      "max_score": 18,
+      "description": "Returns board, workflow, and all selections correctly, including configDir.resolve(workflowValue)."
+    },
+    {
+      "name": "Preserves output behavior",
+      "max_score": 10,
+      "description": "Calls write only when output is present and print only when absent."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

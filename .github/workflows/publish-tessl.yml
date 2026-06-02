@@ -1,0 +1,63 @@
+name: Publish Tessl Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to publish. Defaults to the selected workflow ref."
+        required: false
+        type: string
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-tessl-${{ github.event.release.tag_name || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish Tessl plugin
+    runs-on: ubuntu-latest
+    environment: tessl-release
+    steps:
+      - name: Checkout manual ref
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Checkout release tag
+        if: ${{ github.event_name == 'release' }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Require Tessl token
+        env:
+          TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+        run: |
+          if [ -z "${TESSL_TOKEN:-}" ]; then
+            echo "TESSL_TOKEN is required to publish the Tessl plugin." >&2
+            exit 1
+          fi
+
+      - name: Setup Tessl CLI
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: "0.81.2"
+          token: ${{ secrets.TESSL_TOKEN }}
+
+      - name: Validate plugin before publish
+        run: |
+          python3 scripts/validate_skill.py skills/java-optionals
+          python3 scripts/validate_eval_criteria.py evals evals-reference
+          python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
+          bash -n scripts/check_publish_dry_run.sh
+          tessl plugin lint .
+          tessl plugin publish --dry-run .
+
+      - name: Publish plugin
+        run: tessl plugin publish .

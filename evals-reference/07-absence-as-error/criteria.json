@@ -1,0 +1,25 @@
+{
+  "context": "The skill should recognize absence-as-error and use orElseThrow directly instead of banning orElseThrow.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses orElseThrow",
+      "max_score": 4,
+      "description": "Uses Optional.ofNullable(...).orElseThrow(...) or equivalent direct absence-as-error handling."
+    },
+    {
+      "name": "Preserves exception",
+      "max_score": 3,
+      "description": "Preserves IllegalArgumentException and the message prefix \"Missing config: \"."
+    },
+    {
+      "name": "Does not overgeneralize",
+      "max_score": 3,
+      "description": "Does not claim orElseThrow is always bad or replace it with null/fake collection control flow."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup"
+  }
+}

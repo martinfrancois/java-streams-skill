@@ -1,0 +1,46 @@
+{
+  "context": "Representative real-collection lookup case: the option set is real data and matching should stay centralized while the outer loop handles redact-next state.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Compiles and creates requested artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates a coherent CommandSanitizer.java with sanitize(List<String>) and the required secret option set, using APIs compatible with the stated Java 17 baseline."
+    },
+    {
+      "name": "Implements exact redaction behavior",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Preserves exact-option behavior such as --token abc -> --token <redacted>, adds option=value behavior such as --key=abc -> --key=<redacted>, and preserves non-secret arguments exactly."
+    },
+    {
+      "name": "Preserves output order and sequence state",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Keeps output order, uses String.join(\" \", sanitized), and keeps redact-next behavior only for exact secret options."
+    },
+    {
+      "name": "Keeps option matching centralized",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps exact and option=value matching in one readable helper or direct lookup; a real Set stream, loop, or contains-based shape is acceptable when behavior remains clear."
+    },
+    {
+      "name": "Consumes Optional result directly",
+      "category": "optional_quality",
+      "max_score": 45,
+      "description": "Handles the match result with map/orElse or another direct Optional boundary rather than isPresent()/get() or orElseThrow() value reads."
+    },
+    {
+      "name": "Avoids fake or noisy rewrites",
+      "category": "optional_quality",
+      "max_score": 35,
+      "description": "Does not force a fake Optional collection, duplicate matching branches throughout the loop, local null sentinels, labels, or unnecessary nested loops."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

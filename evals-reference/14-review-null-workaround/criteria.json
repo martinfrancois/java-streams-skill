@@ -1,0 +1,30 @@
+{
+  "context": "The skill should reject a proposed Optional cleanup that merely replaces isPresent()+get() with orElse(null)+null branching.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Rejects proposed cleanup",
+      "max_score": 10,
+      "description": "Clearly says the proposed change should not be accepted as an Optional cleanup."
+    },
+    {
+      "name": "Identifies null-control-flow equivalence",
+      "max_score": 10,
+      "description": "Explains that orElse(null) plus value != null is the same nullable-control-flow smell in a different form."
+    },
+    {
+      "name": "Suggests Optional boundary",
+      "max_score": 8,
+      "description": "Suggests user.map(User::displayName).orElse(\"Anonymous\") or an equivalent direct Optional boundary."
+    },
+    {
+      "name": "Preserves behavior",
+      "max_score": 4,
+      "description": "Preserves both the present displayName branch and the Anonymous fallback."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

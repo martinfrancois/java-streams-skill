@@ -1,0 +1,102 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate skill and plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup Tessl CLI
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: "0.81.2"
+
+      - name: Validate skill metadata
+        run: python3 scripts/validate_skill.py skills/java-optionals
+
+      - name: Validate eval criteria
+        run: python3 scripts/validate_eval_criteria.py evals evals-reference
+
+      - name: Compile validation scripts
+        run: python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
+
+      - name: Check shell scripts
+        run: bash -n scripts/check_publish_dry_run.sh
+
+      - name: Parse JSON files
+        run: |
+          python3 - <<'PY'
+          import json
+          import pathlib
+          for path in pathlib.Path('.').rglob('*.json'):
+              json.load(open(path, encoding='utf-8'))
+          print('JSON ok')
+          PY
+
+      - name: Parse YAML files
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          try:
+              import yaml
+          except ImportError:
+              print('PyYAML unavailable; skipping YAML parse')
+              raise SystemExit(0)
+          for path in list(pathlib.Path('.').rglob('*.yml')) + list(pathlib.Path('.').rglob('*.yaml')):
+              yaml.safe_load(open(path, encoding='utf-8'))
+          print('YAML ok')
+          PY
+
+      - name: Lint Tessl plugin
+        run: tessl plugin lint .
+
+  tessl-dry-run:
+    name: Tessl publish dry-run
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Check Tessl token
+        id: tessl-token
+        env:
+          TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+        run: |
+          if [ -n "${TESSL_TOKEN:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "TESSL_TOKEN isn't configured; skipping Tessl publish dry-runs."
+          fi
+
+      - name: Setup Tessl CLI
+        if: ${{ steps.tessl-token.outputs.available == 'true' }}
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: "0.81.2"
+          token: ${{ secrets.TESSL_TOKEN }}
+
+      - name: Check fast publish dry-run
+        if: ${{ steps.tessl-token.outputs.available == 'true' }}
+        run: bash scripts/check_publish_dry_run.sh .
+
+      - name: Check eval publish dry-run
+        if: ${{ steps.tessl-token.outputs.available == 'true' }}
+        run: tessl plugin publish --dry-run --bump patch .

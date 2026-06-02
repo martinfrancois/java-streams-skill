@@ -1,0 +1,25 @@
+{
+  "context": "The skill should distinguish isolated nullable API interop from local null-control-flow.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Allows isolated nullable interop",
+      "max_score": 8,
+      "description": "Recognizes this can be acceptable if LegacyRequest genuinely uses null to mean absent."
+    },
+    {
+      "name": "No extra null branching",
+      "max_score": 10,
+      "description": "Does not add a value != null branch or other local null-control-flow around the nullable value."
+    },
+    {
+      "name": "Separates API design from local cleanup",
+      "max_score": 6,
+      "description": "Notes that changing the LegacyRequest boundary would be a separate API/design decision if needed."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review"
+  }
+}

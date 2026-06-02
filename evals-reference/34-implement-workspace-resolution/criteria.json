@@ -1,0 +1,40 @@
+{
+  "context": "This mirrors the observed checked-IO boundary: plain branching is clearer than hiding IOException inside Optional syntax.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates requested resolver",
+      "max_score": 6,
+      "description": "Creates WorkspaceResolver.java with workspaceId(Options, Terminal) throws IOException and the requested interfaces."
+    },
+    {
+      "name": "Preserves checked IO contract",
+      "max_score": 16,
+      "description": "Keeps throws IOException on the public method and does not change the checked exception shape."
+    },
+    {
+      "name": "Uses narrow explicit checked branch",
+      "max_score": 18,
+      "description": "Uses a clear branch for the absent prompting path, such as if (configured.isEmpty()) prompt; return configured.orElseThrow();."
+    },
+    {
+      "name": "No unchecked wrapper or helper",
+      "max_score": 16,
+      "description": "Does not introduce RuntimeException, UncheckedIOException, CheckedSupplier, CheckedOptionals, or another helper/dependency to force fluent Optional syntax."
+    },
+    {
+      "name": "Preserves prompt behavior",
+      "max_score": 14,
+      "description": "Calls terminal.readLine(\"Workspace: \") only when the configured workspace is absent."
+    },
+    {
+      "name": "No ordinary Optional workaround",
+      "max_score": 10,
+      "description": "Does not use orElse(null), local null branching, or Optional.stream().toList() for the workspace."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}

@@ -1,0 +1,47 @@
+name: Skill Review
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/skill-review.yml"
+      - ".tessl-plugin/plugin.json"
+      - "tile.json"
+      - "tessl.json"
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - "docs/agents/**"
+      - "skills/java-optionals/**"
+
+concurrency:
+  group: skill-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Tessl skill review
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    env:
+      TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Skip review when Tessl token is unavailable
+        if: ${{ env.TESSL_TOKEN == '' }}
+        run: echo "TESSL_TOKEN isn't configured; skipping Tessl skill review."
+
+      - name: Setup Tessl CLI
+        if: ${{ env.TESSL_TOKEN != '' }}
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: "0.81.2"
+          token: ${{ env.TESSL_TOKEN }}
+
+      - name: Review skill
+        if: ${{ env.TESSL_TOKEN != '' }}
+        run: tessl skill review --threshold 90 skills/java-optionals/SKILL.md

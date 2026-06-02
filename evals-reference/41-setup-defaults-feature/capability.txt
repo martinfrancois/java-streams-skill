@@ -1,0 +1,1 @@
+Implement Java Optional fallback logic without eager fallback work or presence-check value reads.
