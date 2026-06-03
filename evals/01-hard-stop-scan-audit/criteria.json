@@ -1,5 +1,5 @@
 {
-  "context": "Headline audit: applies the hard-stop marker scan across a dense Java 17 class and classifies both required fixes and legitimate markers.",
+  "context": "Headline audit: measures whether the agent uses the bundled hard-stop scan command before classifying dense Java 17 stream issues.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,76 +9,22 @@
       "description": "Creates review.md with a clear hard-stop audit."
     },
     {
-      "name": "Flags count existence check",
+      "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags filter(...).count() > 0 in hasActive and recommends anyMatch."
+      "max_score": 50,
+      "description": "Includes the hard-stop rg scan command or an exact marker-regex equivalent covering count()>0, collect().isEmpty/size, sorted().findFirst, Optional isPresent/get, parallelStream/.parallel, toMap, groupingBy, Comparator.naturalOrder, Stream.toList, mapMulti, takeWhile/dropWhile, teeing, Optional::stream, flatMapping, Stream.ofNullable, and gather."
     },
     {
-      "name": "Flags collect-isEmpty existence check",
+      "name": "Classifies required customer fixes",
       "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags collect(toList()).isEmpty() in missingPrimary and recommends noneMatch or !anyMatch."
+      "max_score": 35,
+      "description": "Correctly flags the customer class issues: existence checks, sorted-findFirst newest lookup, collect-then-join, Stream.toList mutation, parallel findAny priority break, duplicate toMap, nullable groupingBy, nullable natural sort, limit-before-sort top-N, and Optional get pattern."
     },
     {
-      "name": "Flags sorted-findFirst extreme",
+      "name": "Classifies acceptable marker",
       "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags sorted(...).findFirst() in newest and recommends max with the same comparator semantics."
-    },
-    {
-      "name": "Flags collect-then-join",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags collecting display names only to pass them to String.join and recommends Collectors.joining."
-    },
-    {
-      "name": "Flags Stream.toList mutability break",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags activeIds because Stream.toList() returns an unmodifiable list that is later mutated."
-    },
-    {
-      "name": "Flags parallel findAny priority break",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags configuredPrimary because parallelStream plus findAny can ignore configured encounter-order priority; recommends stream().findFirst() or the loop."
-    },
-    {
-      "name": "Flags duplicate toMap risk",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags byEmail because duplicate emails are possible and toMap needs an explicit merge policy."
-    },
-    {
-      "name": "Flags nullable groupingBy classifier",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags byRegion because region can be null and null classifier keys must be filtered or mapped explicitly."
-    },
-    {
-      "name": "Flags nullable natural sort",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags sortedDiscountCodes because null discount codes can reach Comparator.naturalOrder."
-    },
-    {
-      "name": "Flags top-N limit ordering",
-      "category": "stream_quality",
-      "max_score": 6,
-      "description": "Flags topThreeBySpend because limit occurs before sorting, so it does not compute the global top three."
-    },
-    {
-      "name": "Flags Optional get pattern",
-      "category": "stream_quality",
-      "max_score": 4,
-      "description": "Flags filter(Optional::isPresent).map(Optional::get) and recommends flatMap(Optional::stream) on Java 17."
-    },
-    {
-      "name": "Classifies BigDecimal reduce as acceptable",
-      "category": "stream_quality",
-      "max_score": 4,
-      "description": "Mentions totalSpend as a scan-adjacent reduction that should remain BigDecimal reduce rather than primitive aggregation."
+      "max_score": 5,
+      "description": "Explicitly identifies totalSpend's BigDecimal reduce as acceptable rather than forcing primitive aggregation."
     },
     {
       "name": "Keeps audit concise",

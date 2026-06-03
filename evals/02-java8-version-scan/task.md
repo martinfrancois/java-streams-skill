@@ -5,8 +5,9 @@ Use `$java-streams` to run the hard-stop scan workflow over this proposed helper
 
 Assume Java 8.
 
-In `review.md`, list each Java-version drift issue and a Java 8-compatible direction. Also mention
-any stream marker that is allowed on Java 8.
+In `review.md`, start with the exact hard-stop scan command or marker regex you would run from the
+skill bundle. Then list each Java-version drift issue and a Java 8-compatible direction. Also
+mention any stream marker that is allowed on Java 8.
 
 ```java
 import java.util.List;

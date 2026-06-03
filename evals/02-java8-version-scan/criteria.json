@@ -1,5 +1,5 @@
 {
-  "context": "Headline audit: classifies Java-version drift from hard-stop markers on a Java 8 baseline.",
+  "context": "Headline audit: measures whether the agent uses the bundled hard-stop scan command to catch Java-version drift on a Java 8 baseline.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,57 +9,21 @@
       "description": "Creates review.md with a Java 8 compatibility audit."
     },
     {
-      "name": "Flags Optional.stream",
+      "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags Optional::stream as Java 9+ and suggests a Java 8-compatible flatMap/list stream alternative."
+      "max_score": 50,
+      "description": "Includes the hard-stop rg scan command or an exact marker-regex equivalent covering the Java-version-sensitive markers Optional::stream, Stream.ofNullable, takeWhile, dropWhile, Stream.toList, mapMulti, Collectors.flatMapping, Collectors.teeing, and gather, along with the broader stream hard-stop markers."
     },
     {
-      "name": "Flags Stream.toList",
+      "name": "Classifies Java 8 version drift",
       "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags Stream.toList() as Java 16+ and recommends collecting with Collectors.toList or an explicit collection."
+      "max_score": 35,
+      "description": "Flags Optional::stream, Stream.toList, Stream.ofNullable, takeWhile, dropWhile, Collectors.flatMapping, Collectors.teeing, and mapMulti as unavailable on Java 8 and gives Java 8-compatible directions."
     },
     {
-      "name": "Flags Stream.ofNullable",
+      "name": "Classifies allowed count marker",
       "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags Stream.ofNullable as Java 9+ and suggests an explicit null check or Stream.empty/Stream.of branch."
-    },
-    {
-      "name": "Flags takeWhile",
-      "category": "stream_quality",
-      "max_score": 12,
-      "description": "Flags takeWhile as Java 9+ and notes Java 8 should keep the break-based prefix loop or equivalent."
-    },
-    {
-      "name": "Flags dropWhile",
-      "category": "stream_quality",
-      "max_score": 12,
-      "description": "Flags dropWhile as Java 9+ and notes Java 8 should keep explicit prefix state or equivalent."
-    },
-    {
-      "name": "Flags Collectors.flatMapping",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags Collectors.flatMapping as Java 9+ and suggests flattening before grouping or another Java 8-compatible collector shape."
-    },
-    {
-      "name": "Flags Collectors.teeing",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags Collectors.teeing as Java 12+ and suggests two reductions or a custom Java 8 collector if worthwhile."
-    },
-    {
-      "name": "Flags mapMulti",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags mapMulti as Java 16+ and suggests map/filter/flatMap for Java 8."
-    },
-    {
-      "name": "Classifies count as allowed",
-      "category": "stream_quality",
-      "max_score": 6,
+      "max_score": 5,
       "description": "Mentions activeCount uses count() as the requested numeric result, not count() > 0, so it is acceptable."
     },
     {

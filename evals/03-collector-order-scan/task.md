@@ -4,7 +4,8 @@ Use `$java-streams` to run the hard-stop scan workflow over this class. Create `
 
 Assume Java 21.
 
-In `review.md`, classify all hard-stop marker hits. Some markers are legitimate because of the
+In `review.md`, start with the exact hard-stop scan command or marker regex you would run from the
+skill bundle. Then classify all hard-stop marker hits. Some markers are legitimate because of the
 domain notes; include those justifications instead of deleting them from the audit.
 
 ```java

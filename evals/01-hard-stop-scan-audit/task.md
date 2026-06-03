@@ -4,8 +4,9 @@ Audit this Java stream-heavy class with the hard-stop scan workflow. Create `rev
 
 Assume Java 17.
 
-In `review.md`, list every hard-stop marker hit that should be changed, plus any marker hit that is
-acceptable and why. Keep the review concise, but do not skip scan hits.
+In `review.md`, start with the exact hard-stop scan command or marker regex you would run from the
+skill bundle. Then list every hard-stop marker hit that should be changed, plus any marker hit that
+is acceptable and why. Keep the review concise, but do not skip scan hits.
 
 ```java
 import java.math.BigDecimal;

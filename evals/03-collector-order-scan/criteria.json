@@ -1,5 +1,5 @@
 {
-  "context": "Headline audit: classifies collector, ordering, null-sort, and parallel scan hits including legitimate markers.",
+  "context": "Headline audit: measures whether the agent uses the bundled hard-stop scan command to classify collector, ordering, null-sort, and parallel markers.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,58 +9,22 @@
       "description": "Creates review.md with a complete scan-hit classification."
     },
     {
-      "name": "Classifies unique toMap as acceptable",
+      "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 8,
-      "description": "Mentions byId as an acceptable toMap marker because id is globally unique."
+      "max_score": 50,
+      "description": "Includes the hard-stop rg scan command or an exact marker-regex equivalent covering toMap, groupingBy, sorted().findFirst, limit/order-sensitive operations, Comparator.naturalOrder, Stream.toList, parallelStream/.parallel, and the rest of the hard-stop marker set."
     },
     {
-      "name": "Flags duplicate toMap desk risk",
+      "name": "Classifies required collector and ordering fixes",
       "category": "stream_quality",
-      "max_score": 12,
-      "description": "Flags byDesk because duplicate desks can occur and toMap needs a merge policy even though null desks are filtered."
+      "max_score": 25,
+      "description": "Flags byDesk duplicate toMap, byDepartment nullable groupingBy, cheapestDesk sorted-findFirst, topFiveByScore limit before sort, sortedNicknames nullable natural sort, and stableDepartments sorted-before-distinct inefficiency."
     },
     {
-      "name": "Flags nullable groupingBy department",
+      "name": "Classifies acceptable markers",
       "category": "stream_quality",
-      "max_score": 12,
-      "description": "Flags byDepartment because department can be null and groupingBy does not accept null classifier keys."
-    },
-    {
-      "name": "Classifies non-null groupingBy status as acceptable",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Mentions byStatus as an acceptable groupingBy marker because status is non-null and counting is the intended aggregate."
-    },
-    {
-      "name": "Flags sorted-findFirst extreme",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags cheapestDesk because sorting the whole stream before findFirst should become min."
-    },
-    {
-      "name": "Flags top-N order bug",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags topFiveByScore because limit precedes sort and therefore does not compute the global top five."
-    },
-    {
-      "name": "Flags nullable natural sort",
-      "category": "stream_quality",
-      "max_score": 10,
-      "description": "Flags sortedNicknames because null nicknames can reach Comparator.naturalOrder."
-    },
-    {
-      "name": "Flags sorted-distinct order inefficiency",
-      "category": "stream_quality",
-      "max_score": 8,
-      "description": "Flags stableDepartments as a legitimate output but notes distinct before sorted is usually preferable after null filtering."
-    },
-    {
-      "name": "Classifies parallel CPU batch as acceptable",
-      "category": "stream_quality",
-      "max_score": 12,
-      "description": "Mentions cpuScore as an acceptable parallel marker because it is large, CPU-heavy, stateless, non-blocking, and uses a safe primitive sum terminal."
+      "max_score": 15,
+      "description": "Identifies byId toMap as acceptable due unique id, byStatus groupingBy as acceptable due non-null status and intended counting aggregate, and cpuScore parallelStream as acceptable due large CPU-heavy stateless non-blocking work with a safe sum terminal."
     },
     {
       "name": "Keeps audit concise",
