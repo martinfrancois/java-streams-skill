@@ -70,14 +70,65 @@ final class Java8StreamDrift {
                 .count();
     }
 
-    record Customer(String id, String name, String region, List<String> aliases, boolean active) {}
-    record Event(String id, boolean visible) {}
-    record Score(int value) implements Comparable<Score> {
+    static final class Customer {
+        private final String id;
+        private final String name;
+        private final String region;
+        private final List<String> aliases;
+        private final boolean active;
+
+        Customer(String id, String name, String region, List<String> aliases, boolean active) {
+            this.id = id;
+            this.name = name;
+            this.region = region;
+            this.aliases = aliases;
+            this.active = active;
+        }
+
+        String id() { return id; }
+        String name() { return name; }
+        String region() { return region; }
+        List<String> aliases() { return aliases; }
+        boolean active() { return active; }
+    }
+
+    static final class Event {
+        private final String id;
+        private final boolean visible;
+
+        Event(String id, boolean visible) {
+            this.id = id;
+            this.visible = visible;
+        }
+
+        String id() { return id; }
+        boolean visible() { return visible; }
+    }
+
+    static final class Score implements Comparable<Score> {
+        private final int value;
+
+        Score(int value) {
+            this.value = value;
+        }
+
         @Override
         public int compareTo(Score other) {
             return Integer.compare(value, other.value);
         }
     }
-    record Split(Optional<Score> min, Optional<Score> max) {}
+
+    static final class Split {
+        private final Optional<Score> min;
+        private final Optional<Score> max;
+
+        Split(Optional<Score> min, Optional<Score> max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        Optional<Score> min() { return min; }
+        Optional<Score> max() { return max; }
+    }
 }
 ```

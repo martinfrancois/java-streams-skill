@@ -61,10 +61,11 @@ When documenting a scan, start with this header so later reviews can tell which 
 java-streams hard-stop scan v1
 ```
 
-Run a hard-stop scan over touched Java files before finalizing:
+Run a hard-stop scan over touched Java files before finalizing. The command uses PCRE2 and
+multiline mode so it catches normally formatted fluent chains:
 
 ```bash
-rg -n "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\.isEmpty\\(|collect\\([^;]+\\)\\.size\\(|sorted\\([^;]*\\)\\.findFirst\\(|sorted\\(\\)\\.findFirst\\(|filter\\(Optional::isPresent\\)\\s*\\.map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(\\)|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|\\.toList\\(\\)|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
+rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size)\\(|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(\\)|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix

@@ -27,7 +27,18 @@ final class AuditTrail {
         return out;
     }
 
-    record Event(String id, boolean visible) {}
+    static final class Event {
+        private final String id;
+        private final boolean visible;
+
+        Event(String id, boolean visible) {
+            this.id = id;
+            this.visible = visible;
+        }
+
+        String id() { return id; }
+        boolean visible() { return visible; }
+    }
 }
 ```
 
@@ -45,6 +56,17 @@ final class AuditTrail {
                 .toList();
     }
 
-    record Event(String id, boolean visible) {}
+    static final class Event {
+        private final String id;
+        private final boolean visible;
+
+        Event(String id, boolean visible) {
+            this.id = id;
+            this.visible = visible;
+        }
+
+        String id() { return id; }
+        boolean visible() { return visible; }
+    }
 }
 ```
