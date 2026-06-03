@@ -1,5 +1,5 @@
 {
-  "context": "Headline natural implementation: Java 24 blocking per-element remote checks with a service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
+  "context": "Headline natural implementation: Java 24 blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
   "type": "weighted_checklist",
   "checklist": [
     {
