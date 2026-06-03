@@ -57,7 +57,8 @@ Use parallel streams only after checking:
 4. The pipeline does not perform blocking IO or remote calls. For Java 24+ blocking per-element
    calls, consider `Gatherers.mapConcurrent` only when the baseline supports it and virtual-thread
    concurrency is the intended design. Preserve element/result association explicitly with
-   a baseline-compatible holder rather than null sentinels or side maps.
+   a baseline-compatible holder rather than null sentinels or side maps. For remote calls, call out
+   the concurrency limit, timeout handling for slow calls, and error propagation/retry policy.
 5. The terminal/collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked
@@ -80,4 +81,6 @@ rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size)\\(|
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix
-stream-quality issues. If a marker remains because it is legitimate, state why.
+stream-quality issues. If a marker remains because it is legitimate, state why. When an audit asks
+for allowed stream markers or allowed usages, also call out plain `count()` when it is the requested
+numeric result rather than a `count() > 0` existence check.

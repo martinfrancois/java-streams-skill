@@ -61,6 +61,8 @@ Keep these rules in view:
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
    later step needs an expensive check result, carry `element + result` with a baseline-compatible
    holder; use `Map.entry` only on Java 9+ when both values are non-null.
+   For blocking remote checks, also state the concurrency bound, timeout behavior, and error
+   propagation/retry policy instead of leaving those implicit.
 6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
    nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
    mutable collector.
