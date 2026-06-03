@@ -20,18 +20,8 @@ compatibility.
 
 ## Hard Stops
 
-Before finalizing touched stream flow, run the scan in [hard-stops.md](references/hard-stops.md).
-Keep these rules in view:
-
-- Preserve behavior contracts: encounter order, first-match semantics, null handling, duplicate-key
-  handling, mutability expectations, and Java-version compatibility.
-- Use terminals and collectors that encode the requested result directly instead of collecting,
-  sorting, or counting just to inspect one fact.
-- Treat `parallelStream()`, `findAny()`, `Stream.toList()`, `groupingBy`, and `toMap` as semantic
-  choices; only use them when their ordering, mutability, null handling, merge, and thread-safety
-  contracts match the existing code.
-- Keep loops where they express complex state, checked IO, prompting, mutation-heavy code, or early
-  exits more clearly than a stream pipeline.
+Before finalizing touched stream flow, run the scan and apply the replacement rules in
+[hard-stops.md](references/hard-stops.md).
 
 ## Core Workflow
 
@@ -55,14 +45,10 @@ Keep these rules in view:
    `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
    many tiny stream allocations.
 4. Use primitive streams for primitive aggregation. Keep `reduce(identity, op)` for immutable
-   non-primitive accumulation such as `BigDecimal`. For subtype-specific numeric totals, filter and
-   cast to the subtype before `mapToInt`/`mapToLong`/`mapToDouble`; do not map unrelated elements to
-   zero as a sentinel.
+   non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
    later step needs an expensive check result, carry `element + result` with a baseline-compatible
    holder; use `Map.entry` only on Java 9+ when both values are non-null.
-   For blocking remote checks, also state the concurrency bound, timeout behavior, and error
-   propagation/retry policy instead of leaving those implicit.
 6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
    nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
    mutable collector.
@@ -71,6 +57,5 @@ Keep these rules in view:
    still use small stream helpers for real lookups or aggregates when that improves clarity.
 8. Verify each changed branch. Check empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and Java-baseline compatibility. Run the marker scan from
-   [hard-stops.md](references/hard-stops.md); when documenting a scan, copy the scan header and
-   command verbatim from that file, including the escaped regex and `<touched Java files>`
-   placeholder. Fix relevant hits and re-scan.
+   [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
+   a scan. Fix relevant hits and re-scan.

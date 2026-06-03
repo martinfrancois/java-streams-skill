@@ -73,6 +73,9 @@ double totalRadius = shapes.stream()
         .sum();
 ```
 
+Filter and cast to the subtype before primitive mapping. Do not map unrelated elements to `0` as a
+sentinel just to make a primitive sum work.
+
 ## Sorting, Limiting, Counting, Distinct
 
 ```java
