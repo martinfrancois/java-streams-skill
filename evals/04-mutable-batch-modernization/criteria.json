@@ -1,30 +1,30 @@
 {
-  "context": "Headline cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list.",
+  "context": "Headline cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list and should document the hard-stop scan.",
   "type": "weighted_checklist",
   "checklist": [
     {
-      "name": "Creates coherent Java 17 artifact",
+      "name": "Creates requested artifacts",
       "category": "safety",
       "max_score": 5,
-      "description": "Creates ExportBatch.java with the requested class, record, imports, and Java 17-compatible code."
+      "description": "Creates ExportBatch.java and scan.md with coherent Java 17-compatible content."
     },
     {
-      "name": "Preserves batch behavior",
+      "name": "Includes bundled scan command",
+      "category": "stream_quality",
+      "max_score": 60,
+      "description": "scan.md includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder."
+    },
+    {
+      "name": "Preserves mutable batch behavior",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final result by id."
+      "description": "ExportBatch.java keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final mutable result by id."
     },
     {
-      "name": "Preserves mutability contract",
+      "name": "Avoids Stream.toList mutability break",
       "category": "stream_quality",
-      "max_score": 45,
+      "max_score": 10,
       "description": "Does not use Stream.toList() for exportRows because the list is later mutated with add and sort; uses Collectors.toCollection(ArrayList::new), Collectors.toList(), or an equivalent mutable result."
-    },
-    {
-      "name": "Keeps ordering operations in the right places",
-      "category": "stream_quality",
-      "max_score": 25,
-      "description": "Does not move the final id sort before footer append and does not sort by id inside the initial stream before the position contract is satisfied."
     },
     {
       "name": "Keeps cleanup focused",
