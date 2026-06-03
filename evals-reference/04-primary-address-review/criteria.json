@@ -1,5 +1,5 @@
 {
-  "context": "Reference review coverage for findAny/findFirst and collect-then-first cleanup.",
+  "context": "Reference review coverage for findFirst behavior preservation and collect-then-first cleanup.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -15,16 +15,16 @@
       "description": "Says collecting all primary addresses just to inspect emptiness/read the first result is unnecessary."
     },
     {
-      "name": "Chooses findAny when matches are equivalent",
+      "name": "Chooses findFirst to preserve first-match behavior",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Recommends filter(Address::primary).findAny().orElse(null) if any primary address is acceptable."
+      "description": "Recommends filter(Address::primary).findFirst().orElse(null) to preserve the current get(0) encounter-order behavior."
     },
     {
-      "name": "Names the findFirst exception",
+      "name": "Names the findAny exception",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Says findFirst is appropriate only if encounter order defines which primary address should win."
+      "description": "Says findAny is appropriate only if the domain explicitly says all matching primary addresses are equivalent and encounter order does not define which one should win."
     }
   ],
   "metadata": {

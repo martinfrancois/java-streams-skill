@@ -55,7 +55,9 @@ Keep these rules in view:
    `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
    many tiny stream allocations.
 4. Use primitive streams for primitive aggregation. Keep `reduce(identity, op)` for immutable
-   non-primitive accumulation such as `BigDecimal`.
+   non-primitive accumulation such as `BigDecimal`. For subtype-specific numeric totals, filter and
+   cast to the subtype before `mapToInt`/`mapToLong`/`mapToDouble`; do not map unrelated elements to
+   zero as a sentinel.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
    later step needs an expensive check result, carry `element + result` with a baseline-compatible
    holder; use `Map.entry` only on Java 9+ when both values are non-null.
