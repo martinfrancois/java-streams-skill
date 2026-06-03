@@ -11,19 +11,19 @@
     {
       "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 80,
+      "max_score": 20,
       "description": "Includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies required collector and ordering fixes",
       "category": "stream_quality",
-      "max_score": 6,
+      "max_score": 45,
       "description": "Flags byDesk duplicate toMap, byDepartment nullable groupingBy, cheapestDesk sorted-findFirst, topFiveByScore limit before sort, sortedNicknames nullable natural sort, and stableDepartments sorted-before-distinct inefficiency."
     },
     {
       "name": "Classifies acceptable markers",
       "category": "stream_quality",
-      "max_score": 4,
+      "max_score": 25,
       "description": "Identifies byId toMap as acceptable due unique id, byStatus groupingBy as acceptable due non-null status and intended counting aggregate, and cpuScore parallelStream as acceptable due large CPU-heavy stateless non-blocking work with a safe sum terminal."
     },
     {

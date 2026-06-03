@@ -11,19 +11,19 @@
     {
       "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 80,
+      "max_score": 20,
       "description": "Includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies required customer fixes",
       "category": "stream_quality",
-      "max_score": 8,
+      "max_score": 60,
       "description": "Correctly flags the customer class issues: existence checks, sorted-findFirst newest lookup, collect-then-join, Stream.toList mutation, parallel findAny priority break, duplicate toMap, nullable groupingBy, nullable natural sort, limit-before-sort top-N, and Optional get pattern."
     },
     {
       "name": "Classifies acceptable marker",
       "category": "stream_quality",
-      "max_score": 2,
+      "max_score": 10,
       "description": "Explicitly identifies totalSpend's BigDecimal reduce as acceptable rather than forcing primitive aggregation."
     },
     {
