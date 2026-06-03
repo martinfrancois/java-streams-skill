@@ -6,9 +6,9 @@ description: Write, review, and refactor Java Stream and Collector code using be
 
 # Java Streams Skill
 
-Use this skill before writing Java stream code, and when reviewing or refactoring existing stream or
-collector code. Preserve behavior, encounter-order contracts, exception behavior, null handling,
-side effects, mutability expectations, and Java-version compatibility.
+Use this skill before writing, reviewing, or refactoring Java stream and collector code. Preserve
+behavior, encounter order, exceptions, null handling, side effects, mutability, and Java-version
+compatibility.
 
 ## Reference Bundle
 
@@ -20,8 +20,8 @@ side effects, mutability expectations, and Java-version compatibility.
 
 ## Hard Stops
 
-Before finalizing touched stream flow, run the full scan in
-[hard-stops.md](references/hard-stops.md). Keep these rules in view:
+Before finalizing touched stream flow, run the scan in [hard-stops.md](references/hard-stops.md).
+Keep these rules in view:
 
 - Preserve behavior contracts: encounter order, first-match semantics, null handling, duplicate-key
   handling, mutability expectations, and Java-version compatibility.
@@ -38,7 +38,7 @@ Before finalizing touched stream flow, run the full scan in
 0. Check the Java baseline before choosing APIs. Read build/toolchain docs; if unclear, use Java
    8-compatible code or state the assumption. Use [java-stream-api.md](references/java-stream-api.md)
    for minimum Java versions.
-1. Identify the result shape first:
+1. Identify the result shape:
    - one arbitrary match: `filter(...).findAny()`;
    - first encounter-order match: `filter(...).findFirst()`;
    - existence: `anyMatch`, `noneMatch`, or `allMatch`;
@@ -47,25 +47,14 @@ Before finalizing touched stream flow, run the full scan in
    - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive terminals;
    - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
      explicit merge/null handling.
-2. Prefer stream terminals that encode the intent directly:
-
-   ```java
-   // avoid
-   List<Item> out = items.stream().filter(Item::outOfStock).collect(Collectors.toList());
-   return !out.isEmpty();
-
-   // prefer
-   return items.stream().anyMatch(Item::outOfStock);
-   ```
-
+2. Prefer terminals that encode intent directly: `anyMatch` for existence, `count` for counts,
+   `joining` for text, `min`/`max` for extremes, and primitive terminals for primitive totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, consider
    `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
    many tiny stream allocations.
-4. Use primitive streams for primitive aggregation. Prefer `mapToInt(...).sum()`,
-   `mapToDouble(...).average()`, `Collectors.summingInt`, or `Collectors.summarizingInt` over
-   boxed `reduce` when computing primitive totals or statistics. Use `reduce(identity, op)` for
-   immutable non-primitive accumulation such as `BigDecimal`.
+4. Use primitive streams for primitive aggregation. Keep `reduce(identity, op)` for immutable
+   non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics: `toMap` for one value per key, `groupingBy` for many
    values per key, downstream collectors for projections/aggregates, and `partitioningBy` for a
    complete boolean split. Preserve duplicate-key and null-handling contracts explicitly.

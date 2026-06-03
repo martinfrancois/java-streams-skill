@@ -1,5 +1,5 @@
 {
-  "context": "Headline audit: measures whether the agent uses the bundled hard-stop scan command before classifying dense Java 17 stream issues.",
+  "context": "Headline explicit audit: measures whether the agent uses the bundled hard-stop scan command before classifying dense Java 17 stream issues.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -34,7 +34,7 @@
     }
   ],
   "metadata": {
-    "invocation": "natural",
+    "invocation": "explicit",
     "task_type": "review"
   }
 }

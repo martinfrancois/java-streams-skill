@@ -1,6 +1,7 @@
 # Audit customer stream helpers
 
-Audit this Java stream-heavy class with the hard-stop scan workflow. Create `review.md`.
+Use `$java-streams` to audit this Java stream-heavy class with the hard-stop scan workflow. Create
+`review.md`.
 
 Assume Java 17.
 

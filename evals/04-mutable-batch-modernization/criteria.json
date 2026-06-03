@@ -1,29 +1,23 @@
 {
-  "context": "Headline cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list and should document the hard-stop scan.",
+  "context": "Headline natural cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list.",
   "type": "weighted_checklist",
   "checklist": [
     {
-      "name": "Creates requested artifacts",
+      "name": "Creates requested artifact",
       "category": "safety",
-      "max_score": 5,
-      "description": "Creates ExportBatch.java and scan.md with coherent Java 17-compatible content."
-    },
-    {
-      "name": "Includes bundled scan command",
-      "category": "stream_quality",
-      "max_score": 60,
-      "description": "scan.md includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder."
+      "max_score": 10,
+      "description": "Creates ExportBatch.java with coherent Java 17-compatible content."
     },
     {
       "name": "Preserves mutable batch behavior",
       "category": "stream_quality",
-      "max_score": 20,
+      "max_score": 55,
       "description": "ExportBatch.java keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final mutable result by id."
     },
     {
       "name": "Avoids Stream.toList mutability break",
       "category": "stream_quality",
-      "max_score": 10,
+      "max_score": 30,
       "description": "Does not use Stream.toList() for exportRows because the list is later mutated with add and sort; uses Collectors.toCollection(ArrayList::new), Collectors.toList(), or an equivalent mutable result."
     },
     {
