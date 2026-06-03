@@ -26,6 +26,10 @@ Fix these before finalizing:
 - `Stream.toList()` where a mutable result is required or later code mutates the list.
 - `parallelStream()` or `.parallel()` added without checking CPU-bound work, data size, ordering,
   shared state, blocking calls, and collector safety.
+- Blocking predicate-like checks that return the original element or `null` as a false sentinel.
+  Carry the element with an explicit boolean result, then filter and map back to the element. Use
+  `Map.entry` only on Java 9+ when both values are non-null; otherwise use a null-tolerant holder
+  such as `AbstractMap.SimpleImmutableEntry` or a project type.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
 
@@ -50,7 +54,8 @@ Use parallel streams only after checking:
 3. Encounter order is not required, or the ordered terminal is still worth the cost.
 4. The pipeline does not perform blocking IO or remote calls. For Java 24+ blocking per-element
    calls, consider `Gatherers.mapConcurrent` only when the baseline supports it and virtual-thread
-   concurrency is the intended design.
+   concurrency is the intended design. Preserve element/result association explicitly with
+   a baseline-compatible holder rather than null sentinels or side maps.
 5. The terminal/collector is safe under parallel execution.
 
 ## Scan Command

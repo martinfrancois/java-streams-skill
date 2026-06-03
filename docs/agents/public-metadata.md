@@ -8,7 +8,8 @@ topics.
 ## Rules
 
 - GitHub description should be short, clickable, and user-benefit focused.
-- Current preferred shape: "Help AI coding agents write better Java Stream and Collector code."
+- Current preferred shape: "Help AI coding agents use Java Streams and Collectors well in new code,
+  review, and cleanup without replacing one antipattern with another."
 - Keep the GitHub repository private until the maintainer explicitly says to make it public.
 - Keep `.tessl-plugin/plugin.json` private until the maintainer says to publish publicly.
 - Use the maximum useful number of relevant discoverability topics when the repo becomes public.

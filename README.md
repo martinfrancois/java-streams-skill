@@ -3,7 +3,7 @@
 [![tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fmartinfrancois%2Fjava-streams)](https://tessl.io/registry/martinfrancois/java-streams)
 
 AI agents often know Java streams well enough to chain `filter`, `map`, and `collect`, but not
-enough to choose the right stream operation for the job.
+enough to choose the right stream operation for the job in new code, reviews, and cleanup.
 
 They write code that looks modern at first glance, then materializes a list just to check whether
 anything matched, sorts a whole stream to get one newest item, counts for existence, uses boxed
@@ -160,10 +160,10 @@ IntSummaryStatistics stats = orders.stream()
 
 ## How It's Evaluated
 
-The headline eval suite focuses on review and cleanup tasks where the stream-specific context
-should make the agent better than the same agent without the skill. It includes natural activation
-prompts and explicit `Use $java-streams` prompts, with criteria weighted toward stream quality
-rather than just artifact creation.
+The headline eval suite focuses on stream implementation, review, and cleanup tasks where the
+stream-specific context should make the agent better than the same agent without the skill. It
+includes natural activation prompts and explicit `Use $java-streams` prompts, with criteria weighted
+toward stream quality rather than just artifact creation.
 
 Reference evals cover the rest of the stream pattern catalog from the source material. Those
 scenarios are useful for regression and review, but they are not automatically promoted into the

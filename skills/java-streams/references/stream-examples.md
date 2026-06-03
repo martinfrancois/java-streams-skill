@@ -200,3 +200,7 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
         .sorted(Comparator.comparing(Product::getName))
         .toList();
 ```
+
+`Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
+entry is null. If nulls can reach the carrier or the baseline is Java 8, use a null-tolerant project
+type or `AbstractMap.SimpleImmutableEntry`.

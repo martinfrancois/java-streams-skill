@@ -55,13 +55,12 @@ Keep these rules in view:
    many tiny stream allocations.
 4. Use primitive streams for primitive aggregation. Keep `reduce(identity, op)` for immutable
    non-primitive accumulation such as `BigDecimal`.
-5. Choose collectors by result semantics: `toMap` for one value per key, `groupingBy` for many
-   values per key, downstream collectors for projections/aggregates, and `partitioningBy` for a
-   complete boolean split. Preserve duplicate-key and null-handling contracts explicitly.
-6. Preserve ordering, mutability, and short-circuit behavior. `sorted`, `distinct`, `limit`,
-   `takeWhile`, and `dropWhile` are order-sensitive. For top-N pipelines, sort before `limit`; for
-   nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep
-   `Collectors.toCollection(ArrayList::new)` or `Collectors.toList()`.
+5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
+   later step needs an expensive check result, carry `element + result` with a baseline-compatible
+   holder; use `Map.entry` only on Java 9+ when both values are non-null.
+6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
+   nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
+   mutable collector.
 7. Keep imperative code when it is the clearer boundary. Stateful sequence output, checked IO,
    prompts, mutation-heavy code, or complex early exits may be better as a loop. If a loop remains,
    still use small stream helpers for real lookups or aggregates when that improves clarity.
