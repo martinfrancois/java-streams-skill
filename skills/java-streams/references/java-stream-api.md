@@ -33,7 +33,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | --- | ---: | --- |
 | `Collectors.toList`, `toSet` | 8 | `toList` mutability is unspecified; use explicit collection if required. |
 | `Collectors.joining` | 8 | Join mapped text in one terminal. |
-| `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Keys must not be null. |
+| `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Default map results may preserve a null key, but null values are rejected; preserve the existing null contract explicitly. |
 | `Collectors.groupingBy` | 8 | Key maps to a list or downstream aggregate. Null classifier keys are not accepted. |
 | `Collectors.mapping` | 8 | Project values inside downstream collectors. |
 | `Collectors.counting` | 8 | Count elements, often downstream of `groupingBy`. |
@@ -57,5 +57,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | `List.getFirst()` / sequenced collections | 21 | Do not use below Java 21. |
 | virtual threads | 21 | Relevant to gatherer concurrency discussions, not ordinary streams. |
 
-Natural sorting and `Collectors.toMap` are null-sensitive. If a stream may contain null elements or
-keys, filter them out or use explicit null handling before sorting/collecting.
+Natural sorting and collectors are null-sensitive. If a stream may contain null elements, null
+values, or null grouping keys, filter them out or use explicit null handling before sorting or
+collecting. For `toMap`, preserve existing null-key behavior deliberately instead of filtering or
+retaining null keys by accident.

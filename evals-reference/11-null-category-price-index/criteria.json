@@ -18,7 +18,7 @@
       "name": "Filters null categories before collectors",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Filters product.category() != null before toMap or groupingBy so null keys do not reach collectors."
+      "description": "Filters product.category() != null before toMap or groupingBy so the refactor preserves the original null-category skip behavior and avoids groupingBy null classifier failures."
     },
     {
       "name": "Uses explicit merge for cheapest product",

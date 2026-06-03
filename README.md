@@ -160,10 +160,10 @@ IntSummaryStatistics stats = orders.stream()
 
 ## How It's Evaluated
 
-The headline eval suite focuses on tasks where the stream-specific context should make the agent
-better than the same agent without the skill. It includes natural activation prompts and explicit
-`Use $java-streams` prompts, implementation tasks and review tasks, and criteria weighted toward
-stream quality rather than just compilation.
+The headline eval suite focuses on review tasks where the stream-specific context should make the
+agent better than the same agent without the skill. It includes natural activation prompts and
+explicit `Use $java-streams` prompts, with criteria weighted toward stream quality rather than just
+artifact creation.
 
 Reference evals cover the rest of the stream pattern catalog from the source material. Those
 scenarios are useful for regression and review, but they are not automatically promoted into the

@@ -19,7 +19,9 @@ Fix these before finalizing:
   clearer.
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
 - `toMap` without a merge function when duplicate keys are possible.
-- `toMap` or `groupingBy` where null keys can reach the collector.
+- `groupingBy` where null classifier keys can reach the collector, or `toMap` where null keys or
+  values would change the existing null-handling contract. Default `toMap` can preserve one null
+  key in a `HashMap` result, but it rejects null values.
 - `sorted()` or `Comparator.naturalOrder()` where null elements or keys can reach the comparator.
 - `Stream.toList()` where a mutable result is required or later code mutates the list.
 - `parallelStream()` or `.parallel()` added without checking CPU-bound work, data size, ordering,
