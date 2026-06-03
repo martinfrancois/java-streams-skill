@@ -1,1 +1,1 @@
-Implement a Java 24 stream pipeline for bounded concurrent remote checks without using parallelStream.
+Implement a Java 24 stream pipeline for service-limited concurrent remote checks.

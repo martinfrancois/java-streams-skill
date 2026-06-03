@@ -12,11 +12,10 @@ Rules:
 
 - `user.favoriteProducts()` returns products in user preference order.
 - `InventoryApi.check(product.sku())` is a blocking remote call.
+- The inventory service allows at most 8 concurrent checks from this process.
 - Return only products that are in stock.
 - Sort the returned products by `Product::name`.
 - Use Java stream APIs for the pipeline.
-- Avoid `parallelStream()` and avoid unbounded concurrency.
-- Keep the concurrency limit explicit in code.
 
 Use these nested types:
 
