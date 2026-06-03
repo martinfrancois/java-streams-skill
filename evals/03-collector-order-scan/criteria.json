@@ -11,19 +11,19 @@
     {
       "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 50,
-      "description": "Includes the hard-stop rg scan command or an exact marker-regex equivalent covering toMap, groupingBy, sorted().findFirst, limit/order-sensitive operations, Comparator.naturalOrder, Stream.toList, parallelStream/.parallel, and the rest of the hard-stop marker set."
+      "max_score": 80,
+      "description": "Includes the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies required collector and ordering fixes",
       "category": "stream_quality",
-      "max_score": 25,
+      "max_score": 6,
       "description": "Flags byDesk duplicate toMap, byDepartment nullable groupingBy, cheapestDesk sorted-findFirst, topFiveByScore limit before sort, sortedNicknames nullable natural sort, and stableDepartments sorted-before-distinct inefficiency."
     },
     {
       "name": "Classifies acceptable markers",
       "category": "stream_quality",
-      "max_score": 15,
+      "max_score": 4,
       "description": "Identifies byId toMap as acceptable due unique id, byStatus groupingBy as acceptable due non-null status and intended counting aggregate, and cpuScore parallelStream as acceptable due large CPU-heavy stateless non-blocking work with a safe sum terminal."
     },
     {

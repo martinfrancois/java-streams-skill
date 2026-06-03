@@ -11,19 +11,19 @@
     {
       "name": "Includes bundled scan command",
       "category": "stream_quality",
-      "max_score": 50,
-      "description": "Includes the hard-stop rg scan command or an exact marker-regex equivalent covering count()>0, collect().isEmpty/size, sorted().findFirst, Optional isPresent/get, parallelStream/.parallel, toMap, groupingBy, Comparator.naturalOrder, Stream.toList, mapMulti, takeWhile/dropWhile, teeing, Optional::stream, flatMapping, Stream.ofNullable, and gather."
+      "max_score": 80,
+      "description": "Includes the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies required customer fixes",
       "category": "stream_quality",
-      "max_score": 35,
+      "max_score": 8,
       "description": "Correctly flags the customer class issues: existence checks, sorted-findFirst newest lookup, collect-then-join, Stream.toList mutation, parallel findAny priority break, duplicate toMap, nullable groupingBy, nullable natural sort, limit-before-sort top-N, and Optional get pattern."
     },
     {
       "name": "Classifies acceptable marker",
       "category": "stream_quality",
-      "max_score": 5,
+      "max_score": 2,
       "description": "Explicitly identifies totalSpend's BigDecimal reduce as acceptable rather than forcing primitive aggregation."
     },
     {
