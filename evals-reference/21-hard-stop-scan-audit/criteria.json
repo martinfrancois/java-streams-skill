@@ -12,7 +12,7 @@
       "name": "Includes bundled scan command",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Includes the scan header 'java-streams hard-stop scan v1' and the complete rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Equivalent shell escaping is acceptable, but do not award this for a reduced, approximate, or hand-written scan command."
+      "description": "Includes the scan header 'java-streams hard-stop scan v1' and the rg command from hard-stops.md with complete marker coverage and the '<touched Java files>' placeholder. Equivalent shell escaping or formatting is acceptable; do not require character-perfect parity if all marker categories are present, but do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies required customer fixes",
@@ -24,7 +24,7 @@
       "name": "Classifies acceptable marker",
       "category": "stream_quality",
       "max_score": 10,
-      "description": "Explicitly identifies totalSpend's BigDecimal reduce as acceptable rather than forcing primitive aggregation."
+      "description": "Explicitly identifies totalSpend's BigDecimal reduce as acceptable rather than forcing primitive aggregation, whether it is framed as an acceptable scan hit or as an intentional non-hit that should remain unchanged."
     },
     {
       "name": "Keeps audit concise",
