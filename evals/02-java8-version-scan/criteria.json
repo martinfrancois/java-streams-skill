@@ -12,7 +12,7 @@
       "name": "Includes bundled scan command",
       "category": "stream_quality",
       "max_score": 80,
-      "description": "Includes the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
+      "description": "Includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies Java 8 version drift",

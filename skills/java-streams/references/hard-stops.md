@@ -53,6 +53,12 @@ Use parallel streams only after checking:
 
 ## Scan Command
 
+When documenting a scan, start with this header so later reviews can tell which workflow was used:
+
+```text
+java-streams hard-stop scan v1
+```
+
 Run a hard-stop scan over touched Java files before finalizing:
 
 ```bash

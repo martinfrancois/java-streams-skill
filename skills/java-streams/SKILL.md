@@ -80,5 +80,5 @@ Before finalizing touched stream flow, run the full scan in
    still use small stream helpers for real lookups or aggregates when that improves clarity.
 8. Verify each changed branch. Run focused tests or reason through empty inputs, one element,
    multiple matches, duplicates, null keys/values, ordering, parallel-safety, and Java-baseline
-   compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md); fix relevant
-   hits and re-scan.
+   compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md); when
+   documenting it, include the scan header from that reference. Fix relevant hits and re-scan.
