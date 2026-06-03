@@ -26,7 +26,21 @@ final class ReportRows {
         return out;
     }
 
-    record Row(String id, int rank, boolean visible) {}
+    static final class Row {
+        private final String id;
+        private final int rank;
+        private final boolean visible;
+
+        Row(String id, int rank, boolean visible) {
+            this.id = id;
+            this.rank = rank;
+            this.visible = visible;
+        }
+
+        String id() { return id; }
+        int rank() { return rank; }
+        boolean visible() { return visible; }
+    }
 }
 ```
 
@@ -49,6 +63,20 @@ final class ReportRows {
         return out;
     }
 
-    record Row(String id, int rank, boolean visible) {}
+    static final class Row {
+        private final String id;
+        private final int rank;
+        private final boolean visible;
+
+        Row(String id, int rank, boolean visible) {
+            this.id = id;
+            this.rank = rank;
+            this.visible = visible;
+        }
+
+        String id() { return id; }
+        int rank() { return rank; }
+        boolean visible() { return visible; }
+    }
 }
 ```
