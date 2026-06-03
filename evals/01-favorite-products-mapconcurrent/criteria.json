@@ -1,0 +1,46 @@
+{
+  "context": "Headline natural implementation: Java 24 blocking per-element remote checks should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 24 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates FavoriteProducts.java with the requested method, nested types, imports, and Java 24-compatible code."
+    },
+    {
+      "name": "Preserves favorite product behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Returns only products whose sku passes InventoryApi.check and sorts the final returned products by Product::name."
+    },
+    {
+      "name": "Uses bounded Gatherers.mapConcurrent",
+      "category": "stream_quality",
+      "max_score": 45,
+      "description": "Uses Gatherers.mapConcurrent with an explicit bounded concurrency value to perform the blocking InventoryApi.check calls inside the stream pipeline."
+    },
+    {
+      "name": "Carries product with stock result",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Keeps each Product associated with its stock-check result, for example with Map.entry(product, InventoryApi.check(product.sku())), then filters by the boolean result before mapping back to Product."
+    },
+    {
+      "name": "Rejects weak concurrency choices",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Does not use parallelStream(), .parallel(), unbounded CompletableFuture fan-out, or shared mutable state for collecting remote check results."
+    },
+    {
+      "name": "Keeps implementation focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated caching, retries, dependencies, API redesign, or broad concurrency framework changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "context": "Headline explicit implementation: Java 24 blocking per-element remote checks should use bounded Gatherers.mapConcurrent rather than parallelStream or unbounded async work.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 24 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates OfferAvailability.java with the requested method, nested types, imports, and Java 24-compatible code."
+    },
+    {
+      "name": "Preserves offer behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Returns only offers whose id passes AvailabilityApi.isAvailable and sorts the final returned offers by rank, then id."
+    },
+    {
+      "name": "Uses bounded Gatherers.mapConcurrent",
+      "category": "stream_quality",
+      "max_score": 45,
+      "description": "Uses Gatherers.mapConcurrent with an explicit bounded concurrency value to perform the blocking AvailabilityApi.isAvailable calls inside the stream pipeline."
+    },
+    {
+      "name": "Carries offer with availability result",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Keeps each Offer associated with its availability result, for example with Map.entry(offer, AvailabilityApi.isAvailable(offer.id())), then filters by the boolean result before mapping back to Offer."
+    },
+    {
+      "name": "Rejects weak concurrency choices",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Does not use parallelStream(), .parallel(), unbounded CompletableFuture fan-out, or shared mutable state for collecting remote check results."
+    },
+    {
+      "name": "Keeps implementation focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Avoids unrelated caching, retries, dependencies, API redesign, or broad concurrency framework changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation"
+  }
+}
