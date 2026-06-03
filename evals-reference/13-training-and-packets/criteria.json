@@ -24,7 +24,7 @@
       "name": "Uses mapMulti or equivalent conditional emission cleanly",
       "category": "stream_quality",
       "max_score": 30,
-      "description": "Uses Java 17 mapMulti with pattern matching for Developer, or an equivalently concise filter/cast/map pipeline, without unsafe casts before type checks."
+      "description": "Uses Java 17 mapMulti with pattern matching for Developer, or gives full credit for an equivalently concise filter/cast/map pipeline, without unsafe casts before type checks."
     },
     {
       "name": "Uses takeWhile for prefix semantics",

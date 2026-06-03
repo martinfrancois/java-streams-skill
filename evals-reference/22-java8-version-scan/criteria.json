@@ -12,7 +12,7 @@
       "name": "Includes bundled scan command",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Includes the exact scan header 'java-streams hard-stop scan v1' and the exact rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Do not award this for a reduced, approximate, or hand-written scan command."
+      "description": "Includes the scan header 'java-streams hard-stop scan v1' and the complete rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Equivalent shell escaping is acceptable, but do not award this for a reduced, approximate, or hand-written scan command."
     },
     {
       "name": "Classifies Java 8 version drift",
@@ -21,10 +21,10 @@
       "description": "Flags Optional::stream, Stream.toList, Stream.ofNullable, takeWhile, dropWhile, Collectors.flatMapping, Collectors.teeing, and mapMulti as unavailable on Java 8 and gives Java 8-compatible directions."
     },
     {
-      "name": "Classifies allowed count marker",
+      "name": "Classifies allowed count usage",
       "category": "stream_quality",
       "max_score": 10,
-      "description": "Mentions activeCount uses count() as the requested numeric result, not count() > 0, so it is acceptable."
+      "description": "Mentions activeCount uses count() as the requested numeric result, not count() > 0, so it is acceptable Java 8 stream code even though it is not a hard-stop scan hit."
     },
     {
       "name": "Keeps audit concise",

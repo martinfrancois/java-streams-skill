@@ -10,6 +10,8 @@ Fix these before finalizing:
 - `filter(...).collect(...).isEmpty()`, `filter(...).collect(...).size()`, or a temporary list just
   to decide existence. Use `anyMatch`, `noneMatch`, `allMatch`, `findAny`, or `findFirst`.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
+- Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
+  with `anyMatch`.
 - `sorted(...).findFirst()` or sorted-then-sublist just to get one extreme. Use `min`/`max`; keep
   sorting only when the ordered list itself is required.
 - `map(...).collect(toList())` followed immediately by `String.join`. Use `Collectors.joining`.
@@ -57,6 +59,9 @@ Use parallel streams only after checking:
    concurrency is the intended design. Preserve element/result association explicitly with
    a baseline-compatible holder rather than null sentinels or side maps.
 5. The terminal/collector is safe under parallel execution.
+
+For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked
+because fork-join splitting, merging, and common-pool contention can outweigh the gain.
 
 ## Scan Command
 

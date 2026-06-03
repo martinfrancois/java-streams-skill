@@ -178,7 +178,8 @@ List<Packet> beforeFirstSpike = packets.stream()
 ```
 
 Parallel streams can help CPU-heavy stateless work, but they remain blocking and use the common
-fork-join pool by default:
+fork-join pool by default. Recommend measuring or benchmarking the pipeline because split/merge
+overhead and common-pool contention can outweigh the benefit:
 
 ```java
 long result = LongStream.rangeClosed(1, 100_000)
@@ -188,7 +189,8 @@ long result = LongStream.rangeClosed(1, 100_000)
 ```
 
 For Java 24+ blocking per-element calls, `Gatherers.mapConcurrent` can be more appropriate than
-`parallelStream` when the project intentionally uses virtual-thread concurrency:
+`parallelStream` when the project intentionally uses virtual-thread concurrency. Keep concurrency
+bounded and call out timeout/error handling for remote API failures:
 
 ```java
 List<Product> favoriteProducts = user.getFavoriteProducts().stream()

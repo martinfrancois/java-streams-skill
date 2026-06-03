@@ -36,7 +36,7 @@
       "name": "Review is concise and focused",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Keeps the review focused on stream ordering and parallelism rather than unrelated style."
+      "description": "Keeps the review focused on stream ordering and parallelism; brief scan notes or small supporting structure are acceptable if they do not distract from the decision."
     }
   ],
   "metadata": {

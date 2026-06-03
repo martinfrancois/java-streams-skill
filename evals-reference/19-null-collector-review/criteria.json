@@ -36,7 +36,7 @@
       "name": "Keeps review concise",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Avoids unrelated collector commentary."
+      "description": "Avoids unrelated collector commentary; brief directly related collector readability notes are acceptable."
     }
   ],
   "metadata": {

@@ -18,7 +18,7 @@
       "name": "Uses toMap with merge for cheapest products",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Computes cheapestByCategory with Collectors.toMap(Product::category, Function.identity(), BinaryOperator.minBy or an equivalent merge based on Product::price), avoiding duplicate-key failure."
+      "description": "Computes cheapestByCategory with a duplicate-safe collector, such as Collectors.toMap(Product::category, Function.identity(), BinaryOperator.minBy(...)) or groupingBy plus a minBy downstream, avoiding duplicate-key failure."
     },
     {
       "name": "Uses groupingBy with mapping for product names",

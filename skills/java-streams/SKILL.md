@@ -39,15 +39,16 @@ Keep these rules in view:
    8-compatible code or state the assumption. Use [java-stream-api.md](references/java-stream-api.md)
    for minimum Java versions.
 1. Identify the result shape:
-   - one arbitrary match: `filter(...).findAny()`;
-   - first encounter-order match: `filter(...).findFirst()`;
+   - one arbitrary/equivalent match: `filter(...).findAny()`;
+   - first encounter-order, priority, chronological, or user-visible match:
+     `filter(...).findFirst()`;
    - existence: `anyMatch`, `noneMatch`, or `allMatch`;
    - transformed list/set: `map`/`filter` then collect;
    - concatenated text: `Collectors.joining`;
    - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive terminals;
    - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
      explicit merge/null handling.
-2. Prefer terminals that encode intent directly: `anyMatch` for existence, `count` for counts,
+2. Prefer terminals that encode intent directly: `anyMatch` for existence, `count` for numeric counts,
    `joining` for text, `min`/`max` for extremes, and primitive terminals for primitive totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, consider
@@ -66,5 +67,6 @@ Keep these rules in view:
    still use small stream helpers for real lookups or aggregates when that improves clarity.
 8. Verify each changed branch. Check empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and Java-baseline compatibility. Run the marker scan from
-   [hard-stops.md](references/hard-stops.md); include its header when documenting a scan. Fix
-   relevant hits and re-scan.
+   [hard-stops.md](references/hard-stops.md); when documenting a scan, copy the scan header and
+   command verbatim from that file, including the escaped regex and `<touched Java files>`
+   placeholder. Fix relevant hits and re-scan.
