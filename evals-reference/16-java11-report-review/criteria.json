@@ -36,7 +36,7 @@
       "name": "Keeps review concise",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Avoids unrelated style feedback; brief directly related stream observations are acceptable."
+      "description": "Avoids unrelated style feedback; brief directly related stream observations, including a short note about redundant intermediate sorting, are acceptable."
     }
   ],
   "metadata": {
