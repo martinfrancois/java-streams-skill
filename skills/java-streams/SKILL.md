@@ -22,6 +22,8 @@ compatibility.
 
 Before finalizing touched stream flow, run the scan and apply the replacement rules in
 [hard-stops.md](references/hard-stops.md).
+Filtered-list first-element access has first-match semantics; use `findFirst()` unless all matches
+are equivalent.
 
 ## Core Workflow
 
