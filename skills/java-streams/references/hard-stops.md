@@ -9,6 +9,9 @@ Fix these before finalizing:
 
 - `filter(...).collect(...).isEmpty()`, `filter(...).collect(...).size()`, or a temporary list just
   to decide existence. Use `anyMatch`, `noneMatch`, `allMatch`, `findAny`, or `findFirst`.
+- A temporary filtered list followed by `get(0)`, `getFirst()`, or equivalent first-element access.
+  Use `findFirst` to preserve encounter-order behavior unless the domain explicitly says all matches
+  are equivalent.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
