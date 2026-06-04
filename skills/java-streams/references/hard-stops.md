@@ -37,6 +37,8 @@ Fix these before finalizing:
   such as `AbstractMap.SimpleImmutableEntry` or a project type.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
+- Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
+  `Collectors`, or `Gatherers`.
 
 ## Ordering Rules
 
