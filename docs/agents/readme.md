@@ -16,6 +16,7 @@ wording.
 - The README may say agents that support skill auto-selection, such as Codex and Claude Code, can
   select the skill from context.
 - Install examples should use `martinfrancois/java-streams`.
+- Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
 - When discussing evals, distinguish headline lift scenarios from reference/regression scenarios.
 - Keep public examples compact and domain-neutral: products, orders, items, addresses, packets, and

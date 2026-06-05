@@ -18,6 +18,16 @@ as a design choice rather than a default optimization.
 It also tells the agent to check the project Java version first. The right stream code for Java 8
 may be different from the right code for Java 17, Java 21, or Java 24.
 
+## Contents
+
+- [Getting Started](#getting-started)
+- [Why This Exists](#why-this-exists)
+- [What It Helps With](#what-it-helps-with)
+- [How It's Evaluated](#how-its-evaluated)
+- [Origin](#origin)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Getting Started
 
 ### 1. Install
