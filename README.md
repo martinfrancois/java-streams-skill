@@ -75,7 +75,9 @@ For example, when checking a user's favorite products against a blocking remote 
 code needs to keep favorites in preference order for checking, allow at most 8 checks at the same
 time, return only in-stock products, and sort the final result by product name.
 
-Unassisted outputs produced shapes like this for the blocking remote call:
+Two unassisted shapes look plausible at first glance, but both miss the important part.
+
+First, adding `parallelStream()` makes the code look like a small stream improvement:
 
 ```java
 private static final Semaphore STOCK_CHECKS = new Semaphore(8);
@@ -98,15 +100,52 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This preserves the basic filter-and-sort behavior, but it is a weak stream answer: `parallelStream()`
-uses the common fork-join pool, which is not the right default for blocking remote calls, and the
-static semaphore is shared state across requests rather than a clear per-operation concurrency limit.
-Other unassisted runs avoided `parallelStream()` but still submitted one virtual-thread task per
-product up front, blocked those tasks on a semaphore, and returned `null` for out-of-stock products.
-That bounds execution, but still creates unbounded fan-out pressure and hides the product/check
-association behind a null sentinel.
+This preserves the basic filter-and-sort behavior, but it is a weak answer: `parallelStream()` uses
+the common fork-join pool, which is not the right default for blocking remote calls, and the static
+semaphore is shared across requests instead of making the per-operation limit visible in the
+pipeline.
 
-With the skill, the same task is guided toward the Java 24 stream-native shape:
+Second, using virtual threads and a semaphore avoids `parallelStream()`, but can still hide the same
+design problem:
+
+```java
+List<Product> favoriteProducts(User user) {
+    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+        var permits = new Semaphore(8);
+
+        return user.favoriteProducts().stream()
+                .map(product -> executor.submit(() -> {
+                    permits.acquire();
+                    try {
+                        return InventoryApi.check(product.sku()) ? product : null;
+                    } finally {
+                        permits.release();
+                    }
+                }))
+                .map(FavoriteProducts::getUnchecked)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(Product::name))
+                .toList();
+    }
+}
+
+private static Product getUnchecked(Future<Product> future) {
+    try {
+        return future.get();
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(e);
+    } catch (ExecutionException e) {
+        throw new RuntimeException(e.getCause());
+    }
+}
+```
+
+That version bounds active calls, but it submits one task for every product up front, so large inputs
+still create unbounded fan-out pressure. It also encodes "not in stock" as `null`, which hides the
+relationship between each product and its stock-check result.
+
+With the skill, the same problem is guided toward the Java 24 stream-native shape:
 
 ```java
 List<Product> favoriteProducts(User user) {
@@ -175,7 +214,7 @@ headline benchmark when the baseline model already solves them.
 
 ## Origin
 
-The stream examples and pattern catalog are based on the code examples from Martin Francois'
+The stream examples and pattern catalog are based on the code examples from François Martin's
 talk ["I didn't know you could do that with Java Streams"](https://fmartin.ch/session/i-didnt-know-you-could-do-that-with-java-streams),
 with the public example source here:
 <https://github.com/martinfrancois/jfokus-2026/blob/main/code.md>.
