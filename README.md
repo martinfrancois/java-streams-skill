@@ -192,8 +192,9 @@ Good fit:
 - replacing collect-then-inspect, count-for-existence, or sort-then-first patterns;
 - choosing `findFirst()` or `findAny()` without changing ordering semantics;
 - using `flatMap` for nested collections and `Optional::stream` for `Stream<Optional<T>>`;
-- using `Collectors.joining`, `groupingBy`, `mapping`, `counting`, `summing*`,
-  `summarizing*`, `partitioningBy`, `toMap`, and `teeing` correctly;
+- using `Collectors.joining`, `groupingBy`, `mapping`, `counting`, `summingInt` /
+  `summingLong` / `summingDouble`, `summarizingInt` / `summarizingLong` /
+  `summarizingDouble`, `partitioningBy`, `toMap`, and `teeing` correctly;
 - selecting primitive streams and primitive stream terminal operations for primitive aggregation;
 - avoiding null-sensitive sorting and duplicate-key `toMap` failures;
 - deciding whether `parallelStream()` is actually appropriate;
