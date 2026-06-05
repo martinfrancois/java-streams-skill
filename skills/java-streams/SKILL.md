@@ -48,12 +48,16 @@ are equivalent.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, prefer
    `mapMulti` with pattern matching for mixed subtype filtering or small conditional
-   zero-or-one/one-to-few emission when it keeps the pipeline clearer.
+   zero-or-one/one-to-few emission when it keeps the pipeline clearer. For primitive subtype
+   extraction, prefer direct `mapToInt`/`mapToLong`/`mapToDouble` after a safe filter/cast, or the
+   primitive `mapMultiTo*` variants, rather than emitting boxed primitives and unboxing later.
 4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
    op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
    later step needs an expensive check result, carry `element + result` with a baseline-compatible
-   holder; use `Map.entry` only on Java 9+ when both values are non-null.
+   holder; use `Map.entry` only on Java 9+ when both values are non-null. For
+   `Gatherers.mapConcurrent`, do not return `null` as a skip sentinel; return a non-null carrier
+   such as `Map.entry(element, boolean)` or a project result type, then filter and map afterward.
 6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
    nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
    mutable collector.
