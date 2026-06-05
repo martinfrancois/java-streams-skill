@@ -169,7 +169,9 @@ headline benchmark when the baseline model already solves them.
 
 ## Origin
 
-The stream examples and pattern catalog are based on the public JFokus 2026 Java streams examples:
+The stream examples and pattern catalog are based on the code examples from Martin Francois'
+talk ["I didn't know you could do that with Java Streams"](https://fmartin.ch/session/i-didnt-know-you-could-do-that-with-java-streams),
+with the public example source here:
 <https://github.com/martinfrancois/jfokus-2026/blob/main/code.md>.
 
 ## Contributing
