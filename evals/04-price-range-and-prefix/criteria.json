@@ -11,7 +11,7 @@
     {
       "name": "Uses teeing for price range",
       "category": "stream_quality",
-      "max_score": 60,
+      "max_score": 70,
       "description": "Uses Collectors.teeing with minBy and maxBy by Product::price, or an equivalent single-pass pair reduction."
     },
     {
@@ -23,19 +23,19 @@
     {
       "name": "Uses takeWhile for before-spike prefix",
       "category": "stream_quality",
-      "max_score": 40,
+      "max_score": 45,
       "description": "Uses takeWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-preserving loop, not filter."
     },
     {
       "name": "Uses dropWhile for after-prefix remainder",
       "category": "stream_quality",
-      "max_score": 40,
+      "max_score": 45,
       "description": "Uses dropWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-skipping loop, not a filter that removes later healthy packets."
     },
     {
       "name": "Keeps implementation focused",
       "category": "maintainability",
-      "max_score": 15,
+      "max_score": 10,
       "description": "Keeps the implementation focused on the requested stream helpers without unrelated abstractions, caching, concurrency, or API redesign."
     }
   ],
