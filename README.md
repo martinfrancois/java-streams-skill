@@ -64,10 +64,10 @@ Use $java-streams to review this Java stream code and suggest any fixes.
 
 ## Why This Exists
 
-AI can write Java code that looks modern because it uses streams. But looking modern is not enough.
-The code can still use the wrong kind of concurrency, build lists it does not need, use `null` as a
-hidden signal, fail when keys are duplicated, or choose a terminal operation that does not match the
-real intent.
+AI can write Java code that looks modern because it uses streams. If you do not know streams very
+well, that code can look plausible in review. But looking plausible is not enough: the code can
+still use the wrong kind of concurrency, build lists it does not need, use `null` as a hidden signal,
+fail when keys are duplicated, or choose a terminal operation that does not match the real intent.
 
 This skill helps the agent write stream code that is easier to read and safer to change. It also
 helps the agent review existing stream code and explain what should be fixed.
