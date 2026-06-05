@@ -92,3 +92,8 @@ For each hit, decide whether it is legitimate for the project Java baseline and 
 stream-quality issues. If a marker remains because it is legitimate, state why. When an audit asks
 for allowed stream markers or allowed usages, also call out plain `count()` when it is the requested
 numeric result rather than a `count() > 0` existence check.
+
+When the requested audit is specifically about Java-version drift, keep the report scoped to APIs
+that are unavailable for the stated baseline and to explicitly allowed markers. Do not add unrelated
+collector/null-safety notes, such as `groupingBy` null-key caveats, unless the task also asks for a
+general stream safety review.
