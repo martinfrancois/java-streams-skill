@@ -67,7 +67,7 @@ Use $java-streams to review this Java stream code and suggest any fixes.
 The motivation is AI-written Java code that technically uses streams, but misses what streams are
 good at expressing.
 
-Common failures include:
+Stream failure modes this skill targets include:
 
 - collecting filtered elements into a list, then checking `isEmpty()` or reading the first item;
 - using `count() > 0` instead of `anyMatch(...)`;
