@@ -71,9 +71,9 @@ pipeline actually means. This skill exists to push agents past "uses streams" an
 that expresses the operation directly, keeps behavior visible, and uses the Java version's best
 available APIs.
 
-In the favorite-products stock-check eval, the task was to keep user favorites in preference order
-for checking, call a blocking remote inventory API, allow at most 8 checks at the same time, return
-only in-stock products, and sort the final result by product name.
+For example, when checking a user's favorite products against a blocking remote inventory API, the
+code needs to keep favorites in preference order for checking, allow at most 8 checks at the same
+time, return only in-stock products, and sort the final result by product name.
 
 Unassisted outputs produced shapes like this for the blocking remote call:
 
