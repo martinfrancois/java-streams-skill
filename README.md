@@ -22,6 +22,7 @@ may be different from the right code for Java 17, Java 21, or Java 24.
 
 - [Getting Started](#getting-started)
 - [Why This Exists](#why-this-exists)
+- [Common Stream Mistakes](#common-stream-mistakes)
 - [What It Helps With](#what-it-helps-with)
 - [How It's Evaluated](#how-its-evaluated)
 - [Origin](#origin)
@@ -196,7 +197,9 @@ This version is clearer:
 - It keeps each product together with its stock-check result.
 - It filters and sorts in a clear order.
 
-The skill also helps with common stream mistakes such as:
+## Common Stream Mistakes
+
+The skill also helps with mistakes such as:
 
 - collecting filtered elements into a list, then checking `isEmpty()` or reading the first item;
 - using `count() > 0` instead of `anyMatch(...)`;
