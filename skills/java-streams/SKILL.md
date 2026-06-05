@@ -39,6 +39,7 @@ are equivalent.
    - concatenated text: `Collectors.joining`;
    - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive stream terminal
      operations;
+   - two independent aggregates over the same input on Java 12+: `Collectors.teeing`;
    - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
      explicit merge/null handling.
 2. Prefer stream terminal operations that encode intent directly: `anyMatch` for existence, `count`
@@ -48,8 +49,8 @@ are equivalent.
    `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, consider
    `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
    many tiny stream allocations.
-4. Use primitive streams for primitive aggregation. Keep `reduce(identity, op)` for immutable
-   non-primitive accumulation such as `BigDecimal`.
+4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
+   op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
    later step needs an expensive check result, carry `element + result` with a baseline-compatible
    holder; use `Map.entry` only on Java 9+ when both values are non-null.

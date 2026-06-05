@@ -209,3 +209,14 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
 `Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
 entry is null. If nulls can reach the carrier or the baseline is Java 8, use a null-tolerant project
 type or `AbstractMap.SimpleImmutableEntry`.
+
+Use Java 12+ `Collectors.teeing` when two independent aggregates should be computed over the same
+input:
+
+```java
+Pair<Product, Product> range = products.stream()
+        .collect(Collectors.teeing(
+                Collectors.minBy(Comparator.comparing(Product::price)),
+                Collectors.maxBy(Comparator.comparing(Product::price)),
+                (min, max) -> new Pair<>(min.orElse(null), max.orElse(null))));
+```

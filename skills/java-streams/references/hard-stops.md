@@ -21,6 +21,8 @@ Fix these before finalizing:
 - `map(...).collect(toList())` followed immediately by `String.join`. Use `Collectors.joining`.
 - Boxed numeric `reduce` for primitive totals/statistics. Use primitive streams or summarizing
   collectors unless the type is genuinely non-primitive, such as `BigDecimal`.
+  In audits, explicitly classify non-primitive reductions such as
+  `reduce(BigDecimal.ZERO, BigDecimal::add)` as acceptable.
 - Nested `map(... stream ... collect(...)).flatMap(...)` where a direct `flatMap` pipeline is
   clearer.
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
