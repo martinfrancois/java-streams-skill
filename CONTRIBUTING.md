@@ -113,6 +113,10 @@ Common types in this repository:
 
 ## Hosted Evals
 
+In this repository, the headline benchmark is the small main eval set in `evals/` used for public
+lift reporting. `evals-reference/` contains broader regression coverage that helps catch regressions
+but does not directly drive the main lift claim.
+
 The headline benchmark should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
 scenarios must not mention `$java-streams` or ask to use the skill. Explicit scenarios may name the
