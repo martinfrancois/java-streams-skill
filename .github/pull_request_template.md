@@ -52,21 +52,12 @@ Details:
 
 ## Review Checklist
 
-- [ ] Docs updated, or N/A
-- [ ] Evals updated, or N/A
-- [ ] Scenario directories include `task.md`, `criteria.json`, and `capability.txt`, or N/A
-- [ ] Scenario invocation style is classified as natural or explicit, or N/A
-- [ ] Natural activation prompts don't explicitly invoke the skill, or N/A
-- [ ] Explicit invocation prompts are labeled as explicit, or N/A
-- [ ] Headline criteria include compile/artifact checks, or N/A
-- [ ] Headline criteria include behavior correctness checks, or N/A
-- [ ] Runtime references contain no eval answer keys, scenario inventory, hosted run IDs, or fixed score claims
-- [ ] Java baseline compatibility has been considered, or N/A
-- [ ] Stream/collector ordering, null handling, and parallelism have been considered, or N/A
-- [ ] Full/reference eval reporting is not hidden or cherry-picked
-- [ ] Tessl checks were run, or unavailability is documented
-- [ ] PR title or squash title uses Conventional Commits
-- [ ] Redaction checked: no Tessl tokens, GitHub tokens, package manager tokens, private repository links, private eval artifacts, private registry/workspace links, local host paths, or proprietary Java source
+- [ ] The change is scoped to the sections, skill files, evals, or workflows described above.
+- [ ] Validation that applies to this change is checked above, or any unavailable check is explained.
+- [ ] If Java stream guidance changed, Java baseline compatibility plus ordering, null handling, and parallelism were considered.
+- [ ] If evals or benchmark claims changed, the eval scenarios remain fair and do not leak answer keys, run IDs, or fixed score claims into runtime references.
+- [ ] PR title or squash title uses Conventional Commits.
+- [ ] Redaction checked: no tokens, private links, private eval artifacts, local host paths, or proprietary Java source.
 
 ## AI Assistance (if used)
 
