@@ -1,5 +1,5 @@
 {
-  "context": "Headline review: parallelStream with forEach mutating a shared HashMap is unsafe; collector-owned accumulation is the correct stream shape.",
+  "context": "Main eval review: parallelStream with forEach mutating a shared HashMap is unsafe; collector-owned accumulation is the correct stream shape.",
   "type": "weighted_checklist",
   "checklist": [
     {

@@ -1,5 +1,5 @@
 {
-  "context": "Headline weighted explicit audit: selected because without-context missed an acceptable-marker classification; measures use of the bundled hard-stop scan command before classifying dense Java 17 stream issues.",
+  "context": "Main eval weighted explicit audit: selected because without-context missed an acceptable-marker classification; measures use of the bundled hard-stop scan command before classifying dense Java 17 stream issues.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -36,7 +36,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "review",
-    "headline_weight_multiplier": 1,
-    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_weight_multiplier": 1,
+    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

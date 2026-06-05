@@ -1,5 +1,5 @@
 {
-  "context": "Headline cleanup: stream of Optionals, null-sensitive sorting, and duplicate-key collector behavior.",
+  "context": "Main eval cleanup: stream of Optionals, null-sensitive sorting, and duplicate-key collector behavior.",
   "type": "weighted_checklist",
   "checklist": [
     {

@@ -1,5 +1,5 @@
 {
-  "context": "Headline stream cleanup: materialized intermediate lists and manual joining should become direct stream terminals while preserving Java 8 compatibility.",
+  "context": "Main eval stream cleanup: materialized intermediate lists and manual joining should become direct stream terminals while preserving Java 8 compatibility.",
   "type": "weighted_checklist",
   "checklist": [
     {

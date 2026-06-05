@@ -1,5 +1,5 @@
 {
-  "context": "Headline natural cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list.",
+  "context": "Main eval natural cleanup: Java 17 modernization often tempts agents to replace Collectors.toList with Stream.toList, but this method mutates the collected list.",
   "type": "weighted_checklist",
   "checklist": [
     {

@@ -1,5 +1,5 @@
 {
-  "context": "Headline weighted natural implementation: second-lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
+  "context": "Main eval weighted natural implementation: second-lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -42,7 +42,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
-    "headline_weight_multiplier": 4,
-    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_weight_multiplier": 4,
+    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

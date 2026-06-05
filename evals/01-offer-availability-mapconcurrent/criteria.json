@@ -1,5 +1,5 @@
 {
-  "context": "Headline weighted implementation: lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks should use bounded Gatherers.mapConcurrent rather than parallelStream or unbounded async work.",
+  "context": "Main eval weighted implementation: lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks should use bounded Gatherers.mapConcurrent rather than parallelStream or unbounded async work.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -42,7 +42,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "implementation",
-    "headline_weight_multiplier": 5,
-    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_weight_multiplier": 5,
+    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

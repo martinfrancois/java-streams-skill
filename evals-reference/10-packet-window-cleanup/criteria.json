@@ -1,5 +1,5 @@
 {
-  "context": "Headline cleanup: takeWhile/dropWhile are prefix operations; filter would silently change packet-window behavior.",
+  "context": "Main eval cleanup: takeWhile/dropWhile are prefix operations; filter would silently change packet-window behavior.",
   "type": "weighted_checklist",
   "checklist": [
     {

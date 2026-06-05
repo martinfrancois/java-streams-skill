@@ -1,5 +1,5 @@
 {
-  "context": "Headline audit: measures whether the agent uses the bundled hard-stop scan command to classify collector, ordering, null-sort, and parallel markers.",
+  "context": "Main eval audit: measures whether the agent uses the bundled hard-stop scan command to classify collector, ordering, null-sort, and parallel markers.",
   "type": "weighted_checklist",
   "checklist": [
     {

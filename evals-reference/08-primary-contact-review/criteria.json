@@ -1,5 +1,5 @@
 {
-  "context": "Headline review: reject a proposed findAny and parallelStream change that loses priority ordering.",
+  "context": "Main eval review: reject a proposed findAny and parallelStream change that loses priority ordering.",
   "type": "weighted_checklist",
   "checklist": [
     {

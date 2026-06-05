@@ -92,7 +92,7 @@ def text_of(item: dict[str, Any]) -> str:
     return f"{item.get('name', '')} {item.get('description', '')}".lower()
 
 
-def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
+def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     failures: list[str] = []
     task_file = scenario / "task.md"
     criteria_file = scenario / "criteria.json"
@@ -123,7 +123,7 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
         failures.append(f"{criteria_file}: checklist must be a non-empty array")
         checklist = []
 
-    is_headline = headline_root is not None and scenario.parent.resolve() == headline_root.resolve()
+    is_main_eval = main_eval_root is not None and scenario.parent.resolve() == main_eval_root.resolve()
     names: set[str] = set()
     total_score = 0
     compile_score = 0
@@ -153,9 +153,9 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
                 f"{criteria_file}: checklist item {index} has unsupported category {category!r}; "
                 f"use one of {sorted(CRITERION_CATEGORIES)}"
             )
-        if is_headline and category not in CRITERION_CATEGORIES:
+        if is_main_eval and category not in CRITERION_CATEGORIES:
             failures.append(
-                f"{criteria_file}: headline checklist item {index} needs category "
+                f"{criteria_file}: main eval checklist item {index} needs category "
                 f"safety, stream_quality, or maintainability"
             )
         total_score += max_score
@@ -187,15 +187,15 @@ def validate_scenario(scenario: Path, headline_root: Path | None) -> list[str]:
     if invocation == "explicit" and not has_explicit_invocation:
         failures.append(f"{criteria_file}: explicit scenario task does not invoke the skill")
 
-    if is_headline and task_type == "implementation":
+    if is_main_eval and task_type == "implementation":
         if compile_score <= 0:
-            failures.append(f"{criteria_file}: headline implementation scenario needs compile/artifact criteria")
+            failures.append(f"{criteria_file}: main eval implementation scenario needs compile/artifact criteria")
         if behavior_score <= 0:
-            failures.append(f"{criteria_file}: headline implementation scenario needs behavior criteria")
+            failures.append(f"{criteria_file}: main eval implementation scenario needs behavior criteria")
         if category_scores["stream_quality"] <= 0:
-            failures.append(f"{criteria_file}: headline implementation scenario needs stream_quality criteria")
-    elif is_headline and task_type == "cleanup" and category_scores["stream_quality"] <= 0:
-        failures.append(f"{criteria_file}: headline cleanup scenario needs stream_quality criteria")
+            failures.append(f"{criteria_file}: main eval implementation scenario needs stream_quality criteria")
+    elif is_main_eval and task_type == "cleanup" and category_scores["stream_quality"] <= 0:
+        failures.append(f"{criteria_file}: main eval cleanup scenario needs stream_quality criteria")
 
     if "optionalint" in task_text.lower() or "optionalint" in str(data).lower():
         primitive_text = (task_text + json.dumps(data)).lower()
@@ -255,11 +255,11 @@ def main() -> int:
     if not dirs:
         return error("no scenario directories found")
 
-    headline_root = Path("evals") if Path("evals").exists() else None
+    main_eval_root = Path("evals") if Path("evals").exists() else None
     failures: list[str] = []
     invocations: dict[str, int] = {"natural": 0, "explicit": 0}
     for scenario in dirs:
-        failures.extend(validate_scenario(scenario, headline_root))
+        failures.extend(validate_scenario(scenario, main_eval_root))
         criteria = scenario / "criteria.json"
         if criteria.exists():
             data, _ = load_json(criteria)
@@ -268,52 +268,52 @@ def main() -> int:
                 if invocation in invocations:
                     invocations[invocation] += 1
 
-    if headline_root and any(path.resolve() == headline_root.resolve() for path in paths if path.exists()):
-        headline_dirs = [d for d in dirs if d.parent.resolve() == headline_root.resolve()]
-        headline_invocations = {"natural": 0, "explicit": 0}
-        headline_category_scores = {category: 0 for category in CRITERION_CATEGORIES}
-        for scenario in headline_dirs:
+    if main_eval_root and any(path.resolve() == main_eval_root.resolve() for path in paths if path.exists()):
+        main_eval_dirs = [d for d in dirs if d.parent.resolve() == main_eval_root.resolve()]
+        main_eval_invocations = {"natural": 0, "explicit": 0}
+        main_eval_category_scores = {category: 0 for category in CRITERION_CATEGORIES}
+        for scenario in main_eval_dirs:
             data, _ = load_json(scenario / "criteria.json")
             if data and isinstance(data.get("metadata"), dict):
                 invocation = data["metadata"].get("invocation")
-                if invocation in headline_invocations:
-                    headline_invocations[invocation] += 1
+                if invocation in main_eval_invocations:
+                    main_eval_invocations[invocation] += 1
             if data and isinstance(data.get("checklist"), list):
                 for item in data["checklist"]:
                     if not isinstance(item, dict):
                         continue
                     category = item.get("category")
                     max_score = item.get("max_score")
-                    if category in headline_category_scores and isinstance(max_score, int):
-                        headline_category_scores[category] += max_score
-        if headline_dirs and not all(headline_invocations.values()):
+                    if category in main_eval_category_scores and isinstance(max_score, int):
+                        main_eval_category_scores[category] += max_score
+        if main_eval_dirs and not all(main_eval_invocations.values()):
             failures.append(
-                "evals: headline suite must include both natural and explicit invocation scenarios"
+                "evals: main eval set must include both natural and explicit invocation scenarios"
             )
-        headline_total = sum(headline_category_scores.values())
-        if headline_total:
-            stream_quality = headline_category_scores["stream_quality"]
-            safety = headline_category_scores["safety"]
-            maintainability = headline_category_scores["maintainability"]
-            if stream_quality < headline_total * 0.8:
+        main_eval_total = sum(main_eval_category_scores.values())
+        if main_eval_total:
+            stream_quality = main_eval_category_scores["stream_quality"]
+            safety = main_eval_category_scores["safety"]
+            maintainability = main_eval_category_scores["maintainability"]
+            if stream_quality < main_eval_total * 0.8:
                 failures.append(
-                    "evals: headline suite should be primarily Stream-quality scoring "
-                    f"({stream_quality}/{headline_total})"
+                    "evals: main eval set should be primarily Stream-quality scoring "
+                    f"({stream_quality}/{main_eval_total})"
                 )
-            if safety < headline_total * 0.05:
+            if safety < main_eval_total * 0.05:
                 failures.append(
-                    "evals: headline suite needs enough safety-check scoring for compile/behavior "
-                    f"({safety}/{headline_total})"
+                    "evals: main eval set needs enough safety-check scoring for compile/behavior "
+                    f"({safety}/{main_eval_total})"
                 )
-            if maintainability < headline_total * 0.05:
+            if maintainability < main_eval_total * 0.05:
                 failures.append(
-                    "evals: headline suite needs enough maintainability scoring "
-                    f"({maintainability}/{headline_total})"
+                    "evals: main eval set needs enough maintainability scoring "
+                    f"({maintainability}/{main_eval_total})"
                 )
-            if maintainability > headline_total * 0.15:
+            if maintainability > main_eval_total * 0.15:
                 failures.append(
-                    "evals: headline maintainability scoring should not obscure skill behavior "
-                    f"({maintainability}/{headline_total})"
+                    "evals: main eval maintainability scoring should not obscure skill behavior "
+                    f"({maintainability}/{main_eval_total})"
                 )
 
     for path in paths:

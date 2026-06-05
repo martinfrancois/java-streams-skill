@@ -1,5 +1,5 @@
 {
-  "context": "Headline review: parallel streams with shared mutable HashMap state are unsafe; collectors should own accumulation.",
+  "context": "Main eval review: parallel streams with shared mutable HashMap state are unsafe; collectors should own accumulation.",
   "type": "weighted_checklist",
   "checklist": [
     {

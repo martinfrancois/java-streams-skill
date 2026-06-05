@@ -1,5 +1,5 @@
 {
-  "context": "Headline weighted explicit review: third-lowest without-context baseline in the all-eval run; parallelStream is a weak answer for blocking remote calls and Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
+  "context": "Main eval weighted explicit review: third-lowest without-context baseline in the all-eval run; parallelStream is a weak answer for blocking remote calls and Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -42,7 +42,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "review",
-    "headline_weight_multiplier": 3,
-    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_weight_multiplier": 3,
+    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "context": "Headline weighted implementation: selected because without-context missed the teeing criterion; covers Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
+  "context": "Main eval weighted implementation: selected because without-context missed the teeing criterion; covers Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -42,7 +42,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "implementation",
-    "headline_weight_multiplier": 2,
-    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_weight_multiplier": 2,
+    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

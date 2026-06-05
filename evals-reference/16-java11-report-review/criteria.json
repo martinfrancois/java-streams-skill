@@ -1,5 +1,5 @@
 {
-  "context": "Headline review: Stream.toList is Java 16+ and returns an unmodifiable list, so this Java 11 change is both incompatible and behavior-breaking.",
+  "context": "Main eval review: Stream.toList is Java 16+ and returns an unmodifiable list, so this Java 11 change is both incompatible and behavior-breaking.",
   "type": "weighted_checklist",
   "checklist": [
     {

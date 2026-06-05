@@ -54,8 +54,8 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 - `skills/java-streams/references/stream-examples.md` contains runtime-safe examples.
 - `skills/java-streams/references/java-stream-api.md` records Java-version compatibility guidance.
 - `docs/agents/` contains current maintainer policy and workflow guidance.
-- `evals/` contains the hosted Tessl headline benchmark used for lift reporting.
-- `evals-reference/` keeps extra regression scenarios that should not drive headline lift claims.
+- `evals/` contains the hosted Tessl main eval set used for lift reporting.
+- `evals-reference/` keeps extra regression scenarios that should not drive main eval lift claims.
 - `scripts/` contains portable validation checks used by CI.
 
 ## Local Checks
@@ -84,7 +84,7 @@ tessl plugin publish --dry-run --bump patch .
 ```
 
 Hosted evals require Tessl authentication and a linked Tessl project. Use Sonnet 4.6 for this
-repository's headline checks:
+repository's main eval checks:
 
 ```bash
 tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
@@ -113,18 +113,18 @@ Common types in this repository:
 
 ## Hosted Evals
 
-In this repository, the headline benchmark is the small main eval set in `evals/` used for public
-lift reporting. `evals-reference/` contains broader regression coverage that helps catch regressions
-but does not directly drive the main lift claim.
+In this repository, the main eval set lives in `evals/` and is used for public lift reporting.
+`evals-reference/` contains broader regression coverage that helps catch regressions but does not
+directly drive the main lift claim.
 
-The headline benchmark should stay focused on realistic tasks where context should improve stream
+The main eval set should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
 scenarios must not mention `$java-streams` or ask to use the skill. Explicit scenarios may name the
 skill and must be labeled as explicit in `criteria.json`.
 
-Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`. Headline
+Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`. Main eval
 implementation criteria must include compile/artifact checks and behavior correctness checks as
-safety checks, but the headline score should mainly measure stream-specific quality. Each headline
+safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
 
 Do not hide baseline-solved scenarios just to improve lift. Move them to `evals-reference/` when
