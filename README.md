@@ -169,7 +169,7 @@ This avoids `parallelStream()`, and it limits how many checks are active at once
 problems:
 
 - It submits one task for every product before it starts collecting results. With a large list, that
-  can queue too much work.
+  can create a large backlog of queued tasks even though only 8 checks run at once.
 - It returns `null` for products that are not in stock.
 - The `null` value hides the stock-check result, so the code is harder to understand and easier to
   break later.
@@ -191,7 +191,8 @@ List<Product> favoriteProducts(User user) {
 This version is clearer:
 
 - It keeps the limit of 8 checks inside the stream chain.
-- It uses the Java stream API made for bounded concurrent work.
+- It uses bounded concurrency with backpressure: keep only a limited amount of work in flight, then
+  start more work as earlier checks finish.
 - It keeps each product together with its stock-check result.
 - It filters and sorts in a clear order.
 

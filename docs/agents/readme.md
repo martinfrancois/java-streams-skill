@@ -23,6 +23,8 @@ wording.
   messages are fine.
 - When comparing bad and good code examples, use clear subheadings and bullet points so each reason
   belongs to the relevant example.
+- When explaining `Gatherers.mapConcurrent` for remote checks, mention bounded concurrency with
+  backpressure: keep limited work in flight and start more as earlier checks finish.
 - Avoid `pipeline` for Java stream code; use `stream chain`, `stream operation`, or more specific
   wording. Reserve `pipeline` for CI/release contexts.
 - Mention the JFokus reference source only as a public origin link.
