@@ -259,16 +259,16 @@ The evals check that agents:
 - respect Java-version differences such as `Optional::stream`, `takeWhile`, `mapMulti`,
   `Stream.toList()`, gatherers, and `Collectors.teeing`.
 
-Compile and behavior checks make regressions visible in the score, but the headline score is
-intentionally weighted toward stream quality: whether the agent keeps the same behavior while
-choosing the stream operation that best matches the job.
+Compile and behavior checks make regressions visible in the score, but the main score gives extra
+weight to stream quality: whether the agent keeps the same behavior while choosing the stream
+operation that best matches the job.
 
 Results should be read by subset:
 
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
 - stream-quality subtotal shows the skill-specific effect;
-- the focused headline suite reports the representative mix;
+- the main eval set reports the representative mix;
 - `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
   already solve.
 
