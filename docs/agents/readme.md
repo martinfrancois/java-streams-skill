@@ -29,7 +29,8 @@ wording.
   specific example.
 - Avoid `pipeline` for Java stream code; use `stream chain`, `stream operation`, or more specific
   wording. Reserve `pipeline` for CI/release contexts.
-- Mention the JFokus reference source only as a public origin link.
+- Mention the JFokus reference source only as a public origin link. Use the full name
+  `François Martin` in origin wording.
 - Do not include private run IDs, local paths, transcripts, tokens, or unpublished workspace data.
 
 ## References
