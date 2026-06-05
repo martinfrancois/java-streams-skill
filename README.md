@@ -170,9 +170,9 @@ problems:
 
 - It submits one task for every product before it starts collecting results. With a large list, that
   can create a large backlog of queued tasks even though only 8 checks run at once.
-- It returns `null` for products that are not in stock.
-- The `null` value hides the stock-check result, so the code is harder to understand and easier to
-  break later.
+- It uses `null` as a hidden signal for "not in stock." A reader has to remember that special
+  meaning until the later `filter(Objects::nonNull)`. If someone changes the stream chain before
+  that filter, the code can easily break.
 
 ### With The Skill: `Gatherers.mapConcurrent`
 
