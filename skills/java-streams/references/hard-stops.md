@@ -40,6 +40,8 @@ Fix these before finalizing:
   such as `AbstractMap.SimpleImmutableEntry` or a project type.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
+  For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
+  not add unrelated `groupingBy` null-key or collector-safety caveats.
 - Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
   `Collectors`, or `Gatherers`.
 
@@ -47,6 +49,8 @@ Fix these before finalizing:
 
 - Keep `findFirst()` when list order, configuration priority, chronological order, first fallback,
   or user-visible order matters.
+- For numeric priority sorted with `Comparator.comparing(...priority...)`, describe the contract
+  precisely, for example "lowest priority number wins" when natural ascending order is used.
 - Use `findAny()` only when all matches are equivalent. It is often fine after filtering a set of
   equivalent flags, IDs, or permissions.
 - `distinct().sorted()` is usually better than `sorted().distinct()` when duplicates can be removed
