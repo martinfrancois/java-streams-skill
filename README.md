@@ -240,14 +240,37 @@ Poor fit:
 
 ## How It's Evaluated
 
-The headline eval suite focuses on stream implementation, review, and cleanup tasks where the
-stream-specific context should make the agent better than the same agent without the skill. It
-includes natural activation prompts and explicit `Use $java-streams` prompts, with criteria weighted
-toward stream quality rather than just artifact creation.
+The skill is tested on Java stream implementation, review, and cleanup tasks. Each task is run
+without the skill and with the skill, then scored mainly on stream-specific quality, with compile and
+behavior checks included as safety checks.
 
-Reference evals cover the rest of the stream pattern catalog from the source material. Those
-scenarios are useful for regression and review, but they are not automatically promoted into the
-headline benchmark when the baseline model already solves them.
+The evals check that agents:
+
+- produce coherent Java for the stated Java version;
+- preserve outputs, ordering, null handling, duplicate-key behavior, and error behavior;
+- choose direct terminal operations such as `anyMatch`, `findFirst`, `min`, `max`, and primitive
+  `sum` instead of doing extra work first;
+- use collectors such as `joining`, `groupingBy`, `toMap`, `teeing`, and `partitioningBy` with the
+  right null and duplicate-key behavior;
+- keep `findFirst()` when order or priority matters, and use `findAny()` only when matches are
+  equivalent;
+- avoid casual `parallelStream()` changes for blocking calls or shared mutable state;
+- use bounded concurrent stream work for remote checks when the Java version supports it;
+- respect Java-version differences such as `Optional::stream`, `takeWhile`, `mapMulti`,
+  `Stream.toList()`, gatherers, and `Collectors.teeing`.
+
+Compile and behavior checks make regressions visible in the score, but the headline score is
+intentionally weighted toward stream quality: whether the agent keeps the same behavior while
+choosing the stream operation that best matches the job.
+
+Results should be read by subset:
+
+- natural activation scenarios do not name the skill;
+- explicit invocation scenarios directly ask for `$java-streams`;
+- stream-quality subtotal shows the skill-specific effect;
+- the focused headline suite reports the representative mix;
+- `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
+  already solve.
 
 ## Origin
 
