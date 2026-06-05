@@ -69,8 +69,10 @@ well, that code can look plausible in review. But looking plausible is not enoug
 still use the wrong kind of concurrency, build lists it does not need, use `null` as a hidden signal,
 fail when keys are duplicated, or choose a terminal operation that does not match the real intent.
 
-This skill helps the agent write stream code that is easier to read and safer to change. It also
-helps the agent review existing stream code and explain what should be fixed.
+This skill helps the agent write stream code that is easier to read, safer to change, and often more
+efficient. It pushes the agent toward the stream operation that matches the job, such as `anyMatch`
+instead of collecting a list just to check if a match exists. It also helps the agent review existing
+stream code and explain what should be fixed.
 
 For example, imagine code that checks a user's favorite products against a remote inventory API.
 That API call blocks while it waits for the remote service. The code should:
