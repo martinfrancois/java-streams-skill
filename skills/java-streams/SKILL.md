@@ -1,7 +1,7 @@
 ---
 name: java-streams
 license: MIT
-description: Write, review, and refactor Java Stream and Collector code using best practices, improving readability and performance while avoiding common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, and careless findFirst/findAny or parallelStream changes. Use whenever writing, reviewing, or refactoring Java code that uses streams, collectors, primitive streams, Optional-producing stream terminals, map/flatMap/mapMulti, grouping, joining, distinct, sorted, limit, takeWhile/dropWhile, teeing, partitioningBy, summarizing, or parallel stream behavior.
+description: Write, review, and refactor Java Stream and Collector code using best practices, improving readability and performance while avoiding common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, and careless findFirst/findAny or parallelStream changes. Use whenever writing, reviewing, or refactoring Java code that uses streams, collectors, primitive streams, Optional-producing stream terminal operations, map/flatMap/mapMulti, grouping, joining, distinct, sorted, limit, takeWhile/dropWhile, teeing, partitioningBy, summarizing, or parallel stream behavior.
 ---
 
 # Java Streams Skill
@@ -37,11 +37,13 @@ are equivalent.
    - existence: `anyMatch`, `noneMatch`, or `allMatch`;
    - transformed list/set: `map`/`filter` then collect;
    - concatenated text: `Collectors.joining`;
-   - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive terminals;
+   - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive stream terminal
+     operations;
    - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
      explicit merge/null handling.
-2. Prefer terminals that encode intent directly: `anyMatch` for existence, `count` for numeric counts,
-   `joining` for text, `min`/`max` for extremes, and primitive terminals for primitive totals.
+2. Prefer stream terminal operations that encode intent directly: `anyMatch` for existence, `count`
+   for numeric counts, `joining` for text, `min`/`max` for extremes, and primitive stream terminal
+   operations for primitive totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, consider
    `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
@@ -61,3 +63,13 @@ are equivalent.
    parallel-safety, and Java-baseline compatibility. Run the marker scan from
    [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
    a scan. Fix relevant hits and re-scan.
+
+Quick examples:
+
+```java
+boolean hasOutOfStock = products.stream()
+        .anyMatch(product -> product.stock() == 0);
+
+Optional<Product> newest = products.stream()
+        .max(Comparator.comparing(Product::updatedAt));
+```

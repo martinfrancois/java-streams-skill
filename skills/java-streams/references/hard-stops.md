@@ -1,7 +1,8 @@
 # Java Stream Hard Stops
 
 Use this reference before finalizing Java stream cleanup or first-pass implementation when the code
-touches stream terminals, collectors, ordering, primitive aggregation, null sorting, or parallelism.
+touches stream terminal operations, collectors, ordering, primitive aggregation, null sorting, or
+parallelism.
 
 ## Replacement Antipatterns
 
@@ -58,13 +59,13 @@ Use parallel streams only after checking:
 
 1. Work per element is CPU-heavy enough to amortize split/merge overhead.
 2. Operations are stateless and non-interfering.
-3. Encounter order is not required, or the ordered terminal is still worth the cost.
+3. Encounter order is not required, or the ordered stream terminal operation is still worth the cost.
 4. The pipeline does not perform blocking IO or remote calls. For Java 24+ blocking per-element
    calls, consider `Gatherers.mapConcurrent` only when the baseline supports it and virtual-thread
    concurrency is the intended design. Preserve element/result association explicitly with
    a baseline-compatible holder rather than null sentinels or side maps. For remote calls, call out
    the concurrency limit, timeout handling for slow calls, and error propagation/retry policy.
-5. The terminal/collector is safe under parallel execution.
+5. The stream terminal operation or collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked
 because fork-join splitting, merging, and common-pool contention can outweigh the gain.

@@ -11,9 +11,9 @@ numeric reductions, changes `findFirst()` to `findAny()` without noticing the or
 adds `parallelStream()` where it makes the code slower or less predictable.
 
 This skill gives the agent a compact decision guide before it writes or changes stream code: choose
-the terminal that matches the result, preserve ordering and null behavior, pick collectors by map
-semantics, use primitive streams for primitive totals, and treat parallel streams as a design choice
-rather than a default optimization.
+the stream terminal operation that matches the result, preserve ordering and null behavior, pick
+collectors by map semantics, use primitive streams for primitive totals, and treat parallel streams
+as a design choice rather than a default optimization.
 
 It also tells the agent to check the project Java version first. The right stream code for Java 8
 may be different from the right code for Java 17, Java 21, or Java 24.
@@ -40,7 +40,7 @@ Agents that support skill auto-selection, such as
 task or code context. The task does not need to say `stream` by name.
 
 It can trigger when Java code uses streams, collectors, primitive streams, `findFirst()` /
-`findAny()`, match terminals, `flatMap`, `mapMulti`, `joining`, `min` / `max`, `sum`,
+`findAny()`, match terminal operations, `flatMap`, `mapMulti`, `joining`, `min` / `max`, `sum`,
 `groupingBy`, `toMap`, `partitioningBy`, `teeing`, `takeWhile` / `dropWhile`, or parallel stream
 behavior.
 
@@ -73,7 +73,7 @@ Common failures include:
 - using `count() > 0` instead of `anyMatch(...)`;
 - using `sorted(...).findFirst()` instead of `min(...)` or `max(...)`;
 - mapping to a list and then calling `String.join(...)` instead of using `Collectors.joining(...)`;
-- using boxed `reduce(...)` where a primitive stream terminal is clearer;
+- using boxed `reduce(...)` where a primitive stream terminal operation is clearer;
 - building nested sets or lists inside a `map(...)`, then flattening afterward;
 - using `toMap(...)` without a merge function when duplicate keys are possible;
 - forgetting that natural sorting throws when `null` reaches the comparator;
@@ -91,7 +91,8 @@ List<Item> outOfStock = order.getItems().stream()
 return !outOfStock.isEmpty();
 ```
 
-With this skill, the agent is pushed toward the terminal operation that says what the code means:
+With this skill, the agent is pushed toward the stream terminal operation that says what the code
+means:
 
 ```java
 return order.getItems().stream()
@@ -110,7 +111,7 @@ Good fit:
 - using `flatMap` for nested collections and `Optional::stream` for `Stream<Optional<T>>`;
 - using `Collectors.joining`, `groupingBy`, `mapping`, `counting`, `summing*`,
   `summarizing*`, `partitioningBy`, `toMap`, and `teeing` correctly;
-- selecting primitive streams and primitive terminals for primitive aggregation;
+- selecting primitive streams and primitive stream terminal operations for primitive aggregation;
 - avoiding null-sensitive sorting and duplicate-key `toMap` failures;
 - deciding whether `parallelStream()` is actually appropriate;
 - choosing Java-version-compatible APIs such as `takeWhile`, `mapMulti`, `Stream.toList()`, and

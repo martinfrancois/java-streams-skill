@@ -9,13 +9,14 @@ guidance, or auto-selection wording.
 
 - The skill should not require users to explicitly type `$java-streams` every time.
 - Metadata should let agents auto-select it for Java tasks involving streams, collectors, primitive
-  streams, stream terminals, `findFirst`, `findAny`, `anyMatch`, `noneMatch`, `allMatch`, `flatMap`,
+  streams, stream terminal operations, `findFirst`, `findAny`, `anyMatch`, `noneMatch`, `allMatch`,
+  `flatMap`,
   `mapMulti`, `joining`, `min`, `max`, `sum`, `groupingBy`, `toMap`, `partitioningBy`, `teeing`,
   `takeWhile`, `dropWhile`, `parallelStream`, and stream Java-version compatibility.
 - Skill guidance must start by detecting the project Java baseline before selecting stream,
   collector, record, pattern matching, or gatherer APIs.
 - Cover every JFokus reference pattern in runtime guidance or eval coverage:
-  `findAny`/`findFirst`, match terminals, `flatMap`, `Optional::stream`, `joining`, `min`/`max`,
+  `findAny`/`findFirst`, match terminal operations, `flatMap`, `Optional::stream`, `joining`, `min`/`max`,
   primitive ranges, `reduce`, primitive `sum`, `parallelStream`, `sorted`, gatherers, `limit`,
   `count`, `distinct`, `toSet`, `toMap`, `groupingBy`, `mapping`, `counting`, `mapMulti`,
   `summing*`/`averaging*`, `summarizing*`, `partitioningBy`, `teeing`, and `takeWhile`/`dropWhile`.

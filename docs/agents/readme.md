@@ -11,7 +11,8 @@ wording.
 - Keep the README user-focused. Put contributor workflow details in `CONTRIBUTING.md` or
   `docs/agents/`.
 - The first screen should explain the practical failure mode: agents use streams but choose weak
-  terminals, collectors, ordering, primitive aggregation, null handling, or parallelism.
+  stream terminal operations, collectors, ordering, primitive aggregation, null handling, or
+  parallelism.
 - The README may say agents that support skill auto-selection, such as Codex and Claude Code, can
   select the skill from context.
 - Install examples should use `martinfrancois/java-streams`.

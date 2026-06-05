@@ -16,9 +16,9 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | `findFirst`, `findAny` | 8 | `findFirst` preserves encounter-order semantics; `findAny` is for equivalent matches. |
 | `anyMatch`, `noneMatch`, `allMatch` | 8 | Short-circuit existence/universal checks. |
 | `min`, `max` | 8 | Prefer over sorting the whole stream for one extreme. |
-| `reduce` | 8 | Good for immutable non-primitive accumulation; use primitive terminals for primitive totals. |
+| `reduce` | 8 | Good for immutable non-primitive accumulation; use primitive stream terminal operations for primitive totals. |
 | `sorted`, `distinct`, `limit`, `skip`, `count` | 8 | Respect ordering and null behavior. |
-| `IntStream`, `LongStream`, `DoubleStream` | 8 | Use primitive terminals such as `sum`, `average`, `min`, `max`, `summaryStatistics`. |
+| `IntStream`, `LongStream`, `DoubleStream` | 8 | Use primitive stream terminal operations such as `sum`, `average`, `min`, `max`, `summaryStatistics`. |
 | `IntStream.range`, `rangeClosed`, `mapToObj` | 8 | Good for index/range object creation. |
 | `Stream.ofNullable` | 9 | Nullable-to-stream bridge. |
 | `takeWhile`, `dropWhile` | 9 | Prefix operations on ordered streams; not general filters. |
@@ -32,7 +32,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | API or feature | Minimum Java | Notes |
 | --- | ---: | --- |
 | `Collectors.toList`, `toSet` | 8 | `toList` mutability is unspecified; use explicit collection if required. |
-| `Collectors.joining` | 8 | Join mapped text in one terminal. |
+| `Collectors.joining` | 8 | Join mapped text in one stream terminal operation. |
 | `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Default map results may preserve a null key, but null values are rejected; preserve the existing null contract explicitly. |
 | `Collectors.groupingBy` | 8 | Key maps to a list or downstream aggregate. Null classifier keys are not accepted. |
 | `Collectors.mapping` | 8 | Project values inside downstream collectors. |
