@@ -11,7 +11,10 @@ topics.
 - Current preferred shape: "Help AI coding agents use Java Streams and Collectors well in new code,
   review, and cleanup without replacing one antipattern with another."
 - Keep the GitHub repository private until the maintainer explicitly says to make it public.
-- Keep `.tessl-plugin/plugin.json` private until the maintainer says to publish publicly.
+- For OSS-readiness work, `.tessl-plugin/plugin.json` should be public-ready with
+  `"private": false`; this does not publish the plugin by itself.
+- Do not run a real `tessl plugin publish` or make the GitHub repository public until the
+  maintainer explicitly asks for that release step.
 - Use the maximum useful number of relevant discoverability topics when the repo becomes public.
 - Before calling the repo OSS-ready, check for a license, no private/secret references, a
   user-focused README, contributor docs, passing lint, and benchmark claims that match current

@@ -41,6 +41,8 @@ release-readiness.
   `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
 - Keep the GitHub repository private until the maintainer explicitly asks to make it public. Still
   keep docs, metadata, license, security policy, and contribution workflow open-source ready.
+- Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real
+  Tessl publish unless the maintainer explicitly asks for publication.
 - For maintainer-requested automation tasks where the user has asked for GitHub state, commit and
   push finished changes.
 
