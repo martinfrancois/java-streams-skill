@@ -64,10 +64,16 @@ Use $java-streams to review this Java stream code and suggest any fixes.
 
 ## Why This Exists
 
-The motivation is AI-written Java code that technically uses streams, but misses what streams are
-good at expressing. In the favorite-products stock-check eval, the task was to keep user favorites in
-preference order for checking, call a blocking remote inventory API, allow at most 8 checks at the
-same time, return only in-stock products, and sort the final result by product name.
+AI is good at making Java code look modern. That is exactly the problem: stream-shaped code can pass
+a quick review while still hiding the wrong concurrency model, unnecessary intermediate collections,
+fragile null sentinels, duplicate-key crashes, or a terminal operation that says less than the
+pipeline actually means. This skill exists to push agents past "uses streams" and toward stream code
+that expresses the operation directly, keeps behavior visible, and uses the Java version's best
+available APIs.
+
+In the favorite-products stock-check eval, the task was to keep user favorites in preference order
+for checking, call a blocking remote inventory API, allow at most 8 checks at the same time, return
+only in-stock products, and sort the final result by product name.
 
 Unassisted outputs produced shapes like this for the blocking remote call:
 
