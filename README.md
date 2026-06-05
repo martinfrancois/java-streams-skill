@@ -75,7 +75,8 @@ For example, when checking a user's favorite products against a blocking remote 
 code needs to keep favorites in preference order for checking, allow at most 8 checks at the same
 time, return only in-stock products, and sort the final result by product name.
 
-Two unassisted shapes look plausible at first glance, but both miss the important part.
+Generating that code without the skill resulted in two different implementations that look
+plausible at first glance, but both miss the important part.
 
 First, adding `parallelStream()` makes the code look like a small stream improvement:
 
