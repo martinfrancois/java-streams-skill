@@ -24,6 +24,8 @@ guidance, or auto-selection wording.
   ordering or priority contract depends on the first match.
 - Keep `parallelStream()` guidance defensive. It should require CPU-bound stateless work, enough
   data, no blocking IO, no unsafe shared mutable state, and collector safety.
+- Avoid `pipeline` for Java stream behavior; use `stream chain`, `stream operation`, or more specific
+  wording. Reserve `pipeline` for CI/release contexts.
 - The skill should not force streams over clear stateful loops. Stateful sequence output, checked IO,
   prompts, mutation-heavy code, or complex early exits can remain imperative.
 - Runtime references must not contain eval answer keys, scenario inventories, hosted run IDs, or
