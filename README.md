@@ -64,21 +64,26 @@ Use $java-streams to review this Java stream code and suggest any fixes.
 
 ## Why This Exists
 
-AI is good at making Java code look modern. That is exactly the problem: stream-shaped code can pass
-a quick review while still hiding the wrong concurrency model, unnecessary intermediate collections,
-fragile null sentinels, duplicate-key crashes, or a terminal operation that says less than the
-pipeline actually means. This skill exists to push agents past "uses streams" and toward stream code
-that expresses the operation directly, keeps behavior visible, and uses the Java version's best
-available APIs.
+AI can write Java code that looks modern because it uses streams. But looking modern is not enough.
+The code can still use the wrong kind of concurrency, build lists it does not need, use `null` as a
+hidden signal, fail when keys are duplicated, or choose a terminal operation that does not match the
+real intent.
 
-For example, when checking a user's favorite products against a blocking remote inventory API, the
-code needs to keep favorites in preference order for checking, allow at most 8 checks at the same
-time, return only in-stock products, and sort the final result by product name.
+This skill helps the agent write stream code that is easier to read and safer to change. It also
+helps the agent review existing stream code and explain what should be fixed.
 
-Generating that code without the skill resulted in two different implementations that look
-plausible at first glance, but both miss the important part.
+For example, imagine code that checks a user's favorite products against a remote inventory API.
+That API call blocks while it waits for the remote service. The code should:
 
-First, adding `parallelStream()` makes the code look like a small stream improvement:
+- check products in the user's favorite order;
+- run at most 8 stock checks at the same time;
+- keep only products that are in stock;
+- sort the final result by product name.
+
+Without the skill, the generated code used two different approaches. Both looked reasonable at
+first, but both had important problems.
+
+First, one version used `parallelStream()`:
 
 ```java
 private static final Semaphore STOCK_CHECKS = new Semaphore(8);
@@ -101,13 +106,12 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This preserves the basic filter-and-sort behavior, but it is a weak answer: `parallelStream()` uses
-the common fork-join pool, which is not the right default for blocking remote calls, and the static
-semaphore is shared across requests instead of making the per-operation limit visible in the
-pipeline.
+This keeps the basic filter and sort behavior. But it is still not a good solution.
+`parallelStream()` uses Java's common fork-join pool. That pool is not a good default for blocking
+remote API calls. The static semaphore is also shared by all requests, so the limit is not clearly
+part of this one operation.
 
-Second, using virtual threads and a semaphore avoids `parallelStream()`, but can still hide the same
-design problem:
+Second, another version used virtual threads and a semaphore:
 
 ```java
 List<Product> favoriteProducts(User user) {
@@ -142,11 +146,12 @@ private static Product getUnchecked(Future<Product> future) {
 }
 ```
 
-That version bounds active calls, but it submits one task for every product up front, so large inputs
-still create unbounded fan-out pressure. It also encodes "not in stock" as `null`, which hides the
-relationship between each product and its stock-check result.
+This avoids `parallelStream()`, and it limits how many checks are active at once. But it still
+submits one task for every product before it starts collecting results. With a large list, that can
+queue too much work. It also returns `null` for products that are not in stock. That makes the code
+harder to understand, because the stock-check result is hidden inside a `null` value.
 
-With the skill, the same problem is guided toward the Java 24 stream-native shape:
+With the skill, the same problem is guided toward a clearer Java 24 stream version:
 
 ```java
 List<Product> favoriteProducts(User user) {
@@ -160,11 +165,11 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This keeps the concurrency limit local and explicit, uses the stream API designed for bounded
-concurrent per-element work, carries each product with its stock-check result, and keeps the final
-filter/map/sort pipeline readable.
+This version keeps the limit of 8 checks inside the pipeline. It uses the Java stream API made for
+bounded concurrent work. It keeps each product together with its stock-check result, then filters and
+sorts in a clear order.
 
-Other stream failure modes this skill targets include:
+The skill also helps with common stream mistakes such as:
 
 - collecting filtered elements into a list, then checking `isEmpty()` or reading the first item;
 - using `count() > 0` instead of `anyMatch(...)`;
@@ -177,8 +182,8 @@ Other stream failure modes this skill targets include:
 - making casual `parallelStream()` changes without checking data size, CPU cost, shared state,
   ordering, or blocking IO.
 
-The goal is not to force every loop into a stream. The goal is to use streams and collectors when
-they make the operation clearer, safer, or easier to verify.
+The goal is not to turn every loop into a stream. The goal is to use streams and collectors when
+they make the code clearer, safer, or easier to check.
 
 ## What It Helps With
 
