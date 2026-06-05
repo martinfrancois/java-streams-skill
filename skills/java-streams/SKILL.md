@@ -46,9 +46,9 @@ are equivalent.
    for numeric counts, `joining` for text, `min`/`max` for extremes, and primitive stream terminal
    operations for primitive totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
-   `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, consider
-   `mapMulti` only when it makes a small zero-or-one/one-to-few transformation clearer or avoids
-   many tiny stream allocations.
+   `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, prefer
+   `mapMulti` with pattern matching for mixed subtype filtering or small conditional
+   zero-or-one/one-to-few emission when it keeps the pipeline clearer.
 4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
    op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
@@ -68,7 +68,8 @@ are equivalent.
 For review artifacts, stay concise by default. If the user asks for a short review or decision,
 lead with accept/reject, list only the behavior-preserving stream issues, and show one safer shape
 when useful. Run the scan as workflow, but do not print scan headers, scan tables, or broad
-collector commentary unless the task asks for scan documentation or a general audit.
+collector commentary unless the task asks for scan documentation or a general audit. Do not critique
+unchanged original code in a short review unless that critique is required to explain the decision.
 
 Quick examples:
 
