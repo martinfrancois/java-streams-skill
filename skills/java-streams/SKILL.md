@@ -67,8 +67,8 @@ are equivalent.
 
 For review artifacts, stay concise by default. If the user asks for a short review or decision,
 lead with accept/reject, list only the behavior-preserving stream issues, and show one safer shape
-when useful. Avoid extra summary tables or broad collector commentary unless the task asks for a
-general audit.
+when useful. Run the scan as workflow, but do not print scan headers, scan tables, or broad
+collector commentary unless the task asks for scan documentation or a general audit.
 
 Quick examples:
 
