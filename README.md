@@ -123,8 +123,8 @@ This keeps the basic filter and sort behavior, but it is still not a good soluti
 
 - `parallelStream()` uses Java's common fork-join pool. The
   [`ForkJoinPool` Javadoc](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/concurrent/ForkJoinPool.html)
-  says blocked I/O is not guaranteed to be compensated for, so that pool is a poor default for
-  remote API calls.
+  says the pool can adjust its worker threads in some cases, but those adjustments are not
+  guaranteed for blocked I/O. That makes it a poor default for blocking remote API calls.
 - In this example, the limit is per call to `favoriteProducts(user)`. The static semaphore is shared
   by every call to the method, so two users calling it at the same time can block each other even
   though each call is allowed to run up to 8 stock checks.
