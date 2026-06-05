@@ -65,9 +65,60 @@ Use $java-streams to review this Java stream code and suggest any fixes.
 ## Why This Exists
 
 The motivation is AI-written Java code that technically uses streams, but misses what streams are
-good at expressing.
+good at expressing. In the favorite-products stock-check eval, the task was to keep user favorites in
+preference order for checking, call a blocking remote inventory API, allow at most 8 checks at the
+same time, return only in-stock products, and sort the final result by product name.
 
-Stream failure modes this skill targets include:
+Unassisted outputs produced shapes like this for the blocking remote call:
+
+```java
+private static final Semaphore STOCK_CHECKS = new Semaphore(8);
+
+List<Product> favoriteProducts(User user) {
+    return user.favoriteProducts().parallelStream()
+            .filter(product -> {
+                try {
+                    STOCK_CHECKS.acquire();
+                    return InventoryApi.check(product.sku());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                } finally {
+                    STOCK_CHECKS.release();
+                }
+            })
+            .sorted(Comparator.comparing(Product::name))
+            .toList();
+}
+```
+
+This preserves the basic filter-and-sort behavior, but it is a weak stream answer: `parallelStream()`
+uses the common fork-join pool, which is not the right default for blocking remote calls, and the
+static semaphore is shared state across requests rather than a clear per-operation concurrency limit.
+Other unassisted runs avoided `parallelStream()` but still submitted one virtual-thread task per
+product up front, blocked those tasks on a semaphore, and returned `null` for out-of-stock products.
+That bounds execution, but still creates unbounded fan-out pressure and hides the product/check
+association behind a null sentinel.
+
+With the skill, the same task is guided toward the Java 24 stream-native shape:
+
+```java
+List<Product> favoriteProducts(User user) {
+    return user.favoriteProducts().stream()
+            .gather(Gatherers.mapConcurrent(8,
+                    product -> Map.entry(product, InventoryApi.check(product.sku()))))
+            .filter(Map.Entry::getValue)
+            .map(Map.Entry::getKey)
+            .sorted(Comparator.comparing(Product::name))
+            .toList();
+}
+```
+
+This keeps the concurrency limit local and explicit, uses the stream API designed for bounded
+concurrent per-element work, carries each product with its stock-check result, and keeps the final
+filter/map/sort pipeline readable.
+
+Other stream failure modes this skill targets include:
 
 - collecting filtered elements into a list, then checking `isEmpty()` or reading the first item;
 - using `count() > 0` instead of `anyMatch(...)`;
@@ -79,25 +130,6 @@ Stream failure modes this skill targets include:
 - forgetting that natural sorting throws when `null` reaches the comparator;
 - making casual `parallelStream()` changes without checking data size, CPU cost, shared state,
   ordering, or blocking IO.
-
-## What Good Looks Like
-
-Without this skill, an agent may write stream code that works but hides the intent:
-
-```java
-List<Item> outOfStock = order.getItems().stream()
-        .filter(item -> item.getStock() == 0)
-        .collect(Collectors.toList());
-return !outOfStock.isEmpty();
-```
-
-With this skill, the agent is pushed toward the stream terminal operation that says what the code
-means:
-
-```java
-return order.getItems().stream()
-        .anyMatch(item -> item.getStock() == 0);
-```
 
 The goal is not to force every loop into a stream. The goal is to use streams and collectors when
 they make the operation clearer, safer, or easier to verify.
@@ -123,41 +155,6 @@ Poor fit:
 - replacing straightforward stateful loops with hard-to-read stream tricks;
 - large API redesigns or new dependencies without maintainer agreement;
 - changing business behavior just to make code look more functional.
-
-## Examples
-
-Newest order:
-
-```java
-Optional<Order> newestOrder = orders.stream()
-        .max(Comparator.comparing(Order::createdAt));
-```
-
-Product categories:
-
-```java
-String categories = products.stream()
-        .map(Product::category)
-        .collect(Collectors.joining(", "));
-```
-
-Cheapest product per category:
-
-```java
-Map<String, Product> cheapestByCategory = products.stream()
-        .collect(Collectors.toMap(
-                Product::category,
-                Function.identity(),
-                BinaryOperator.minBy(Comparator.comparing(Product::price))));
-```
-
-Item quantity summary:
-
-```java
-IntSummaryStatistics stats = orders.stream()
-        .flatMap(order -> order.items().stream())
-        .collect(Collectors.summarizingInt(Item::quantity));
-```
 
 ## How It's Evaluated
 
