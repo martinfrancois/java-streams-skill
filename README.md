@@ -85,7 +85,7 @@ That API call blocks while it waits for the remote service. The code should:
 Without the skill, the generated code used two different approaches. Both looked reasonable at
 first, but both had important problems.
 
-First, one version used `parallelStream()`:
+### Version 1: `parallelStream()`
 
 ```java
 private static final Semaphore STOCK_CHECKS = new Semaphore(8);
@@ -108,14 +108,17 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This keeps the basic filter and sort behavior. But it is still not a good solution.
-`parallelStream()` uses Java's common fork-join pool. That pool is not a good default for blocking
-remote API calls. In this example, the limit is per call to `favoriteProducts(user)`. The static
-semaphore is shared by every call to the method, so two users calling it at the same time can block
-each other even though each call is allowed to run up to 8 stock checks. The limit is also separate
-from the stream chain, which makes the code harder to reason about.
+This keeps the basic filter and sort behavior, but it is still not a good solution:
 
-Second, another version used virtual threads and a semaphore:
+- `parallelStream()` uses Java's common fork-join pool. That pool is not a good default for blocking
+  remote API calls.
+- In this example, the limit is per call to `favoriteProducts(user)`. The static semaphore is shared
+  by every call to the method, so two users calling it at the same time can block each other even
+  though each call is allowed to run up to 8 stock checks.
+- The concurrency limit is separate from the stream chain, which makes the code harder to reason
+  about.
+
+### Version 2: Virtual Threads And A Semaphore
 
 ```java
 List<Product> favoriteProducts(User user) {
@@ -150,12 +153,16 @@ private static Product getUnchecked(Future<Product> future) {
 }
 ```
 
-This avoids `parallelStream()`, and it limits how many checks are active at once. But it still
-submits one task for every product before it starts collecting results. With a large list, that can
-queue too much work. It also returns `null` for products that are not in stock. That makes the code
-harder to understand, because the stock-check result is hidden inside a `null` value.
+This avoids `parallelStream()`, and it limits how many checks are active at once. But it still has
+problems:
 
-With the skill, the same problem is guided toward a clearer Java 24 stream version:
+- It submits one task for every product before it starts collecting results. With a large list, that
+  can queue too much work.
+- It returns `null` for products that are not in stock.
+- The `null` value hides the stock-check result, so the code is harder to understand and easier to
+  break later.
+
+### With The Skill: `Gatherers.mapConcurrent`
 
 ```java
 List<Product> favoriteProducts(User user) {
@@ -169,9 +176,12 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This version keeps the limit of 8 checks inside the stream chain. It uses the Java stream API made for
-bounded concurrent work. It keeps each product together with its stock-check result, then filters and
-sorts in a clear order.
+This version is clearer:
+
+- It keeps the limit of 8 checks inside the stream chain.
+- It uses the Java stream API made for bounded concurrent work.
+- It keeps each product together with its stock-check result.
+- It filters and sorts in a clear order.
 
 The skill also helps with common stream mistakes such as:
 
