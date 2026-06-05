@@ -65,6 +65,11 @@ are equivalent.
    [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
    a scan. Fix relevant hits and re-scan.
 
+For review artifacts, stay concise by default. If the user asks for a short review or decision,
+lead with accept/reject, list only the behavior-preserving stream issues, and show one safer shape
+when useful. Avoid extra summary tables or broad collector commentary unless the task asks for a
+general audit.
+
 Quick examples:
 
 ```java
