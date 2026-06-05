@@ -120,7 +120,9 @@ List<Product> favoriteProducts(User user) {
 
 This keeps the basic filter and sort behavior, but it is still not a good solution:
 
-- `parallelStream()` uses Java's common fork-join pool. That pool is not a good default for blocking
+- `parallelStream()` uses Java's common fork-join pool. The
+  [`ForkJoinPool` Javadoc](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/concurrent/ForkJoinPool.html)
+  says blocked I/O is not guaranteed to be compensated for, so that pool is a poor default for
   remote API calls.
 - In this example, the limit is per call to `favoriteProducts(user)`. The static semaphore is shared
   by every call to the method, so two users calling it at the same time can block each other even
