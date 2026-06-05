@@ -4,7 +4,7 @@
   "checklist": [
     {
       "name": "Creates coherent Java 17 artifact",
-      "category": "maintainability",
+      "category": "safety",
       "max_score": 10,
       "description": "Creates PriceRangeAndPackets.java with requested methods and records."
     },
@@ -31,6 +31,12 @@
       "category": "stream_quality",
       "max_score": 40,
       "description": "Uses dropWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-skipping loop, not a filter that removes later healthy packets."
+    },
+    {
+      "name": "Keeps implementation focused",
+      "category": "maintainability",
+      "max_score": 15,
+      "description": "Keeps the implementation focused on the requested stream helpers without unrelated abstractions, caching, concurrency, or API redesign."
     }
   ],
   "metadata": {
