@@ -1,40 +1,42 @@
 {
-  "context": "Reference coverage for Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
+  "context": "Headline weighted implementation: selected because without-context missed the teeing criterion; covers Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
   "type": "weighted_checklist",
   "checklist": [
     {
       "name": "Creates coherent Java 17 artifact",
-      "category": "safety",
-      "max_score": 5,
+      "category": "maintainability",
+      "max_score": 10,
       "description": "Creates PriceRangeAndPackets.java with requested methods and records."
     },
     {
       "name": "Uses teeing for price range",
       "category": "stream_quality",
-      "max_score": 30,
+      "max_score": 60,
       "description": "Uses Collectors.teeing with minBy and maxBy by Product::price, or an equivalent single-pass pair reduction."
     },
     {
       "name": "Handles empty price range",
       "category": "safety",
-      "max_score": 10,
+      "max_score": 20,
       "description": "Returns a Pair whose left and right are null for an empty product list."
     },
     {
       "name": "Uses takeWhile for before-spike prefix",
       "category": "stream_quality",
-      "max_score": 20,
+      "max_score": 40,
       "description": "Uses takeWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-preserving loop, not filter."
     },
     {
       "name": "Uses dropWhile for after-prefix remainder",
       "category": "stream_quality",
-      "max_score": 20,
+      "max_score": 40,
       "description": "Uses dropWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-skipping loop, not a filter that removes later healthy packets."
     }
   ],
   "metadata": {
     "invocation": "explicit",
-    "task_type": "implementation"
+    "task_type": "implementation",
+    "headline_weight_multiplier": 2,
+    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }

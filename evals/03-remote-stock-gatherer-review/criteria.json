@@ -1,46 +1,48 @@
 {
-  "context": "Headline explicit review: parallelStream is a weak answer for blocking remote calls; Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
+  "context": "Headline weighted explicit review: third-lowest without-context baseline in the all-eval run; parallelStream is a weak answer for blocking remote calls and Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
   "type": "weighted_checklist",
   "checklist": [
     {
       "name": "Creates review artifact",
       "category": "safety",
-      "max_score": 5,
+      "max_score": 15,
       "description": "Creates review.md with a clear decision and recommendation."
     },
     {
       "name": "Preserves required output behavior",
       "category": "safety",
-      "max_score": 10,
+      "max_score": 30,
       "description": "Recognizes that the final product list must still contain only in-stock favorites sorted by Product::name."
     },
     {
       "name": "Rejects parallelStream for blocking IO",
       "category": "stream_quality",
-      "max_score": 25,
+      "max_score": 75,
       "description": "Rejects the proposed parallelStream change and explains that it uses the common fork-join pool, remains blocking, and is not the right default for remote API calls."
     },
     {
       "name": "Recommends bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
-      "max_score": 40,
+      "max_score": 120,
       "description": "Recommends a Java 24 Gatherers.mapConcurrent pipeline with an explicit concurrency bound for the blocking stock checks."
     },
     {
       "name": "Shows a safe stream shape",
       "category": "stream_quality",
-      "max_score": 15,
+      "max_score": 45,
       "description": "Describes or sketches carrying Product with the stock-check result, filtering by that result, mapping back to Product, sorting by name, and collecting with toList."
     },
     {
       "name": "Review is concise and actionable",
       "category": "maintainability",
-      "max_score": 5,
+      "max_score": 15,
       "description": "Keeps the review focused on the stream/concurrency decision and gives a concrete path forward."
     }
   ],
   "metadata": {
     "invocation": "explicit",
-    "task_type": "review"
+    "task_type": "review",
+    "headline_weight_multiplier": 3,
+    "headline_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
   }
 }
