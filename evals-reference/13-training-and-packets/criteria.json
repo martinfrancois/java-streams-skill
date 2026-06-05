@@ -24,7 +24,7 @@
       "name": "Uses mapMulti or equivalent conditional emission cleanly",
       "category": "stream_quality",
       "max_score": 30,
-      "description": "Uses Java 17 mapMulti with pattern matching for Developer, or gives full credit for an equivalently concise filter/cast/map pipeline, without unsafe casts before type checks. A cast after a verified instanceof/Class::isInstance filter is acceptable. Do not deduct merely because the safe equivalent does not use mapMulti, does not reuse a pattern variable, or uses an explicit safe cast in the following map step."
+      "description": "Uses Java 17 mapMulti with pattern matching for Developer, or gives full credit for an equivalently concise filter/cast/map stream chain, without unsafe casts before type checks. A cast after a verified instanceof/Class::isInstance filter is acceptable. Do not deduct merely because the safe equivalent does not use mapMulti, does not reuse a pattern variable, or uses an explicit safe cast in the following map step."
     },
     {
       "name": "Uses takeWhile for prefix semantics",

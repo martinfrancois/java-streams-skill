@@ -18,7 +18,7 @@
       "name": "Uses bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
       "max_score": 180,
-      "description": "Uses Gatherers.mapConcurrent with an explicit max concurrency no greater than 8 to perform the blocking InventoryApi.check calls inside the stream pipeline."
+      "description": "Uses Gatherers.mapConcurrent with an explicit max concurrency no greater than 8 to perform the blocking InventoryApi.check calls inside the stream chain."
     },
     {
       "name": "Carries product with stock result",

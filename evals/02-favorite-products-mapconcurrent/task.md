@@ -17,7 +17,7 @@ Rules:
   in-flight `InventoryApi.check(...)` calls at the same time.
 - Return only products that are in stock.
 - Sort the returned products by `Product::name`.
-- Use Java stream APIs for the pipeline.
+- Use Java stream APIs for the operation.
 
 Use these nested types:
 

@@ -24,7 +24,7 @@
       "name": "Recommends bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
       "max_score": 120,
-      "description": "Recommends a Java 24 Gatherers.mapConcurrent pipeline with an explicit concurrency bound for the blocking stock checks."
+      "description": "Recommends a Java 24 Gatherers.mapConcurrent stream chain with an explicit concurrency bound for the blocking stock checks."
     },
     {
       "name": "Shows a safe stream shape",

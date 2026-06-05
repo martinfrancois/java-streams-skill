@@ -18,7 +18,7 @@
       "name": "Uses bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
       "max_score": 225,
-      "description": "Uses Gatherers.mapConcurrent with an explicit bounded concurrency value to perform the blocking AvailabilityApi.isAvailable calls inside the stream pipeline."
+      "description": "Uses Gatherers.mapConcurrent with an explicit bounded concurrency value to perform the blocking AvailabilityApi.isAvailable calls inside the stream chain."
     },
     {
       "name": "Carries offer with availability result",

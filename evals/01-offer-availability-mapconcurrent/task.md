@@ -13,7 +13,7 @@ Rules:
 - `AvailabilityApi.isAvailable(offer.id())` is a blocking remote call.
 - Return only offers that are available.
 - Sort the returned offers by `Offer::rank`, then `Offer::id`.
-- Use Java stream APIs for the pipeline.
+- Use Java stream APIs for the operation.
 - Do not use `parallelStream()` or `.parallel()`.
 - Do not fan out unbounded asynchronous work.
 - Keep the concurrency limit explicit in code.

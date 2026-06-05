@@ -1,1 +1,1 @@
-Implement a Java 24 stream pipeline for bounded concurrent offer availability checks without using parallelStream.
+Implement a Java 24 stream chain for bounded concurrent offer availability checks without using parallelStream.

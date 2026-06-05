@@ -46,18 +46,12 @@ are equivalent.
    for numeric counts, `joining` for text, `min`/`max` for extremes, and primitive stream terminal
    operations for primitive totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
-   `flatMap(Optional::stream)` on Java 9+ for `Stream<Optional<T>>`. On Java 16+, prefer
-   `mapMulti` with pattern matching for mixed subtype filtering or small conditional
-   zero-or-one/one-to-few emission when it keeps the pipeline clearer. For primitive subtype
-   extraction, prefer direct `mapToInt`/`mapToLong`/`mapToDouble` after a safe filter/cast, or the
-   primitive `mapMultiTo*` variants, rather than emitting boxed primitives and unboxing later.
+   `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for mixed subtype checks or
+   small conditional emission; use primitive streams for primitive results.
 4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
    op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
-   later step needs an expensive check result, carry `element + result` with a baseline-compatible
-   holder; use `Map.entry` only on Java 9+ when both values are non-null. For
-   `Gatherers.mapConcurrent`, do not return `null` as a skip sentinel; return a non-null carrier
-   such as `Map.entry(element, boolean)` or a project result type, then filter and map afterward.
+   later step needs an expensive check result, carry `element + result`; do not use `null` sentinels.
 6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
    nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
    mutable collector.
@@ -69,11 +63,8 @@ are equivalent.
    [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
    a scan. Fix relevant hits and re-scan.
 
-For review artifacts, stay concise by default. If the user asks for a short review or decision,
-lead with accept/reject, list only the behavior-preserving stream issues, and show one safer shape
-when useful. Run the scan as workflow, but do not print scan headers, scan tables, or broad
-collector commentary unless the task asks for scan documentation or a general audit. Do not critique
-unchanged original code in a short review unless that critique is required to explain the decision.
+Short reviews: decision first, direct stream issues only, one safer shape if useful. Omit scan
+details and unchanged-code critiques unless asked.
 
 Quick examples:
 

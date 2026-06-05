@@ -10,7 +10,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 
 | API or feature | Minimum Java | Notes |
 | --- | ---: | --- |
-| `Collection.stream()` / `Stream` | 8 | Sequential stream pipeline. |
+| `Collection.stream()` / `Stream` | 8 | Sequential stream operation chain. |
 | `parallelStream()` / `.parallel()` | 8 | Uses common fork-join pool; not async and not a default optimization. |
 | `filter`, `map`, `flatMap`, `peek` | 8 | `peek` is for diagnostics; do not rely on it for required side effects. |
 | `findFirst`, `findAny` | 8 | `findFirst` preserves encounter-order semantics; `findAny` is for equivalent matches. |

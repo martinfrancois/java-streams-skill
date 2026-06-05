@@ -53,7 +53,7 @@ Use $java-streams to implement this Java feature with stream and collector best 
 For cleanup work:
 
 ```text
-Use $java-streams to clean up this Java stream pipeline without changing behavior.
+Use $java-streams to clean up this Java stream chain without changing behavior.
 ```
 
 For reviews:
@@ -113,7 +113,7 @@ This keeps the basic filter and sort behavior. But it is still not a good soluti
 remote API calls. In this example, the limit is per call to `favoriteProducts(user)`. The static
 semaphore is shared by every call to the method, so two users calling it at the same time can block
 each other even though each call is allowed to run up to 8 stock checks. The limit is also separate
-from the stream pipeline, which makes the code harder to reason about.
+from the stream chain, which makes the code harder to reason about.
 
 Second, another version used virtual threads and a semaphore:
 
@@ -169,7 +169,7 @@ List<Product> favoriteProducts(User user) {
 }
 ```
 
-This version keeps the limit of 8 checks inside the pipeline. It uses the Java stream API made for
+This version keeps the limit of 8 checks inside the stream chain. It uses the Java stream API made for
 bounded concurrent work. It keeps each product together with its stock-check result, then filters and
 sorts in a clear order.
 

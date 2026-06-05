@@ -8,7 +8,7 @@ most useful contributions.
 
 Keep changes focused on observed failure modes: materializing just to inspect, counting for
 existence, sorting just to get one extreme, careless `findFirst()` / `findAny()` changes, boxed
-numeric reductions, nested collection pipelines, unsafe `toMap`, null-sensitive sorting, Java
+numeric reductions, nested collection stream chains, unsafe `toMap`, null-sensitive sorting, Java
 baseline drift, and casual `parallelStream()` usage.
 
 ## Community Standards

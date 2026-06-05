@@ -191,7 +191,7 @@ List<Packet> beforeFirstSpike = packets.stream()
 ```
 
 Parallel streams can help CPU-heavy stateless work, but they remain blocking and use the common
-fork-join pool by default. Recommend measuring or benchmarking the pipeline because split/merge
+fork-join pool by default. Recommend measuring or benchmarking the stream chain because split/merge
 overhead and common-pool contention can outweigh the benefit:
 
 ```java
