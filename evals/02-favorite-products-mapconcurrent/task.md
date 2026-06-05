@@ -13,7 +13,8 @@ Rules:
 - `user.favoriteProducts()` returns products in user preference order.
 - `InventoryApi.check(product.sku())` is a blocking remote call.
 - Users can have hundreds of favorite products, and checking stock one product at a time is too slow in production.
-- For a single request, the inventory service allows at most 8 stock checks at the same time.
+- The concurrency limit is per `favoriteProducts(user)` call: during one call, run at most 8
+  in-flight `InventoryApi.check(...)` calls at the same time.
 - Return only products that are in stock.
 - Sort the returned products by `Product::name`.
 - Use Java stream APIs for the pipeline.

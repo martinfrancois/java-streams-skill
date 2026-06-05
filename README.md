@@ -110,8 +110,10 @@ List<Product> favoriteProducts(User user) {
 
 This keeps the basic filter and sort behavior. But it is still not a good solution.
 `parallelStream()` uses Java's common fork-join pool. That pool is not a good default for blocking
-remote API calls. The static semaphore is also shared by all requests, so the limit is not clearly
-part of this one operation.
+remote API calls. In this example, the limit is per call to `favoriteProducts(user)`. The static
+semaphore is shared by every call to the method, so two users calling it at the same time can block
+each other even though each call is allowed to run up to 8 stock checks. The limit is also separate
+from the stream pipeline, which makes the code harder to reason about.
 
 Second, another version used virtual threads and a semaphore:
 
