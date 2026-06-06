@@ -43,8 +43,9 @@ are equivalent.
    - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
      explicit merge/null handling.
 2. Prefer stream terminal operations that encode intent directly: `anyMatch` for existence, `count`
-   for numeric counts, `joining` for text, `min`/`max` for extremes, and primitive stream terminal
-   operations for primitive totals.
+   for numeric counts, `joining` for text, `min`/`max` for a single extreme, `teeing` for a Java
+   12+ min/max pair over the same input, and primitive stream terminal operations for primitive
+   totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for mixed subtype checks or
    small conditional emission; use primitive streams for primitive results.

@@ -29,11 +29,12 @@ using APIs from [java-stream-api.md](java-stream-api.md).
   boolean anyOutOfStock = order.getItems().stream()
           .anyMatch(item -> item.getStock() == 0);
 
-  user.getRoles().stream()
+  boolean allowed = user.getRoles().stream()
           .flatMap(role -> role.getPermissions().stream())
-          .filter(requiredPermission::equals)
-          .findAny()
-          .orElseThrow(AccessDeniedException::new);
+          .anyMatch(requiredPermission::equals);
+  if (!allowed) {
+      throw new AccessDeniedException();
+  }
   ```
 
 - Flatten present optionals on Java 9+:
@@ -146,7 +147,8 @@ Map<Boolean, List<Product>> partitionedProducts = products.stream()
         .collect(Collectors.partitioningBy(product -> product.getStock() > 0));
 ```
 
-Java 12+ `teeing` can combine two reductions:
+Java 12+ `teeing` can combine two independent reductions over the same input. Prefer this for a
+min/max pair or price range instead of running two separate stream passes:
 
 ```java
 Pair<Product, Product> priceRange = products.stream()
