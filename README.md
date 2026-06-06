@@ -175,6 +175,9 @@ problems:
 
 ### With The Skill: `Gatherers.mapConcurrent`
 
+When the project uses Java 24 with preview features enabled, `Gatherers.mapConcurrent` gives a
+bounded concurrent stream operation for this kind of blocking per-element work:
+
 ```java
 List<Product> favoriteProducts(User user) {
     return user.favoriteProducts().stream()
@@ -227,7 +230,7 @@ Good fit:
 - avoiding null-sensitive sorting and duplicate-key `toMap` failures;
 - deciding whether `parallelStream()` is actually appropriate;
 - choosing Java-version-compatible APIs such as `takeWhile`, `mapMulti`, `Stream.toList()`, and
-  gatherers.
+  gatherers. For Java 24 gatherers, the project must explicitly enable preview features.
 
 Poor fit:
 

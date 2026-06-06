@@ -184,6 +184,13 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     task_text = task_file.read_text(encoding="utf-8") if task_file.is_file() else ""
     if task_text and not re.search(r"\bAssume Java\s+\d+\b", task_text):
         failures.append(f"{task_file}: task must state the Java version to assume, e.g. 'Assume Java 17.'")
+    scenario_text = task_text + "\n" + json.dumps(data)
+    if (
+        re.search(r"\bJava 24\b", scenario_text)
+        and re.search(r"\b(?:Gatherers?|mapConcurrent)\b|\.gather\(", scenario_text)
+        and "preview" not in scenario_text.lower()
+    ):
+        failures.append(f"{task_file}: Java 24 gatherer scenarios must state that preview features are enabled")
     has_explicit_invocation = invocation_from_task(task_text)
     if invocation == "natural" and has_explicit_invocation:
         failures.append(f"{task_file}: natural scenario explicitly invokes the skill")
