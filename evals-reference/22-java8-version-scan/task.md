@@ -7,8 +7,8 @@ Assume Java 8.
 
 In `review.md`, start with the exact scan header and hard-stop `rg` scan command from the skill
 bundle, including the full marker regex and `<touched Java files>` placeholder. Then list each
-Java-version drift issue and a Java 8-compatible direction. Also mention any stream marker that is
-allowed on Java 8.
+Java-version drift issue and a Java 8-compatible direction. Also mention whether `activeCount` is
+acceptable Java 8 stream code, and be precise about whether plain `count()` is a bundled scan hit.
 
 ```java
 import java.util.List;
