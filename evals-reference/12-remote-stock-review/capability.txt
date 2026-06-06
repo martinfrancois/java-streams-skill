@@ -1,1 +1,1 @@
-Review Java stream concurrency changes involving blocking per-element calls and Java 24 preview-enabled gatherers.
+Review Java stream concurrency changes involving blocking per-element calls and Java 24 gatherers.

@@ -201,10 +201,9 @@ long result = LongStream.rangeClosed(1, 100_000)
         .sum();
 ```
 
-For Java 24 projects with preview features enabled, `Gatherers.mapConcurrent` can be more appropriate
-than `parallelStream` for blocking per-element calls when the project intentionally uses
-virtual-thread concurrency. Keep concurrency bounded and call out timeout/error handling for remote
-API failures:
+For Java 24+ projects, `Gatherers.mapConcurrent` can be more appropriate than `parallelStream` for
+blocking per-element calls when the project intentionally uses virtual-thread concurrency. Keep
+concurrency bounded and call out timeout/error handling for remote API failures:
 
 ```java
 List<Product> favoriteProducts = user.getFavoriteProducts().stream()
@@ -217,11 +216,10 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
         .toList();
 ```
 
-`Map.entry` is appropriate in this example because the baseline is Java 24 with preview features
-enabled and neither side of the entry is null. Do not return `null` from a `mapConcurrent` mapper to
-mean "skip"; carry the element with an explicit boolean result, then filter and map afterward. If
-nulls can reach the carrier or the baseline is Java 8, use a null-tolerant project type or
-`AbstractMap.SimpleImmutableEntry`.
+`Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
+entry is null. Do not return `null` from a `mapConcurrent` mapper to mean "skip"; carry the element
+with an explicit boolean result, then filter and map afterward. If nulls can reach the carrier or
+the baseline is Java 8, use a null-tolerant project type or `AbstractMap.SimpleImmutableEntry`.
 
 Use Java 12+ `Collectors.teeing` when two independent aggregates should be computed over the same
 input:
