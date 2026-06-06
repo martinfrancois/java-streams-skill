@@ -20,6 +20,9 @@ Fix these before finalizing:
   audit calls out plain `count()` as allowed, say it is an allowed usage, not a scan hit.
 - `sorted(...).findFirst()` or sorted-then-sublist just to get one extreme. Use `min`/`max`; keep
   sorting only when the ordered list itself is required.
+- Two separate `min` and `max` stream passes over the same input when Java 12+ is available and the
+  requested result is a pair/range. Use `Collectors.teeing(minBy(...), maxBy(...), ...)` so the
+  stream states "compute these two aggregates together".
 - `map(...).collect(toList())` followed immediately by `String.join`. Use `Collectors.joining`.
 - Boxed numeric `reduce` for primitive totals/statistics. Use primitive streams or summarizing
   collectors unless the type is genuinely non-primitive, such as `BigDecimal`.
