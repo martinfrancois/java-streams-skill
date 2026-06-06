@@ -39,9 +39,10 @@ Fix these before finalizing:
   `Map.entry` only on Java 9+ when both values are non-null; otherwise use a null-tolerant holder
   such as `AbstractMap.SimpleImmutableEntry` or a project type.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
-  `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
-  For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
-  not add unrelated `groupingBy` null-key or collector-safety caveats.
+  `Collectors.flatMapping`, `Stream.ofNullable`, gatherers used below their minimum Java version, or
+  Java 24 gatherers used without preview features enabled. For a version-drift audit, report these
+  unavailable APIs and explicitly allowed markers only; do not add unrelated `groupingBy` null-key or
+  collector-safety caveats.
 - Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
   `Collectors`, or `Gatherers`.
 
@@ -66,11 +67,12 @@ Use parallel streams only after checking:
 1. Work per element is CPU-heavy enough to amortize split/merge overhead.
 2. Operations are stateless and non-interfering.
 3. Encounter order is not required, or the ordered stream terminal operation is still worth the cost.
-4. The stream chain does not perform blocking IO or remote calls. For Java 24+ blocking per-element
-   calls, consider `Gatherers.mapConcurrent` only when the baseline supports it and virtual-thread
-   concurrency is the intended design. Preserve element/result association explicitly with
-   a baseline-compatible holder rather than null sentinels or side maps. For remote calls, call out
-   the concurrency limit, timeout handling for slow calls, and error propagation/retry policy.
+4. The stream chain does not perform blocking IO or remote calls. For Java 24 preview-enabled
+   blocking per-element calls, consider `Gatherers.mapConcurrent` only when the baseline supports it,
+   preview features are enabled, and virtual-thread concurrency is the intended design. Preserve
+   element/result association explicitly with a baseline-compatible holder rather than null sentinels
+   or side maps. For remote calls, call out the concurrency limit, timeout handling for slow calls,
+   and error propagation/retry policy.
 5. The stream terminal operation or collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked

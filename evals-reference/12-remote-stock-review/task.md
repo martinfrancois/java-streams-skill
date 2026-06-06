@@ -1,6 +1,6 @@
 # Review remote stock stream change
 
-Assume Java 24.
+Assume Java 24 with preview features enabled.
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short review decision
 and a safer recommendation.

@@ -1,12 +1,12 @@
 {
-  "context": "Main eval weighted natural implementation: second-lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
+  "context": "Main eval weighted natural implementation: second-lowest without-context baseline in the all-eval run; Java 24 preview-enabled blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
   "type": "weighted_checklist",
   "checklist": [
     {
-      "name": "Creates coherent Java 24 artifact",
+      "name": "Creates coherent Java 24 preview artifact",
       "category": "safety",
       "max_score": 20,
-      "description": "Creates FavoriteProducts.java with the requested method, nested types, imports, and Java 24-compatible code."
+      "description": "Creates FavoriteProducts.java with the requested method, nested types, imports, and Java 24 preview-compatible code."
     },
     {
       "name": "Preserves favorite product behavior",

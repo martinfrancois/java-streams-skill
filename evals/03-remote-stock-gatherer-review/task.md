@@ -1,9 +1,9 @@
 # Review remote stock stream change
 
-Assume Java 24.
+Assume Java 24 with preview features enabled.
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short review decision
-and a safer Java 24 stream shape.
+and a safer Java 24 preview-enabled stream shape.
 
 The product service calls a remote inventory API inside `isInStock(product)`.
 
