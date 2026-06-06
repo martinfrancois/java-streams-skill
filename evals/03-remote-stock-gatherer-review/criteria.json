@@ -1,5 +1,5 @@
 {
-  "context": "Main eval weighted explicit review: third-lowest without-context baseline in the all-eval run; parallelStream is a weak answer for blocking remote calls and Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
+  "context": "Main eval weighted explicit review: non-overlapping Java 24 remote-call review; parallelStream is a weak answer for blocking remote calls and Java 24 stream guidance should recommend bounded Gatherers.mapConcurrent.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -12,7 +12,7 @@
       "name": "Preserves required output behavior",
       "category": "safety",
       "max_score": 30,
-      "description": "Recognizes that the final product list must still contain only in-stock favorites sorted by Product::name."
+      "description": "Recognizes that the final payment list must still contain only payments approved by FraudApi.approve and sorted by Payment::submittedAt."
     },
     {
       "name": "Rejects parallelStream for blocking IO",
@@ -24,13 +24,13 @@
       "name": "Recommends bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
       "max_score": 120,
-      "description": "Recommends a Java 24 Gatherers.mapConcurrent stream chain with an explicit concurrency bound for the blocking stock checks."
+      "description": "Recommends a Java 24 Gatherers.mapConcurrent stream chain with an explicit concurrency bound for the blocking fraud-screening calls."
     },
     {
       "name": "Shows a safe stream shape",
       "category": "stream_quality",
       "max_score": 45,
-      "description": "Describes or sketches carrying Product with the stock-check result, filtering by that result, mapping back to Product, sorting by name, and collecting with toList."
+      "description": "Describes or sketches carrying each Payment with the fraud-screening result using a non-null holder, filtering by that result, mapping back to Payment, sorting by submittedAt, and collecting with toList."
     },
     {
       "name": "Review is concise and actionable",
@@ -43,6 +43,6 @@
     "invocation": "explicit",
     "task_type": "review",
     "main_eval_weight_multiplier": 3,
-    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping remote stock review; rerun hosted evals before updating benchmark claims"
   }
 }

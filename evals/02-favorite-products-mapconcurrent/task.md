@@ -1,31 +1,32 @@
-# Implement favorite product stock checks
+# Implement delivery appointment checks
 
-Create `FavoriteProducts.java`. Assume Java 24.
+Create `DeliveryAppointments.java`. Assume Java 24.
 
 Implement:
 
 ```java
-List<Product> favoriteProducts(User user)
+List<Appointment> schedulableAppointments(Planner planner)
 ```
 
 Rules:
 
-- `user.favoriteProducts()` returns products in user preference order.
-- `InventoryApi.check(product.sku())` is a blocking remote call.
-- Users can have hundreds of favorite products, and checking stock one product at a time is too slow in production.
-- The concurrency limit is per `favoriteProducts(user)` call: during one call, run at most 8
-  in-flight `InventoryApi.check(...)` calls at the same time.
-- Return only products that are in stock.
-- Sort the returned products by `Product::name`.
+- `planner.appointments()` returns appointments in the planner's proposed order.
+- `CalendarService.canSchedule(appointment.token())` is a blocking remote call.
+- A planner can contain hundreds of appointments, and checking one appointment at a time is too
+  slow in production.
+- The concurrency limit is per `schedulableAppointments(planner)` call: during one call, run at
+  most 8 in-flight `CalendarService.canSchedule(...)` calls at the same time.
+- Return only appointments that can be scheduled.
+- Sort the returned appointments by `Appointment::startsAt`, then `Appointment::token`.
 - Use Java stream APIs for the operation.
 
 Use these nested types:
 
 ```java
-record User(List<Product> favoriteProducts) {}
-record Product(String sku, String name) {}
-static final class InventoryApi {
-    static boolean check(String sku) {
+record Planner(List<Appointment> appointments) {}
+record Appointment(String token, long startsAt) {}
+static final class CalendarService {
+    static boolean canSchedule(String token) {
         throw new UnsupportedOperationException("provided by production");
     }
 }

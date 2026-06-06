@@ -1,30 +1,30 @@
 {
-  "context": "Main eval weighted natural implementation: second-lowest without-context baseline in the all-eval run; Java 24 blocking per-element remote checks with a per-operation service concurrency limit should use a bounded stream concurrency shape rather than parallelStream or unbounded async work.",
+  "context": "Main eval weighted natural implementation: non-overlapping Java 24 bounded remote-check scenario; measures bounded stream concurrency for blocking calls without reusing runtime favorite-products examples.",
   "type": "weighted_checklist",
   "checklist": [
     {
       "name": "Creates coherent Java 24 artifact",
       "category": "safety",
       "max_score": 20,
-      "description": "Creates FavoriteProducts.java with the requested method, nested types, imports, and Java 24-compatible code."
+      "description": "Creates DeliveryAppointments.java with the requested method, nested types, imports, and Java 24-compatible code."
     },
     {
-      "name": "Preserves favorite product behavior",
+      "name": "Preserves appointment behavior",
       "category": "safety",
       "max_score": 40,
-      "description": "Returns only products whose sku passes InventoryApi.check and sorts the final returned products by Product::name."
+      "description": "Returns only appointments whose token passes CalendarService.canSchedule and sorts the final returned appointments by Appointment::startsAt, then Appointment::token."
     },
     {
       "name": "Uses bounded Gatherers.mapConcurrent",
       "category": "stream_quality",
       "max_score": 180,
-      "description": "Uses Gatherers.mapConcurrent with an explicit max concurrency no greater than 8 to perform the blocking InventoryApi.check calls inside the stream chain."
+      "description": "Uses Gatherers.mapConcurrent with an explicit max concurrency no greater than 8 to perform the blocking CalendarService.canSchedule calls inside the stream chain."
     },
     {
-      "name": "Carries product with stock result",
+      "name": "Carries appointment with schedule result",
       "category": "stream_quality",
       "max_score": 80,
-      "description": "Keeps each Product associated with its stock-check result, for example with Map.entry(product, InventoryApi.check(product.sku())), then filters by the boolean result before mapping back to Product."
+      "description": "Keeps each Appointment associated with its schedule-check result using a non-null holder, then filters by the boolean result before mapping back to Appointment."
     },
     {
       "name": "Rejects weak concurrency choices",
@@ -43,6 +43,6 @@
     "invocation": "natural",
     "task_type": "implementation",
     "main_eval_weight_multiplier": 4,
-    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping bounded remote-check scenario; rerun hosted evals before updating benchmark claims"
   }
 }

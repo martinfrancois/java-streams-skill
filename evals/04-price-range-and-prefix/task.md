@@ -1,27 +1,28 @@
-# Implement price range and packet windows
+# Implement invoice bounds and temperature windows
 
-Use `$java-streams` to create `PriceRangeAndPackets.java`. Assume Java 17.
+Use `$java-streams` to create `InvoiceBoundsAndTemperatures.java`. Assume Java 17.
 
 Implement:
 
 ```java
-Pair<Product, Product> priceRange(List<Product> products)
-List<Packet> packetsBeforeFirstLossSpike(List<Packet> packets, double threshold)
-List<Packet> packetsAfterInitialHealthyPrefix(List<Packet> packets, double threshold)
+Bounds<Invoice, Invoice> invoiceTotalBounds(List<Invoice> invoices)
+List<Reading> readingsBeforeFirstOverheat(List<Reading> readings, double maxSafeTemperature)
+List<Reading> readingsAfterInitialSafeRun(List<Reading> readings, double maxSafeTemperature)
 ```
 
 Rules:
 
-- `priceRange` should return the cheapest and most expensive products. For an empty product list,
-  both pair values should be `null`.
-- `packetsBeforeFirstLossSpike` returns the chronological prefix where `loss <= threshold`.
-- `packetsAfterInitialHealthyPrefix` skips the initial chronological prefix where `loss <= threshold`
-  and returns the rest.
+- `invoiceTotalBounds` should return the lowest-total and highest-total invoices. For an empty
+  invoice list, both bounds values should be `null`.
+- `readingsBeforeFirstOverheat` returns the chronological prefix where
+  `temperatureCelsius <= maxSafeTemperature`.
+- `readingsAfterInitialSafeRun` skips the initial chronological prefix where
+  `temperatureCelsius <= maxSafeTemperature` and returns the rest.
 
 Use nested records:
 
 ```java
-record Product(String name, BigDecimal price) {}
-record Packet(long sequence, double loss) {}
-record Pair<L, R>(L left, R right) {}
+record Invoice(String id, BigDecimal total) {}
+record Reading(long sequence, double temperatureCelsius) {}
+record Bounds<L, R>(L low, R high) {}
 ```

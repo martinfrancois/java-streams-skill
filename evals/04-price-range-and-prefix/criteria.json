@@ -1,36 +1,36 @@
 {
-  "context": "Main eval weighted implementation: selected because without-context missed the teeing criterion; covers Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
+  "context": "Main eval weighted implementation: non-overlapping Java 17 scenario for Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
   "type": "weighted_checklist",
   "checklist": [
     {
       "name": "Creates coherent Java 17 artifact",
       "category": "safety",
       "max_score": 10,
-      "description": "Creates PriceRangeAndPackets.java with requested methods and records."
+      "description": "Creates InvoiceBoundsAndTemperatures.java with requested methods and records."
     },
     {
-      "name": "Uses teeing for price range",
+      "name": "Uses teeing for invoice bounds",
       "category": "stream_quality",
       "max_score": 70,
-      "description": "Uses Collectors.teeing with minBy and maxBy by Product::price, or an equivalent single-pass pair reduction."
+      "description": "Uses Collectors.teeing with minBy and maxBy by Invoice::total, or an equivalent single-pass pair reduction."
     },
     {
-      "name": "Handles empty price range",
+      "name": "Handles empty invoice bounds",
       "category": "safety",
       "max_score": 20,
-      "description": "Returns a Pair whose left and right are null for an empty product list."
+      "description": "Returns a Bounds whose low and high values are null for an empty invoice list."
     },
     {
-      "name": "Uses takeWhile for before-spike prefix",
+      "name": "Uses takeWhile for before-overheat prefix",
       "category": "stream_quality",
       "max_score": 45,
-      "description": "Uses takeWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-preserving loop, not filter."
+      "description": "Uses takeWhile(reading -> reading.temperatureCelsius() <= maxSafeTemperature) or an equivalent prefix-preserving loop, not filter."
     },
     {
-      "name": "Uses dropWhile for after-prefix remainder",
+      "name": "Uses dropWhile for after-safe-run remainder",
       "category": "stream_quality",
       "max_score": 45,
-      "description": "Uses dropWhile(packet -> packet.loss() <= threshold) or an equivalent prefix-skipping loop, not a filter that removes later healthy packets."
+      "description": "Uses dropWhile(reading -> reading.temperatureCelsius() <= maxSafeTemperature) or an equivalent prefix-skipping loop, not a filter that removes later safe readings."
     },
     {
       "name": "Keeps implementation focused",
@@ -43,6 +43,6 @@
     "invocation": "explicit",
     "task_type": "implementation",
     "main_eval_weight_multiplier": 2,
-    "main_eval_selection": "selected from all-26 Sonnet 4.6 run because at least one without-context criterion scored below 50%"
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping teeing/prefix scenario; rerun hosted evals before updating benchmark claims"
   }
 }
