@@ -16,6 +16,8 @@ wording.
 - The README may say agents that support skill auto-selection, such as Codex and Claude Code, can
   select the skill from context.
 - Install examples should use `martinfrancois/java-streams`.
+- If the Tessl package is not published yet, say that clearly before install commands and do not add
+  live registry badges or links that currently 404.
 - Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
 - When discussing evals, distinguish main eval lift scenarios from reference/regression scenarios.

@@ -1,5 +1,5 @@
 {
-  "context": "Main eval implementation: choose stream collectors that express map and aggregate semantics without manual mutable loops.",
+  "context": "Reference implementation: choose stream collectors that express map and aggregate semantics without manual mutable loops.",
   "type": "weighted_checklist",
   "checklist": [
     {

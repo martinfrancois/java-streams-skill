@@ -1,5 +1,5 @@
 {
-  "context": "Main eval review: Java 8 cannot use Optional.stream, takeWhile, or Stream.toList; the prefix behavior must still be preserved.",
+  "context": "Reference review: Java 8 cannot use Optional.stream, takeWhile, or Stream.toList; the prefix behavior must still be preserved.",
   "type": "weighted_checklist",
   "checklist": [
     {

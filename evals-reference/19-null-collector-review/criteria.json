@@ -1,5 +1,5 @@
 {
-  "context": "Main eval review: toMap needs explicit null and duplicate-key handling to preserve loop behavior.",
+  "context": "Reference review: toMap needs explicit null and duplicate-key handling to preserve loop behavior.",
   "type": "weighted_checklist",
   "checklist": [
     {

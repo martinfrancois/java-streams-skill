@@ -1,5 +1,5 @@
 {
-  "context": "Main eval review: parallelStream is a weak answer for blocking remote calls; Java 24 allows discussing Gatherers.mapConcurrent.",
+  "context": "Reference review: parallelStream is a weak answer for blocking remote calls; Java 24 allows discussing Gatherers.mapConcurrent.",
   "type": "weighted_checklist",
   "checklist": [
     {

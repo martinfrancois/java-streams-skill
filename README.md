@@ -1,7 +1,5 @@
 # Java Streams Skill for AI Agents
 
-[![tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fmartinfrancois%2Fjava-streams)](https://tessl.io/registry/martinfrancois/java-streams)
-
 AI agents often know Java streams well enough to chain `filter`, `map`, and `collect`, but not
 enough to choose the right stream operation for the job in new code, reviews, and cleanup.
 
@@ -33,7 +31,8 @@ may be different from the right code for Java 17, Java 21, or Java 24.
 
 ### 1. Install
 
-Install the published Tessl plugin using the option that fits your setup:
+This repository is private and the Tessl plugin has not been published yet. After the first public
+Tessl publish, install it using the option that fits your setup:
 
 | Tool | Command |
 | --- | --- |

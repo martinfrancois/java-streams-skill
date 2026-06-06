@@ -1,5 +1,5 @@
 {
-  "context": "Main eval implementation: Java 17 mapMulti is a strong fit for conditional developer email extraction, and takeWhile is required for prefix semantics.",
+  "context": "Reference implementation: Java 17 mapMulti is a strong fit for conditional developer email extraction, and takeWhile is required for prefix semantics.",
   "type": "weighted_checklist",
   "checklist": [
     {

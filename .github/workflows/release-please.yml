@@ -28,21 +28,6 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - name: Trigger Tessl publish
-        if: ${{ steps.release.outputs.release_created == 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: ${{ steps.release.outputs.tag_name }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${TAG_NAME:-}" ]; then
-            echo "Release Please reported a release but did not output tag_name." >&2
-            exit 1
-          fi
-
-          gh workflow run publish-tessl.yml --repo "$GITHUB_REPOSITORY" --ref main -f ref="$TAG_NAME"
-
       - name: Find release PR
         id: release-pr
         env:

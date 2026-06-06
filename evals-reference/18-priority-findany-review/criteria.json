@@ -1,5 +1,5 @@
 {
-  "context": "Main eval review: findAny and parallelStream can break first-configured-value semantics on ordered inputs.",
+  "context": "Reference review: findAny and parallelStream can break first-configured-value semantics on ordered inputs.",
   "type": "weighted_checklist",
   "checklist": [
     {

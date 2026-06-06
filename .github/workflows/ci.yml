@@ -50,18 +50,19 @@ jobs:
           print('JSON ok')
           PY
 
-      - name: Parse YAML files
+      - name: Validate YAML metadata
         run: |
           python3 - <<'PY'
           import pathlib
-          try:
-              import yaml
-          except ImportError:
-              print('PyYAML unavailable; skipping YAML parse')
-              raise SystemExit(0)
-          for path in list(pathlib.Path('.').rglob('*.yml')) + list(pathlib.Path('.').rglob('*.yaml')):
-              yaml.safe_load(open(path, encoding='utf-8'))
-          print('YAML ok')
+          from scripts.validate_skill import parse_openai_agent_metadata
+
+          for path in pathlib.Path('skills').glob('*/agents/openai.yaml'):
+              _, failures = parse_openai_agent_metadata(path.read_text(encoding='utf-8'))
+              if failures:
+                  for failure in failures:
+                      print(f'{path}: {failure}')
+                  raise SystemExit(1)
+          print('YAML metadata ok')
           PY
 
       - name: Lint Tessl plugin

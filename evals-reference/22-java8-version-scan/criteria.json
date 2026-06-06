@@ -1,5 +1,5 @@
 {
-  "context": "Main eval audit: measures whether the agent uses the bundled hard-stop scan command to catch Java-version drift on a Java 8 baseline.",
+  "context": "Reference audit: measures whether the agent uses the bundled hard-stop scan command to catch Java-version drift on a Java 8 baseline.",
   "type": "weighted_checklist",
   "checklist": [
     {

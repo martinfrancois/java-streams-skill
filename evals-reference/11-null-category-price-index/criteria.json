@@ -1,5 +1,5 @@
 {
-  "context": "Main eval implementation: collectors must preserve null-skip and duplicate-key behavior; naive toMap/groupingBy can throw or change semantics.",
+  "context": "Reference implementation: collectors must preserve null-skip and duplicate-key behavior; naive toMap/groupingBy can throw or change semantics.",
   "type": "weighted_checklist",
   "checklist": [
     {
