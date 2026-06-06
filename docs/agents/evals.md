@@ -39,6 +39,12 @@ benchmark claims, or scoring rules.
   maintainability points per 100-point scenario unless a scenario has a documented reason to differ.
 - Runtime skill references must not contain eval inventories, expected answers, score rubrics,
   hosted run IDs, or fixed score claims.
+- Active evals must not be near-copies of runtime reference examples. It is fine for an eval to test
+  `Gatherers.mapConcurrent`, `Collectors.teeing`, `takeWhile`, or `dropWhile`; it is not fine to
+  reuse the same domain class, method, record, constant, and carrier shape from a runtime example.
+- Active and reference/regression tasks must not be exact or near-exact duplicates. If a reference
+  scenario is promoted or replaced by active coverage, delete or materially rewrite the reference
+  copy and document the numbering gap.
 - Every Java scenario must state the Java version to assume, such as `Assume Java 17.`.
 - If the baseline is too high, first check whether the eval is too generic or too easy before
   changing the skill.

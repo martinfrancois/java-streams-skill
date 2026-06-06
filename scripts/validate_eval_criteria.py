@@ -51,6 +51,58 @@ EXPLICIT_INVOCATION_PATTERNS = (
     r"\buse\s+the\s+java-streams\s+skill\b",
     r"\bjava-streams\s+skill\b",
 )
+IDENTIFIER_STOP_WORDS = {
+    "abstractmap",
+    "api",
+    "arraylist",
+    "bigdecimal",
+    "boolean",
+    "class",
+    "collectors",
+    "comparator",
+    "completablefuture",
+    "comparing",
+    "double",
+    "exception",
+    "filter",
+    "function",
+    "gatherers",
+    "hashmap",
+    "integer",
+    "intstream",
+    "java",
+    "list",
+    "long",
+    "longstream",
+    "map",
+    "object",
+    "objects",
+    "optional",
+    "parallel",
+    "parallelstream",
+    "predicate",
+    "record",
+    "runtimeexception",
+    "set",
+    "simpleimmutableentry",
+    "sorted",
+    "string",
+    "stream",
+    "streams",
+    "system",
+    "throw",
+    "tolist",
+    "total",
+    "null",
+    "unsupportedoperationexception",
+    "void",
+}
+SCENARIO_REFERENCE_FILES = (
+    Path("README.md"),
+    Path("CONTRIBUTING.md"),
+    Path(".github/pull_request_template.md"),
+)
+SCENARIO_REFERENCE_DIRS = (Path("docs"),)
 
 
 def error(message: str) -> int:
@@ -90,6 +142,60 @@ def invocation_from_task(task_text: str) -> bool:
 
 def text_of(item: dict[str, Any]) -> str:
     return f"{item.get('name', '')} {item.get('description', '')}".lower()
+
+
+def normalized_words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def normalized_text(text: str) -> str:
+    return " ".join(normalized_words(text))
+
+
+def ngrams(words: list[str], size: int) -> set[tuple[str, ...]]:
+    if len(words) < size:
+        return set()
+    return {tuple(words[index : index + size]) for index in range(len(words) - size + 1)}
+
+
+def code_like_text(text: str) -> str:
+    chunks = re.findall(r"```(?:[A-Za-z0-9_-]+)?\n(.*?)```", text, flags=re.DOTALL)
+    chunks.extend(re.findall(r"`([^`\n]+)`", text))
+    return "\n".join(chunks)
+
+
+def task_similarity(left: str, right: str) -> float:
+    left_words = normalized_words(left)
+    right_words = normalized_words(right)
+    left_text = " ".join(left_words)
+    right_text = " ".join(right_words)
+    if not left_text or not right_text:
+        return 0.0
+    exact_ratio = 1.0 if left_text == right_text else 0.0
+    left_grams = ngrams(left_words, 8)
+    right_grams = ngrams(right_words, 8)
+    if not left_grams or not right_grams:
+        return exact_ratio
+    overlap = len(left_grams & right_grams) / min(len(left_grams), len(right_grams))
+    return max(exact_ratio, overlap)
+
+
+def domain_identifiers(text: str) -> set[str]:
+    identifiers = set(re.findall(r"\b[A-Za-z_][A-Za-z0-9_]*\b", code_like_text(text)))
+    result: set[str] = set()
+    for identifier in identifiers:
+        lowered = identifier.lower()
+        if lowered in IDENTIFIER_STOP_WORDS or len(identifier) < 4:
+            continue
+        if identifier.isupper() and len(identifier) <= 6:
+            continue
+        result.add(identifier)
+    return result
+
+
+def is_hard_stop_workflow_scenario(scenario: Path, task_text: str) -> bool:
+    lowered = f"{scenario.name}\n{task_text}".lower()
+    return "hard-stop scan" in lowered and "exact scan" in lowered
 
 
 def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
@@ -212,6 +318,83 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     return failures
 
 
+def validate_cross_suite_duplicates(dirs: list[Path]) -> list[str]:
+    failures: list[str] = []
+    active = [scenario for scenario in dirs if scenario.parent.name == "evals"]
+    reference = [
+        scenario
+        for scenario in dirs
+        if scenario.parent.name in {"evals-reference", "evals-regression"}
+    ]
+    for active_scenario in active:
+        active_task = (active_scenario / "task.md").read_text(encoding="utf-8")
+        for reference_scenario in reference:
+            reference_task = (reference_scenario / "task.md").read_text(encoding="utf-8")
+            similarity = task_similarity(active_task, reference_task)
+            if similarity >= 0.85:
+                failures.append(
+                    f"{active_scenario}: task.md is too similar to {reference_scenario} "
+                    f"(normalized task overlap {similarity:.2f})"
+                )
+    return failures
+
+
+def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
+    failures: list[str] = []
+    references_root = Path("skills/java-streams/references")
+    if not references_root.exists():
+        return failures
+
+    runtime_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in sorted(references_root.glob("*.md"))
+    )
+    runtime_identifiers = domain_identifiers(runtime_text)
+    runtime_words = normalized_words(runtime_text)
+    runtime_grams = ngrams(runtime_words, 12)
+
+    for scenario in dirs:
+        if scenario.parent.name != "evals":
+            continue
+        task_file = scenario / "task.md"
+        if not task_file.exists():
+            continue
+        task_text = task_file.read_text(encoding="utf-8")
+        if is_hard_stop_workflow_scenario(scenario, task_text):
+            continue
+
+        task_identifiers = domain_identifiers(task_text)
+        shared_identifiers = sorted(task_identifiers & runtime_identifiers)
+        task_words = normalized_words(task_text)
+        task_grams = ngrams(task_words, 12)
+        long_overlap_count = len(task_grams & runtime_grams)
+
+        if len(shared_identifiers) >= 4 or (len(shared_identifiers) >= 3 and long_overlap_count):
+            failures.append(
+                f"{scenario}: task.md overlaps runtime references too closely; shared identifiers: "
+                f"{', '.join(shared_identifiers[:12])}"
+            )
+    return failures
+
+
+def validate_scenario_path_references() -> list[str]:
+    failures: list[str] = []
+    files = [path for path in SCENARIO_REFERENCE_FILES if path.exists()]
+    for directory in SCENARIO_REFERENCE_DIRS:
+        if directory.exists():
+            files.extend(sorted(directory.rglob("*.md")))
+
+    pattern = re.compile(r"`?((?:evals|evals-reference|evals-regression)/[A-Za-z0-9_.\-/]+)`?")
+    for path in files:
+        text = path.read_text(encoding="utf-8")
+        for match in pattern.finditer(text):
+            candidate = match.group(1).rstrip(".,);:")
+            if "*" in candidate:
+                continue
+            if not Path(candidate).exists():
+                failures.append(f"{path}: stale scenario path reference {candidate!r}")
+    return failures
+
+
 def validate_runtime_references() -> list[str]:
     failures: list[str] = []
     root = Path("skills/java-streams/references")
@@ -326,6 +509,9 @@ def main() -> int:
     for path in paths:
         if path.is_dir():
             failures.extend(validate_numbering(path))
+    failures.extend(validate_cross_suite_duplicates(dirs))
+    failures.extend(validate_runtime_reference_overlap(dirs))
+    failures.extend(validate_scenario_path_references())
     failures.extend(validate_runtime_references())
 
     if failures:
