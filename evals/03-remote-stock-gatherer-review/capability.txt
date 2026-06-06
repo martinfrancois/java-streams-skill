@@ -1,1 +1,1 @@
-Review a Java 24 preview-enabled stream refactor that incorrectly uses parallelStream for blocking remote stock checks.
+Review a Java 24 stream refactor that incorrectly uses parallelStream for blocking remote stock checks.

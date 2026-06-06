@@ -1,5 +1,5 @@
 {
-  "context": "Reference review: parallelStream is a weak answer for blocking remote calls; Java 24 with preview features enabled allows discussing Gatherers.mapConcurrent.",
+  "context": "Reference review: parallelStream is a weak answer for blocking remote calls; Java 24 allows discussing Gatherers.mapConcurrent.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -21,10 +21,10 @@
       "description": "Explains that parallelStream uses the common fork-join pool, remains blocking, and is not the right default for remote API calls."
     },
     {
-      "name": "Recommends Java 24 preview mapConcurrent or explicit async boundary",
+      "name": "Recommends Java 24 mapConcurrent or explicit async boundary",
       "category": "stream_quality",
       "max_score": 30,
-      "description": "Recommends Java 24 preview-enabled Gatherers.mapConcurrent with a bounded concurrency value, or an explicit executor/async design, rather than casual parallelStream."
+      "description": "Recommends Gatherers.mapConcurrent with a bounded concurrency value, or an explicit executor/async design, rather than casual parallelStream."
     },
     {
       "name": "Keeps sorting after stock checks",

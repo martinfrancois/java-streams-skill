@@ -1,6 +1,6 @@
 # Implement favorite product stock checks
 
-Create `FavoriteProducts.java`. Assume Java 24 with preview features enabled.
+Create `FavoriteProducts.java`. Assume Java 24.
 
 Implement:
 
