@@ -252,6 +252,13 @@ The skill is tested on Java stream implementation, review, and cleanup tasks. Ea
 without the skill and with the skill, then scored mainly on stream-specific quality, with compile and
 behavior checks included as safety checks.
 
+The Java streams skill is broadly about stream and collector correctness, maintainability, laziness,
+ordering, reduction, collection, flattening, and concurrency choices. The main eval set is
+evidence-weighted: it covers core skill capabilities and gives more weight to scenario families
+where hosted runs show the largest improvement with the skill versus without it. Read the main score
+as "where this skill measurably helps most," not as an evenly sampled survey of every Java Streams
+API.
+
 The evals check that agents:
 
 - produce coherent Java for the stated Java version;
@@ -276,10 +283,10 @@ Results should be read by subset:
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
 - stream-quality subtotal shows the skill-specific effect;
-- the main eval set focuses on realistic tasks where stream-specific guidance should change the
-  answer;
-- `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
-  already solve.
+- the main eval set is evidence-weighted toward realistic tasks where stream-specific guidance
+  should change the answer;
+- `evals-reference/` keeps broader stream and collector regression coverage, including scenarios a
+  strong baseline may already solve, and should be reported separately from the main score.
 
 ## Origin
 

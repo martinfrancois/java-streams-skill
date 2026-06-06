@@ -117,18 +117,27 @@ In this repository, the main eval set lives in `evals/` and is used for public l
 `evals-reference/` contains broader regression coverage that helps catch regressions but does not
 directly drive the main lift claim.
 
+The Java streams skill is broadly about stream and collector correctness, maintainability, laziness,
+ordering, reduction, collection, flattening, and concurrency choices. The main eval set is
+evidence-weighted: it covers core skill capabilities and gives more weight to scenario families
+where hosted runs show the largest improvement with the skill versus without it. The main score
+should be read as "where this skill measurably helps most," not as an evenly sampled survey of every
+Java Streams API.
+
 The main eval set should stay focused on realistic tasks where context should improve stream
-quality. It must include natural activation prompts and explicit invocation prompts. Natural
-scenarios must not mention `$java-streams` or ask to use the skill. Explicit scenarios may name the
-skill and must be labeled as explicit in `criteria.json`.
+quality. It must include natural activation prompts and explicit invocation prompts, reported
+separately when hosted results are available. Natural scenarios must not mention `$java-streams` or
+ask to use the skill. Explicit scenarios may name the skill and must be labeled as explicit in
+`criteria.json`.
 
 Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`. Main eval
 implementation criteria must include compile/artifact checks and behavior correctness checks as
 safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
 
-Do not hide baseline-solved scenarios just to improve lift. Move them to `evals-reference/` when
-they are better as regression coverage and report that separately.
+Do not hide baseline-solved scenarios just to improve lift. Keep them in `evals-reference/` when
+they are better as broader stream and collector regression coverage, and report that separately from
+the main score.
 
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.

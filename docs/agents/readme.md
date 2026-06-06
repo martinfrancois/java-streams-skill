@@ -21,7 +21,15 @@ wording.
   do not ship README wording that will become false immediately after publication.
 - Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
-- When discussing evals, distinguish main eval lift scenarios from reference/regression scenarios.
+- When discussing evals, explain that the Java streams skill is broadly about stream and collector
+  correctness, maintainability, laziness, ordering, reduction, collection, flattening, and
+  concurrency choices.
+- Describe the main eval set as evidence-weighted, not `mapConcurrent`-focused: it covers core skill
+  capabilities and gives more weight to scenario families where hosted runs show the largest
+  with-vs-without improvement.
+- When discussing evals, distinguish main eval lift scenarios from reference/regression scenarios,
+  and say that broader stream and collector coverage in `evals-reference/` should be reported
+  separately from the main score.
 - Keep evaluation wording concrete: say what tasks check, what behavior must be preserved, and how
   to read result subsets. Avoid vague benchmark language.
 - Use `main score` and `main eval set` consistently in public and maintainer docs.
