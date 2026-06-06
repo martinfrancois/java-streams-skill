@@ -32,6 +32,7 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 ├── .github/workflows/
 ├── evals/
 ├── evals-reference/
+├── evals-regression/
 ├── scripts/
 ├── skills/java-streams/
 │   ├── SKILL.md
@@ -55,7 +56,10 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 - `skills/java-streams/references/java-stream-api.md` records Java-version compatibility guidance.
 - `docs/agents/` contains current maintainer policy and workflow guidance.
 - `evals/` contains the hosted Tessl main eval set used for lift reporting.
-- `evals-reference/` keeps extra regression scenarios that should not drive main eval lift claims.
+- `evals-reference/` keeps candidate, diagnostic, and broad coverage scenarios that should not
+  drive main eval lift claims.
+- `evals-regression/` keeps scenarios that hosted history shows are consistently solved by both
+  with-context and without-context.
 - `scripts/` contains portable validation checks used by CI.
 
 ## Local Checks
@@ -64,7 +68,7 @@ Run these before committing skill, eval, README, package, script, or CI changes:
 
 ```bash
 python3 scripts/validate_skill.py skills/java-streams
-python3 scripts/validate_eval_criteria.py evals evals-reference
+python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
 python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
 bash -n scripts/check_publish_dry_run.sh
 tessl plugin lint .
@@ -114,8 +118,10 @@ Common types in this repository:
 ## Hosted Evals
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.
-`evals-reference/` contains broader regression coverage that helps catch regressions but does not
-directly drive the main lift claim.
+`evals-reference/` contains candidate and diagnostic coverage that helps tune the skill or decide
+what to promote later. `evals-regression/` contains scenarios that are consistently solved by both
+with-context and without-context; these are useful safety checks, but they do not directly drive the
+main lift claim.
 
 The main eval set should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
@@ -127,8 +133,14 @@ implementation criteria must include compile/artifact checks and behavior correc
 safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
 
-Do not hide baseline-solved scenarios just to improve lift. Move them to `evals-reference/` when
-they are better as regression coverage and report that separately.
+Do not hide baseline-solved scenarios just to improve lift. Move repeatedly baseline-solved
+scenarios to `evals-regression/` only when hosted evidence shows both variants are consistently
+100%. Keep low-delta but still diagnostic scenarios in `evals-reference/`.
+
+When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
+there, then rerun only that targeted scenario until it is clean before running broader suites. After
+targeted failures are clean, run `evals/` for the main score, relevant `evals-reference/` scenarios
+for nearby behavior, and `evals-regression/` only for final release safety or broad changes.
 
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.

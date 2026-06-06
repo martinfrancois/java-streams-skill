@@ -32,7 +32,7 @@ jobs:
         run: python3 scripts/validate_skill.py skills/java-streams
 
       - name: Validate eval criteria
-        run: python3 scripts/validate_eval_criteria.py evals evals-reference
+        run: python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
 
       - name: Compile validation scripts
         run: python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py

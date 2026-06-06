@@ -16,7 +16,7 @@ release-readiness.
 
   ```bash
   python3 scripts/validate_skill.py skills/java-streams
-  python3 scripts/validate_eval_criteria.py evals evals-reference
+  python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
   python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
   bash -n scripts/check_publish_dry_run.sh
   tessl plugin lint .
@@ -25,11 +25,22 @@ release-readiness.
   tessl plugin publish --dry-run .
   ```
 
-- For skill behavior or eval changes, run hosted evals with Sonnet 4.6:
+- For skill behavior or eval changes, run hosted evals with Sonnet 4.6, but start with the smallest
+  useful set. Run targeted affected scenarios first:
+
+  ```bash
+  tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context <scenario-dir>
+  ```
+
+  If any targeted with-context result is below 100%, fix the skill or eval and rerun only those
+  targeted scenarios until they are clean. Then run the main eval set:
 
   ```bash
   tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
   ```
+
+  Run relevant `evals-reference/` scenarios for nearby behavior and `evals-regression/` only as a
+  final safety check before release or after broad changes.
 
 - Run the Tessl skill review at threshold 100 when changing runtime skill content:
 

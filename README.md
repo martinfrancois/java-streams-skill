@@ -273,8 +273,8 @@ Results should be read by subset:
 - stream-quality subtotal shows the skill-specific effect;
 - the main eval set focuses on realistic tasks where stream-specific guidance should change the
   answer;
-- `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
-  already solve.
+- `evals-reference/` keeps broader candidate and diagnostic cases;
+- `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
 
 ## Origin
 

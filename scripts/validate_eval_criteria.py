@@ -118,8 +118,12 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     if data.get("type") != "weighted_checklist":
         failures.append(f"{criteria_file}: type must be weighted_checklist")
     context = data.get("context")
-    if scenario.parent.name == "evals-reference" and isinstance(context, str) and context.startswith("Main eval"):
-        failures.append(f"{criteria_file}: reference scenario context must not start with 'Main eval'")
+    if (
+        scenario.parent.name in {"evals-reference", "evals-regression"}
+        and isinstance(context, str)
+        and context.startswith("Main eval")
+    ):
+        failures.append(f"{criteria_file}: reference/regression scenario context must not start with 'Main eval'")
 
     checklist = data.get("checklist")
     if not isinstance(checklist, list) or not checklist:

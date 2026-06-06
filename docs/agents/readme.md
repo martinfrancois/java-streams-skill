@@ -20,7 +20,8 @@ wording.
   Tessl badge and published-install wording unless the maintainer explicitly asks to hide them.
 - Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
-- When discussing evals, distinguish main eval lift scenarios from reference/regression scenarios.
+- When discussing evals, distinguish main eval lift scenarios, reference/candidate scenarios, and
+  regression safety-net scenarios.
 - Keep evaluation wording concrete: say what tasks check, what behavior must be preserved, and how
   to read result subsets. Avoid vague benchmark language.
 - Use `main score` and `main eval set` consistently in public and maintainer docs.

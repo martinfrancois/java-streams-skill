@@ -31,7 +31,7 @@ user-visible change, write `None`.
 Checks most contributors can run:
 
 - [ ] `python3 scripts/validate_skill.py skills/java-streams`
-- [ ] `python3 scripts/validate_eval_criteria.py evals evals-reference`
+- [ ] `python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression`
 - [ ] `python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py`
 - [ ] `bash -n scripts/check_publish_dry_run.sh`
 - [ ] `tessl plugin lint .`
@@ -42,7 +42,8 @@ Tessl-authenticated checks:
 - [ ] `bash scripts/check_publish_dry_run.sh .`
 - [ ] `tessl plugin publish --dry-run --bump patch .`
 - [ ] `tessl skill review --threshold 100 skills/java-streams/SKILL.md`, if skill text or references changed
-- [ ] `tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .`, if skill behavior, evals, or benchmark claims changed
+- [ ] Targeted `tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context <scenario-dir>`, if skill behavior or evals changed
+- [ ] Full/main `tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .`, if benchmark claims changed or targeted with-context results are clean
 
 Details:
 
@@ -56,6 +57,7 @@ Details:
 - [ ] Validation that applies to this change is checked above, or any unavailable check is explained.
 - [ ] If Java stream guidance changed, Java baseline compatibility plus ordering, null handling, and parallelism were considered.
 - [ ] If evals or benchmark claims changed, the eval scenarios remain fair and do not leak answer keys, run IDs, or fixed score claims into runtime references.
+- [ ] If any with-context result was below 100%, targeted failing scenarios were fixed and rerun before broader eval suites.
 - [ ] PR title or squash title uses Conventional Commits.
 - [ ] Redaction checked: no tokens, private links, private eval artifacts, local host paths, or proprietary Java source.
 

@@ -2,7 +2,8 @@
 
 ## Scope
 
-Use this when editing `evals/`, `evals-reference/`, skill evals, benchmark claims, or scoring rules.
+Use this when editing `evals/`, `evals-reference/`, `evals-regression/`, skill evals,
+benchmark claims, or scoring rules.
 
 ## Rules
 
@@ -17,12 +18,17 @@ Use this when editing `evals/`, `evals-reference/`, skill evals, benchmark claim
   - Natural activation scenarios don't mention `$java-streams`, "use the skill", or similar
     command-style phrasing.
   - Explicit invocation scenarios may say `Use $java-streams`.
-  - Report natural, explicit, main eval combined, and reference/full results separately when hosted
-    data is available.
+  - Report natural, explicit, main eval combined, reference, and regression results separately when
+    hosted data is available.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
-- Keep broad smoke scenarios and baseline-solved scenarios in `evals-reference/` unless they are
-  part of the main eval set.
+- Keep three eval buckets:
+  - `evals/` is the main eval set used for public lift reporting.
+  - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
+    help tune or promote future main evals.
+  - `evals-regression/` is for scenarios that hosted history shows are consistently solved by both
+    with-context and without-context. These protect against regressions but should not be part of
+    normal lift discovery runs.
 - Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
 - Every main eval criterion must classify `category` as `safety`, `stream_quality`, or
@@ -36,6 +42,15 @@ Use this when editing `evals/`, `evals-reference/`, skill evals, benchmark claim
 - Every Java scenario must state the Java version to assume, such as `Assume Java 17.`.
 - If the baseline is too high, first check whether the eval is too generic or too easy before
   changing the skill.
+- If with-context is below 100%, keep the scenario in its current suite. Fix the skill or eval in
+  place and run that scenario targeted until it is clean before running broader suites. Do not move
+  failing with-context scenarios to hide them.
+- Promote or demote scenarios based on purpose and evidence:
+  - `with-context < 100`: targeted fix/rerun in place.
+  - `with-context = 100` and `without-context < 100`: useful lift evidence; keep in main or
+    reference depending on coverage and weighting.
+  - `with-context = 100` and `without-context = 100` repeatedly: candidate for
+    `evals-regression/`.
 - A 2x raw score ratio is useful only when earned by honest, realistic eval design. Don't suppress
   legitimate coverage just to improve lift.
 - Track raw score, percentage-point lift, raw score ratio, missed-point reduction, and the
@@ -45,6 +60,15 @@ Use this when editing `evals/`, `evals-reference/`, skill evals, benchmark claim
   ```bash
   tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
   ```
+- Keep hosted eval usage minimal while preserving confidence:
+  - For skill or eval changes, first run only the affected scenario directories, with both variants
+    when lift or regression risk matters.
+  - If any affected with-context result is below 100%, keep rerunning only those targeted scenarios
+    after fixes until they are clean.
+  - Then run `evals/` for the main score.
+  - Run relevant `evals-reference/` scenarios when deciding promotion or checking nearby behavior.
+  - Run `evals-regression/` as a final safety check before release or after broad changes, not on
+    every tuning loop.
 
 ## Checks
 

@@ -53,7 +53,7 @@ jobs:
       - name: Validate plugin before publish
         run: |
           python3 scripts/validate_skill.py skills/java-streams
-          python3 scripts/validate_eval_criteria.py evals evals-reference
+          python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
           python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
           bash -n scripts/check_publish_dry_run.sh
           tessl plugin lint .
