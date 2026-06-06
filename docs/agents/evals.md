@@ -22,6 +22,9 @@ benchmark claims, or scoring rules.
     hosted data is available.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
+- The hard-stop scan audit may ask for the exact bundled scan header and `rg` command, but treat it
+  as explicit workflow-use evidence. Do not describe it as natural activation or independent Java
+  stream reasoning, and do not call weighted checklist items hard gates.
 - Keep three eval buckets:
   - `evals/` is the main eval set used for public lift reporting.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still

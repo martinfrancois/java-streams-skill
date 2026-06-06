@@ -144,3 +144,7 @@ for nearby behavior, and `evals-regression/` only for final release safety or br
 
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
+
+The hard-stop scan audit is an explicit workflow-use scenario because it asks for the bundled scan
+header and `rg` command. Report it with explicit invocation results, not as natural activation or
+independent Java stream reasoning.

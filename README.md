@@ -270,6 +270,8 @@ Results should be read by subset:
 
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
+- the hard-stop scan audit is explicit workflow-use evidence because it asks for the bundled scan
+  header and command;
 - stream-quality subtotal shows the skill-specific effect;
 - the main eval set focuses on realistic tasks where stream-specific guidance should change the
   answer;
