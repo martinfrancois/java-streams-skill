@@ -102,14 +102,18 @@ private static final Semaphore STOCK_CHECKS = new Semaphore(8);
 List<Product> favoriteProducts(User user) {
     return user.favoriteProducts().parallelStream()
             .filter(product -> {
+                boolean acquired = false;
                 try {
                     STOCK_CHECKS.acquire();
+                    acquired = true;
                     return InventoryApi.check(product.sku());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 } finally {
-                    STOCK_CHECKS.release();
+                    if (acquired) {
+                        STOCK_CHECKS.release();
+                    }
                 }
             })
             .sorted(Comparator.comparing(Product::name))
