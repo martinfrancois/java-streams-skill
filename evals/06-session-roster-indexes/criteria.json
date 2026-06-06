@@ -1,0 +1,54 @@
+{
+  "context": "Main eval natural implementation: non-overlapping Java 17 collector scenario for flattening nested data, grouping, duplicate-key handling, sorted unique downstream results, and short-circuit existence checks. Rerun hosted evals before updating benchmark claims.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates SessionRosterIndexes.java with the requested methods, nested records, imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves requested roster and index behavior",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Correctly handles null tracks, null rooms, null emails, opted-in filtering, duplicate emails, sorted email lists, room duplicate handling, encounter-order ties, and waitlisted existence."
+    },
+    {
+      "name": "Flattens nested conference data directly",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Traverses conferences to sessions to registrations with direct flatMap-style composition or an equivalently clear stream shape, without building nested temporary collections or mutating shared result maps inside forEach."
+    },
+    {
+      "name": "Uses collector semantics for track email lists",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Builds opted-in emails by track with collector semantics such as groupingBy plus downstream mapping/filtering/collection, producing sorted unique email lists without a post-hoc shared mutable accumulation pass."
+    },
+    {
+      "name": "Handles duplicate rooms explicitly",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Builds longestSessionByRoom with an explicit duplicate-room merge or grouping reduction that keeps the longer session and preserves the earlier encounter-order session on ties."
+    },
+    {
+      "name": "Short-circuits waitlisted existence",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Uses anyMatch or an equivalent early-exit check for hasWaitlistedRegistration rather than collecting or counting all waitlisted registrations first."
+    },
+    {
+      "name": "Keeps implementation focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the implementation limited to the requested helpers without unrelated caching, concurrency, dependencies, API redesign, or broad style rewrites."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "main_eval_weight_multiplier": 1,
+    "main_eval_selection": "added to improve natural activation coverage and broaden active stream/collector capability coverage; rerun hosted evals before updating benchmark claims"
+  }
+}

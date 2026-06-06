@@ -1,0 +1,1 @@
+Implement Java 17 collection helpers that flatten nested data, build collector-based indexes, preserve duplicate handling, and short-circuit existence checks.
