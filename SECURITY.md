@@ -23,8 +23,9 @@ Don't open a public issue for a suspected vulnerability.
 
 Use GitHub private vulnerability reporting through
 [Report a Vulnerability](https://github.com/martinfrancois/java-streams-skill/security/advisories/new).
-If GitHub private vulnerability reporting isn't working for you, contact the maintainers privately
-through GitHub and share only the minimum information needed to start triage.
+If GitHub private vulnerability reporting isn't working for you, email
+[f.martin@fastmail.com](mailto:f.martin@fastmail.com) with the subject
+`Security report: java-streams-skill` and share only the minimum information needed to start triage.
 
 Don't open a public issue or pull request that discloses an unpatched vulnerability, exploit path,
 secret, or security-sensitive proof of concept. Maintainers may hide, delete, or close public reports

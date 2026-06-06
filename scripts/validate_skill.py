@@ -95,6 +95,14 @@ def parse_openai_agent_metadata(text: str) -> tuple[dict[str, str] | None, list[
     return values, failures
 
 
+def scan_answer_key_markers(path: Path, text: str) -> list[str]:
+    failures: list[str] = []
+    for marker in ANSWER_KEY_MARKERS:
+        if marker.lower() in text.lower():
+            failures.append(f"{path}: runtime file contains answer-key marker {marker!r}")
+    return failures
+
+
 def validate_skill(skill_path: Path) -> list[str]:
     failures: list[str] = []
     skill_md = skill_path / "SKILL.md"
@@ -141,6 +149,7 @@ def validate_skill(skill_path: Path) -> list[str]:
     body = re.sub(r"^---\n.*?\n---\n?", "", text, count=1, flags=re.DOTALL).strip()
     if not body:
         failures.append(f"{skill_md}: missing body content after frontmatter")
+    failures.extend(scan_answer_key_markers(skill_md, body))
 
     for link in re.findall(r"\]\((references/[^)]+)\)", text):
         target = skill_path / link
@@ -155,11 +164,7 @@ def validate_skill(skill_path: Path) -> list[str]:
     if references_dir.is_dir():
         for reference in sorted(references_dir.glob("*.md")):
             reference_text = reference.read_text(encoding="utf-8")
-            for marker in ANSWER_KEY_MARKERS:
-                if marker.lower() in reference_text.lower():
-                    failures.append(
-                        f"{reference}: runtime reference contains answer-key marker {marker!r}"
-                    )
+            failures.extend(scan_answer_key_markers(reference, reference_text))
 
     stale_eval = skill_path / "evals" / "evals.json"
     if stale_eval.exists():

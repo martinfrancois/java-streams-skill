@@ -9,7 +9,8 @@ Use this when editing `evals/`, `evals-reference/`, skill evals, benchmark claim
 - Don't cheat. Don't leak the diagnosis or desired fix in eval prompts.
 - Keep natural activation prompts neutral. Explicit invocation prompts may name `$java-streams`, but
   should not leak the desired fix beyond invoking the skill.
-- The main eval should mirror real failure modes: Java stream code that may materialize
+- The main eval should focus on realistic failure modes where this skill should change the answer:
+  Java stream code that may materialize
   unnecessarily, count for existence, sort for one extreme, mishandle order, misuse collectors,
   miss primitive streams, or overuse parallel streams.
 - Keep a documented mix of invocation styles:

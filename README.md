@@ -31,8 +31,7 @@ may be different from the right code for Java 17, Java 21, or Java 24.
 
 ### 1. Install
 
-This repository is private and the Tessl plugin has not been published yet. After the first public
-Tessl publish, install it using the option that fits your setup:
+After the first Tessl release, install the skill using the option that fits your setup:
 
 | Tool | Command |
 | --- | --- |
@@ -267,7 +266,8 @@ Results should be read by subset:
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
 - stream-quality subtotal shows the skill-specific effect;
-- the main eval set reports the representative mix;
+- the main eval set focuses on realistic tasks where stream-specific guidance should change the
+  answer;
 - `evals-reference/` keeps broader regression cases, including scenarios a strong baseline may
   already solve.
 
