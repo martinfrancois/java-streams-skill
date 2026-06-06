@@ -1,11 +1,11 @@
-# Review remote stock stream change
+# Review payment screening stream change
 
 Assume Java 24.
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short review decision
 and a safer Java 24 stream shape.
 
-The product service calls a remote inventory API inside `isInStock(product)`.
+The payment service calls a remote fraud-screening API inside `passesFraudScreen(payment)`.
 
 Before:
 
@@ -13,20 +13,20 @@ Before:
 import java.util.Comparator;
 import java.util.List;
 
-final class FavoriteProducts {
-    List<Product> favoriteProducts(User user) {
-        return user.favoriteProducts().stream()
-                .filter(this::isInStock)
-                .sorted(Comparator.comparing(Product::name))
+final class PaymentScreening {
+    List<Payment> releasablePayments(Batch batch) {
+        return batch.payments().stream()
+                .filter(this::passesFraudScreen)
+                .sorted(Comparator.comparing(Payment::submittedAt))
                 .toList();
     }
 
-    boolean isInStock(Product product) {
-        return InventoryApi.check(product.sku());
+    boolean passesFraudScreen(Payment payment) {
+        return FraudApi.approve(payment.reference());
     }
 
-    record User(List<Product> favoriteProducts) {}
-    record Product(String sku, String name) {}
+    record Batch(List<Payment> payments) {}
+    record Payment(String reference, long submittedAt) {}
 }
 ```
 
@@ -36,19 +36,19 @@ Proposed:
 import java.util.Comparator;
 import java.util.List;
 
-final class FavoriteProducts {
-    List<Product> favoriteProducts(User user) {
-        return user.favoriteProducts().parallelStream()
-                .filter(this::isInStock)
-                .sorted(Comparator.comparing(Product::name))
+final class PaymentScreening {
+    List<Payment> releasablePayments(Batch batch) {
+        return batch.payments().parallelStream()
+                .filter(this::passesFraudScreen)
+                .sorted(Comparator.comparing(Payment::submittedAt))
                 .toList();
     }
 
-    boolean isInStock(Product product) {
-        return InventoryApi.check(product.sku());
+    boolean passesFraudScreen(Payment payment) {
+        return FraudApi.approve(payment.reference());
     }
 
-    record User(List<Product> favoriteProducts) {}
-    record Product(String sku, String name) {}
+    record Batch(List<Payment> payments) {}
+    record Payment(String reference, long submittedAt) {}
 }
 ```
