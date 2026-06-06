@@ -16,6 +16,8 @@ Fix these before finalizing:
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
+  The hard-stop scan regex catches only `count() > 0` existence checks, not plain `count()`. If an
+  audit calls out plain `count()` as allowed, say it is an allowed usage, not a scan hit.
 - `sorted(...).findFirst()` or sorted-then-sublist just to get one extreme. Use `min`/`max`; keep
   sorting only when the ordered list itself is required.
 - `map(...).collect(toList())` followed immediately by `String.join`. Use `Collectors.joining`.
@@ -95,7 +97,8 @@ rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getF
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix
 stream-quality issues. If a marker remains because it is legitimate, state why. When an audit asks
 for allowed stream markers or allowed usages, also call out plain `count()` when it is the requested
-numeric result rather than a `count() > 0` existence check.
+numeric result rather than a `count() > 0` existence check, and state that plain `count()` is not a
+hit for the bundled scan regex.
 
 When the requested audit is specifically about Java-version drift, keep the report scoped to APIs
 that are unavailable for the stated baseline and to explicitly allowed markers. Do not add unrelated
