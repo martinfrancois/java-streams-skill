@@ -38,7 +38,10 @@ release-readiness.
   ```
 
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
-  `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
+  `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases. When Release Please creates a
+  release with `GITHUB_TOKEN`, the normal `release: published` trigger does not fire, so the Release
+  Please workflow dispatches `.github/workflows/publish-tessl.yml` with the created tag. Tessl
+  publishing still happens only in `.github/workflows/publish-tessl.yml`.
 - Keep the GitHub repository private until the maintainer explicitly asks to make it public. Still
   keep docs, metadata, license, security policy, and contribution workflow open-source ready.
 - Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real

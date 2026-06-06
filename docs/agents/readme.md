@@ -16,9 +16,8 @@ wording.
 - The README may say agents that support skill auto-selection, such as Codex and Claude Code, can
   select the skill from context.
 - Install examples should use `martinfrancois/java-streams`.
-- If the Tessl package is not published yet, use evergreen wording such as "After the first Tessl
-  release" before install commands. Do not add live registry badges or links that currently 404, and
-  do not ship README wording that will become false immediately after publication.
+- Treat public docs as release-ready even while the GitHub repository is still private. Keep the
+  Tessl badge and published-install wording unless the maintainer explicitly asks to hide them.
 - Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
 - When discussing evals, distinguish main eval lift scenarios from reference/regression scenarios.
@@ -29,6 +28,9 @@ wording.
   messages are fine.
 - When comparing bad and good code examples, use clear subheadings and bullet points so each reason
   belongs to the relevant example.
+- README code examples copied from hosted eval outputs or reference runs are evidence examples.
+  Do not "fix" or harden those snippets during review cleanup unless the maintainer explicitly asks
+  to change the underlying example; update surrounding explanation instead.
 - When explaining `Gatherers.mapConcurrent` for remote checks, mention bounded concurrency with
   backpressure: keep limited work in flight and start more as earlier checks finish.
 - Keep broad mistake catalogs separate from individual examples so they do not read as part of one

@@ -25,7 +25,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | `Optional.stream` | 9 | Flatten `Stream<Optional<T>>` with `flatMap(Optional::stream)`. |
 | `Stream.toList()` | 16 | Returns an unmodifiable list; not equivalent to mutable `Collectors.toList()`. Do not use when callers or later code mutate the list. |
 | `mapMulti` and primitive `mapMulti` variants | 16 | Efficient one-to-few mapping when clearer than `flatMap`. |
-| `Stream.gather(Gatherer)` / built-in gatherers | 24 | Advanced extension point finalized in JDK 24 by JEP 485; `Gatherers.mapConcurrent` can help blocking per-element work. |
+| `Stream.gather(Gatherer)` / built-in gatherers | 24 | `Gatherers.mapConcurrent` can help blocking per-element work. |
 
 ## Collectors
 

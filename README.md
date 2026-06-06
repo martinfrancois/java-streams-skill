@@ -1,5 +1,7 @@
 # Java Streams Skill for AI Agents
 
+[![tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fmartinfrancois%2Fjava-streams)](https://tessl.io/registry/martinfrancois/java-streams)
+
 AI agents often know Java streams well enough to chain `filter`, `map`, and `collect`, but not
 enough to choose the right stream operation for the job in new code, reviews, and cleanup.
 
@@ -31,7 +33,7 @@ may be different from the right code for Java 17, Java 21, or Java 24.
 
 ### 1. Install
 
-After the first Tessl release, install the skill using the option that fits your setup:
+Install the published Tessl plugin using the option that fits your setup:
 
 | Tool | Command |
 | --- | --- |
@@ -102,18 +104,14 @@ private static final Semaphore STOCK_CHECKS = new Semaphore(8);
 List<Product> favoriteProducts(User user) {
     return user.favoriteProducts().parallelStream()
             .filter(product -> {
-                boolean acquired = false;
                 try {
                     STOCK_CHECKS.acquire();
-                    acquired = true;
                     return InventoryApi.check(product.sku());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 } finally {
-                    if (acquired) {
-                        STOCK_CHECKS.release();
-                    }
+                    STOCK_CHECKS.release();
                 }
             })
             .sorted(Comparator.comparing(Product::name))
@@ -140,7 +138,7 @@ List<Product> favoriteProducts(User user) {
     try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
         var permits = new Semaphore(8);
 
-        var futures = user.favoriteProducts().stream()
+        return user.favoriteProducts().stream()
                 .map(product -> executor.submit(() -> {
                     permits.acquire();
                     try {
@@ -149,9 +147,6 @@ List<Product> favoriteProducts(User user) {
                         permits.release();
                     }
                 }))
-                .toList();
-
-        return futures.stream()
                 .map(FavoriteProducts::getUnchecked)
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(Product::name))

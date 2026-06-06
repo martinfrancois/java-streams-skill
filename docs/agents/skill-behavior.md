@@ -15,6 +15,9 @@ guidance, or auto-selection wording.
   `takeWhile`, `dropWhile`, `parallelStream`, and stream Java-version compatibility.
 - Skill guidance must start by detecting the project Java baseline before selecting stream,
   collector, record, pattern matching, or gatherer APIs.
+- Runtime Java API tables should state the minimum Java version and practical usage note. Do not add
+  JEP numbers, preview/finalization history, or other release trivia unless it directly changes what
+  code the agent should write.
 - Cover every JFokus reference pattern in runtime guidance or eval coverage:
   `findAny`/`findFirst`, match terminal operations, `flatMap`, `Optional::stream`, `joining`, `min`/`max`,
   primitive ranges, `reduce`, primitive `sum`, `parallelStream`, `sorted`, gatherers, `limit`,
