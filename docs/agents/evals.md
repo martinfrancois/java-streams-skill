@@ -79,6 +79,19 @@ benchmark claims, or scoring rules.
   - Run `evals-regression/` as a final safety check before release or after broad changes, not on
     every tuning loop.
 
+## Current Suite Composition
+
+Update this section whenever active eval membership or scoring changes.
+
+- Main eval set: 6 active scenarios, 1600 total checklist points.
+- Natural activation subset: 2 scenarios.
+- Explicit invocation subset: 4 scenarios.
+- Hard-stop scan audit: explicit workflow-use only.
+- Reference suite: 20 scenarios, 1880 total checklist points. Deleted reference number 12 is not
+  counted.
+- Regression suite: currently empty.
+- Hosted benchmark claims: pending rerun for the current active suite.
+
 ## Checks
 
 Run the shared validation commands in [Workflow](workflow.md). When editing eval criteria, also run

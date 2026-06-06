@@ -278,6 +278,17 @@ Results should be read by subset:
 - `evals-reference/` keeps broader candidate and diagnostic cases;
 - `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
 
+Current local suite structure:
+
+- main eval set: 6 scenarios, 1600 total checklist points;
+- natural subset: 2 scenarios;
+- explicit subset: 4 scenarios;
+- reference suite: 20 scenarios, reported separately;
+- regression suite: currently empty.
+
+Hosted benchmark numbers are pending a rerun for the current active suite. Do not compare older run
+IDs or older denominators against this version.
+
 ## Origin
 
 The stream examples and pattern catalog are based on the code examples from François Martin's conference
