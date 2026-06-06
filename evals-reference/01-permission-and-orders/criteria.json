@@ -1,5 +1,5 @@
 {
-  "context": "Reference coverage for flatMap permission lookup, IntStream.range mapToObj, BigDecimal reduce, and primitive DoubleStream sum.",
+  "context": "Reference coverage for short-circuit permission lookup, IntStream.range mapToObj, BigDecimal reduce, and primitive DoubleStream sum.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,10 +9,10 @@
       "description": "Creates StreamHelpers.java with requested methods and nested types."
     },
     {
-      "name": "Uses flatMap for permissions",
+      "name": "Uses short-circuit permission lookup",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Uses user.roles().stream().flatMap(role -> role.permissions().stream()) with findAny/orElseThrow or equivalent."
+      "description": "Checks permissions with a stream shape that short-circuits, either by flattening permissions with flatMap(...).anyMatch(...) or by using nested anyMatch/contains over each role's permissions. Do not require flatMap when nested anyMatch preserves the same behavior clearly."
     },
     {
       "name": "Uses IntStream range mapping",

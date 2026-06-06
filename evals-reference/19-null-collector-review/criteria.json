@@ -36,7 +36,7 @@
       "name": "Keeps review concise",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Avoids unrelated collector commentary; brief hard-stop scan context and directly related collector readability notes are acceptable."
+      "description": "Avoids unrelated collector commentary. Award full credit when the review stays focused on the null and duplicate-key behavior, even if it includes a brief directly related readability note such as Function.identity() versus a lambda."
     }
   ],
   "metadata": {
