@@ -47,8 +47,9 @@ are equivalent.
    12+ min/max pair over the same input, and primitive stream terminal operations for primitive
    totals.
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
-   `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for mixed subtype checks or
-   small conditional emission; use primitive streams for primitive results.
+   `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
+   reference-value emission. For primitive values from a subtype, filter/cast first, then use
+   `mapToInt`/`mapToLong`/`mapToDouble` directly; do not emit boxed primitives only to unbox them.
 4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
    op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
 5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
