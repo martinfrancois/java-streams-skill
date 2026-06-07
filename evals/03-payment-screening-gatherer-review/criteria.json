@@ -27,7 +27,7 @@
       "description": "Recommends a Java 24 Gatherers.mapConcurrent stream chain with an explicit concurrency bound for the blocking fraud-screening calls."
     },
     {
-      "name": "Shows a safe stream shape",
+      "name": "Shows a safe stream chain",
       "category": "stream_quality",
       "max_score": 45,
       "description": "Describes or sketches carrying each Payment with the fraud-screening result using a non-null holder, filtering by that result, mapping back to Payment, sorting by submittedAt, and collecting with toList."

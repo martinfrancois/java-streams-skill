@@ -18,7 +18,7 @@
       "name": "Flattens nested conference data directly",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Traverses conferences to sessions to registrations with direct flatMap-style composition or an equivalently clear stream shape, without building nested temporary collections or mutating shared result maps inside forEach."
+      "description": "Traverses conferences to sessions to registrations with direct flatMap-style composition or an equivalently clear stream chain, without building nested temporary collections or mutating shared result maps inside forEach."
     },
     {
       "name": "Uses collector semantics for track email lists",

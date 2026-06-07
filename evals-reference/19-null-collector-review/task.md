@@ -1,7 +1,7 @@
 # Review nullable collector refactor
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short decision and a
-safer collector shape if the change should not be accepted.
+safer collector approach if the change should not be accepted.
 
 Assume Java 17.
 

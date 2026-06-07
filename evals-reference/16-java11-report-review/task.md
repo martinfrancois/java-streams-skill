@@ -1,7 +1,7 @@
 # Review Java 11 report refactor
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short decision and a
-corrected stream shape if the change should not be accepted.
+corrected stream chain if the change should not be accepted.
 
 Assume Java 11.
 
