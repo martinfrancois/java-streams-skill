@@ -30,13 +30,13 @@
       "name": "Suggests collector-owned accumulation",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Recommends products.stream().filter(Product::enabled).collect(Collectors.toMap(Product::id, Function.identity(), ...)) or another collector-owned accumulation shape rather than shared mutable forEach."
+      "description": "Recommends products.stream().filter(Product::enabled).collect(Collectors.toMap(Product::id, Function.identity(), ...)) or another collector-owned accumulation approach rather than shared mutable forEach."
     },
     {
       "name": "Review is concise and focused",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Keeps the review focused on stream safety and the replacement shape."
+      "description": "Keeps the review focused on stream safety and the replacement stream chain."
     }
   ],
   "metadata": {

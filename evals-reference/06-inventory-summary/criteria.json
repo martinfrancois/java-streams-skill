@@ -42,7 +42,7 @@
       "name": "Keeps cleanup focused",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Keeps the existing class shape and avoids unrelated abstractions, dependencies, or behavior changes."
+      "description": "Keeps the existing class structure and avoids unrelated abstractions, dependencies, or behavior changes."
     }
   ],
   "metadata": {

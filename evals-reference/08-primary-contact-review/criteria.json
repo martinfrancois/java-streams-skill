@@ -27,7 +27,7 @@
       "description": "Explains that parallelStream is not justified here and makes ordered selection less predictable or more expensive without evidence of CPU-bound work."
     },
     {
-      "name": "Suggests safe stream shape",
+      "name": "Suggests safe stream chain",
       "category": "stream_quality",
       "max_score": 20,
       "description": "Suggests keeping sorted(...).filter(...).findFirst(), or filtering before sorting only if that preserves the same lowest-priority verified contact behavior."

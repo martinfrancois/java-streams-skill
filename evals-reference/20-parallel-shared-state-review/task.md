@@ -1,7 +1,7 @@
 # Review parallel stream accumulator refactor
 
 Use `$java-streams` to review this proposed change. Create `review.md` with a short decision and a
-safer stream shape if the change should not be accepted.
+safer stream chain if the change should not be accepted.
 
 Assume Java 17.
 

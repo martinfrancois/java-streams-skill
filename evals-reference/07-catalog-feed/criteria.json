@@ -18,19 +18,19 @@
       "name": "Flattens Stream of Optionals directly",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Replaces filter(Optional::isPresent).map(Optional::get) with flatMap(Optional::stream) or an equivalent Java 9+ direct flattening shape."
+      "description": "Replaces filter(Optional::isPresent).map(Optional::get) with flatMap(Optional::stream) or an equivalent Java 9+ direct flattening stream chain."
     },
     {
       "name": "Uses distinct before sorted with null filtering",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Computes sortedDiscountCodes with a stream that filters Objects::nonNull before natural sorting and removes duplicates with distinct or an equivalent set-plus-safe-sort shape."
+      "description": "Computes sortedDiscountCodes with a stream that filters Objects::nonNull before natural sorting and removes duplicates with distinct or an equivalent set-plus-safe-sort approach."
     },
     {
       "name": "Uses toMap with merge for duplicate categories",
       "category": "stream_quality",
       "max_score": 25,
-      "description": "Computes cheapestByCategory with Collectors.toMap and an explicit cheapest-product merge, or an equivalently concise collector-based grouping/min shape that cannot fail on duplicates."
+      "description": "Computes cheapestByCategory with Collectors.toMap and an explicit cheapest-product merge, or an equivalently concise collector-based grouping/min approach that cannot fail on duplicates."
     },
     {
       "name": "Avoids unnecessary temporary collections",

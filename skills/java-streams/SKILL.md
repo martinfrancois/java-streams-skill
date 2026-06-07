@@ -30,7 +30,7 @@ are equivalent.
 0. Check the Java baseline before choosing APIs. Read build/toolchain docs; if unclear, use Java
    8-compatible code or state the assumption. Use [java-stream-api.md](references/java-stream-api.md)
    for minimum Java versions.
-1. Identify the result shape:
+1. Identify the requested result:
    - one arbitrary/equivalent match: `filter(...).findAny()`;
    - first encounter-order, priority, chronological, or user-visible match:
      `filter(...).findFirst()`;
@@ -64,7 +64,7 @@ are equivalent.
    [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
    a scan. Fix relevant hits and re-scan.
 
-Short reviews: decision first, direct stream issues only, one safer shape if useful. Omit scan
+Short reviews: decision first, direct stream issues only, one safer stream chain if useful. Omit scan
 details and unchanged-code critiques unless asked.
 
 Quick examples:

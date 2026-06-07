@@ -29,6 +29,9 @@ guidance, or auto-selection wording.
   data, no blocking IO, no unsafe shared mutable state, and collector safety.
 - Avoid `pipeline` for Java stream behavior; use `stream chain`, `stream operation`, or more specific
   wording. Reserve `pipeline` for CI/release contexts.
+- Avoid `shape` for Java stream behavior; use `stream chain`, `collector approach`, `result`, or
+  more specific wording. Reserve `Shape` only for Java types or domain examples that actually use
+  that name.
 - The skill should not force streams over clear stateful loops. Stateful sequence output, checked IO,
   prompts, mutation-heavy code, or complex early exits can remain imperative.
 - Runtime references must not contain eval answer keys, scenario inventories, hosted run IDs, or

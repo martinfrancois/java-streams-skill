@@ -99,7 +99,7 @@ tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --vari
 Pull request titles and commits must use Conventional Commits. CI checks both the pull request title
 and every commit in the pull request.
 
-Use this shape:
+Use this format:
 
 ```text
 type(optional-scope): short description

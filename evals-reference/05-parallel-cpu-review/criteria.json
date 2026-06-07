@@ -9,7 +9,7 @@
       "description": "Creates review.md with a clear review decision."
     },
     {
-      "name": "Allows parallelism for this shape",
+      "name": "Allows parallelism for this stream chain",
       "category": "stream_quality",
       "max_score": 20,
       "description": "Recognizes the work is CPU-heavy, stateless, and has a primitive sum reduction, so parallelism can be reasonable."
