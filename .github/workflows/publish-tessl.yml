@@ -35,6 +35,14 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
 
+      - name: Show publish ref
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "requested_ref=${{ github.event.release.tag_name || inputs.ref || github.ref }}"
+          echo "checked_out_ref=$(git rev-parse --abbrev-ref HEAD)"
+          echo "checked_out_sha=$(git rev-parse HEAD)"
+          git describe --tags --always --dirty
+
       - name: Require Tessl token
         env:
           TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}

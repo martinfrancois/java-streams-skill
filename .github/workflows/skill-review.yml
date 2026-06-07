@@ -27,21 +27,21 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     env:
-      TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+      TESSL_TOKEN_AVAILABLE: ${{ secrets.TESSL_TOKEN != '' }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Skip review when Tessl token is unavailable
-        if: ${{ env.TESSL_TOKEN == '' }}
+        if: ${{ env.TESSL_TOKEN_AVAILABLE != 'true' }}
         run: echo "TESSL_TOKEN isn't configured; skipping Tessl skill review."
 
       - name: Setup Tessl CLI
-        if: ${{ env.TESSL_TOKEN != '' }}
+        if: ${{ env.TESSL_TOKEN_AVAILABLE == 'true' }}
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
           version: "0.82.0"
-          token: ${{ env.TESSL_TOKEN }}
+          token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Review skill
-        if: ${{ env.TESSL_TOKEN != '' }}
+        if: ${{ env.TESSL_TOKEN_AVAILABLE == 'true' }}
         run: tessl skill review --threshold 100 skills/java-streams/SKILL.md
