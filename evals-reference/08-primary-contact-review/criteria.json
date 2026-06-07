@@ -36,7 +36,7 @@
       "name": "Review is concise and focused",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Keeps the review focused on stream ordering and parallelism; do not deduct for brief references to the hard-stop scan/checklist or small supporting structure if they do not distract from the decision."
+      "description": "Keeps the review focused on stream ordering and parallelism without internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria. Award full credit for a brief note that the original chain can also be simplified only if it supports the decision and does not distract from it."
     }
   ],
   "metadata": {
