@@ -46,6 +46,12 @@ BEHAVIOR_WORDS = (
 )
 CRITERION_CATEGORIES = {"safety", "stream_quality", "maintainability"}
 EVIDENCE_TYPES = {"ordinary_lift", "solved_regression", "skill_context_dependent"}
+INTERNAL_LABEL_ALLOW_PATTERNS = (
+    r"\bdo not deduct\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
+    r"\baward full credit\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
+    r"\ballow(?:s|ed)?\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
+    r"\bbrief(?:ly)? uses\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
+)
 EXPLICIT_INVOCATION_PATTERNS = (
     r"\$java-streams\b",
     r"\buse\s+java-streams\b",
@@ -108,6 +114,12 @@ SCENARIO_REFERENCE_FILES = (
     Path("evals-regression/README.md"),
 )
 SCENARIO_REFERENCE_DIRS = (Path("docs"),)
+AGENT_DOC_FORBIDDEN_EXTERNAL_HISTORY_PATTERNS = (
+    re.compile(r"\bissue\s+#?\d+\b", re.IGNORECASE),
+    re.compile(r"\bpr\s+#?\d+\b", re.IGNORECASE),
+    re.compile(r"https://github\.com/[^)\s]+/(?:issues|pull)/\d+", re.IGNORECASE),
+    re.compile(r"\b019e[a-f0-9-]{20,}\b", re.IGNORECASE),
+)
 
 
 def error(message: str) -> int:
@@ -371,6 +383,17 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
             f"{criteria_file}: scenario appears skill-context-dependent; set "
             "metadata.evidence_type to skill_context_dependent and keep it in evals-regression"
         )
+    if evidence_type != "skill_context_dependent" and task_type == "review":
+        for index, item in enumerate(checklist, start=1):
+            if not isinstance(item, dict):
+                continue
+            criterion_text = text_of(item)
+            if any(re.search(pattern, criterion_text) for pattern in INTERNAL_LABEL_ALLOW_PATTERNS):
+                failures.append(
+                    f"{criteria_file}: checklist item {index} appears to allow internal workflow "
+                    "labels in ordinary review output; prohibit them or move the scenario to "
+                    "skill-context-dependent regression if exact workflow wording is required"
+                )
 
     if task_text and not re.search(r"\bAssume Java\s+\d+\b", task_text):
         failures.append(f"{task_file}: task must state the Java version to assume, e.g. 'Assume Java 17.'")
@@ -542,6 +565,23 @@ def validate_runtime_references() -> list[str]:
     return failures
 
 
+def validate_agent_docs_self_contained() -> list[str]:
+    failures: list[str] = []
+    root = Path("docs/agents")
+    if not root.exists():
+        return failures
+    for path in sorted(root.glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        for pattern in AGENT_DOC_FORBIDDEN_EXTERNAL_HISTORY_PATTERNS:
+            match = pattern.search(text)
+            if match:
+                failures.append(
+                    f"{path}: docs/agents must be self-contained; remove external history "
+                    f"reference {match.group(0)!r}"
+                )
+    return failures
+
+
 def validate_numbering(root: Path) -> list[str]:
     failures: list[str] = []
     if not root.exists():
@@ -646,6 +686,7 @@ def main() -> int:
     warnings = runtime_reference_overlap_warnings(dirs)
     failures.extend(validate_scenario_path_references())
     failures.extend(validate_runtime_references())
+    failures.extend(validate_agent_docs_self_contained())
 
     for warning in warnings:
         print(f"warning: {warning}", file=sys.stderr)
