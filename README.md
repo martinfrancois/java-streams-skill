@@ -243,26 +243,30 @@ Poor fit:
 
 ## How It's Evaluated
 
-The skill is tested on Java stream implementation, review, and cleanup tasks. Each task is run
+The skill is tested on Java stream implementation, review, and cleanup tasks. The main eval set uses
+a documented mix of natural prompts and explicit `Use $java-streams` prompts. Each task is run
 without the skill and with the skill, then scored mainly on stream-specific quality, with compile and
-behavior checks included as safety checks. The main eval set is evidence-weighted: it focuses on
-areas where the skill is expected to change agent behavior, not on an evenly sampled survey of every
-Java Streams and Collectors API.
+behavior checks included as safety checks.
+
+The Java Streams skill is broadly about stream and collector correctness, readability, laziness,
+ordering, reduction, collection, flattening, Java-version compatibility, and concurrency choices. The
+main eval set is evidence-weighted: it covers core skill capabilities and gives more weight to
+scenario families where hosted runs show the largest improvement with the skill versus without it.
+Read the main score as "where this skill measurably helps most," not as an evenly sampled survey of
+every Java Streams and Collectors API.
 
 The evals check that agents:
 
-- produce coherent Java for the stated Java version;
+- produce coherent Java for the stated baseline;
 - preserve outputs, ordering, null handling, duplicate-key behavior, and error behavior;
-- choose direct terminal operations such as `anyMatch`, `findFirst`, `min`, `max`, and primitive
-  `sum` instead of doing extra work first;
-- use collectors such as `joining`, `groupingBy`, `toMap`, `teeing`, and `partitioningBy` with the
-  right null and duplicate-key behavior;
-- keep `findFirst()` when order or priority matters, and use `findAny()` only when matches are
-  equivalent;
+- choose direct terminal operations such as `anyMatch`, `findFirst`, `findAny`, `min`, `max`, and
+  primitive `sum`;
+- use collectors such as `joining`, `groupingBy`, `toMap`, `teeing`, and `partitioningBy` correctly;
 - avoid casual `parallelStream()` changes for blocking calls or shared mutable state;
-- use bounded concurrent stream work for remote checks when the Java version supports it;
+- use bounded concurrent stream work for remote checks when the Java baseline supports it;
 - respect Java-version differences such as `Optional::stream`, `takeWhile`, `mapMulti`,
-  `Stream.toList()`, gatherers, and `Collectors.teeing`.
+  `Stream.toList()`, gatherers, and `Collectors.teeing`;
+- avoid cleanup changes that replace one stream antipattern with another.
 
 Compile and behavior checks make regressions visible in the score, but the main score gives extra
 weight to stream quality: whether the agent keeps the same behavior while choosing the stream
@@ -273,25 +277,10 @@ Results should be read by subset:
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
 - stream-quality subtotal shows the skill-specific effect;
-- the main eval set focuses on realistic tasks where stream-specific guidance should change the
-  answer, so it should not be read as representative of all Java Stream and Collector work;
-- `evals-reference/` keeps broader candidate and diagnostic cases;
+- the main eval set is evidence-weighted toward realistic tasks where stream-specific guidance
+  should change the answer;
+- `evals-reference/` keeps broader Java Streams and Collectors candidate and diagnostic coverage;
 - `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
-
-Current local suite structure:
-
-- main eval set: 5 scenarios, 1500 total checklist points;
-- natural subset: 2 scenarios;
-- explicit subset: 3 scenarios;
-- Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 points;
-- Java 17 collector, prefix-operation, and indexing coverage: 2 scenarios, 300 points;
-- reference suite: 2 scenarios, 160 total checklist points, reported separately;
-- regression suite: 19 scenarios, 1820 total checklist points, reported separately.
-
-Scenario 01 is focused Java 24 runtime-guidance coverage. It checks whether the skill helps agents
-apply bounded `Gatherers.mapConcurrent` guidance to a blocking remote-call stream task, while using a
-different domain and result-carrier pattern from the bundled runtime example. Do not over-read that
-scenario as independent evidence for all Java Streams and Collectors work.
 
 Hosted benchmark evidence is pending rerun for the current active suite. Exact hosted run IDs and
 score claims are intentionally kept out of this public README until they are verified against the
