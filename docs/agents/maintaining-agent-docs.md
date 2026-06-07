@@ -39,6 +39,15 @@ keep. Don't auto-resolve.
 When editing these docs, delete or rewrite anything redundant, vague, or too obvious to be
 actionable.
 
+## Self-Contained Docs
+
+Files under `docs/agents/` must be self-contained maintainer guidance. Do not require agents to load
+GitHub issues, pull requests, transcripts, hosted run pages, or other external history to understand
+the rule. Avoid specific issue numbers, PR numbers, hosted run IDs, and links to those records. If
+historical evidence matters, summarize the relevant decision, scores, and durable rationale in the
+doc itself. External links are acceptable only for stable public references or current data that must
+be fetched fresh.
+
 ## Minimal Template For New Pages
 
 ```md
