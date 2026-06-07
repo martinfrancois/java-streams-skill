@@ -97,6 +97,7 @@ benchmark claims, or scoring rules.
   membership, scoring, or hosted results change.
 - Main weighting policy:
   - Keep weights evidence-weighted, not evenly sampled.
+  - Do not describe the main eval set as representative of all Java Stream and Collector work.
   - Give more total points to scenario families with larger observed missed-point reduction, while
     keeping the skill broadly about Java Streams and Collectors.
   - Normalize ordinary 100-point main scenarios around 15 safety, 80 stream-quality, and 5
@@ -151,29 +152,23 @@ Update this section whenever active eval membership or scoring changes.
 - Main eval set: 5 active scenarios, 1500 total checklist points.
 - Natural activation subset: 2 scenarios.
 - Explicit invocation subset: 3 scenarios.
+- Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
+  points. This dominates the current main score because hosted evidence previously showed strong
+  deltas in that family; do not over-read it as broad Java Streams coverage.
+- Scenario `01-offer-availability-mapconcurrent` is intentionally focused Java 24 runtime-guidance
+  coverage. Its expected solution is close to the bundled bounded `Gatherers.mapConcurrent` example
+  in `stream-examples.md`, so report it as focused skill-use coverage rather than broad independent
+  lift evidence.
+- Java 17 collector, prefix-operation, and indexing coverage: 2 scenarios, 300 checklist points.
 - Hard-stop scan audits: regression explicit workflow-use only.
 - Reference suite: 2 scenarios, 160 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
-- Latest hosted evidence: full main run `019e9f67-8102-7517-8d4b-d2044a1d3f08`, plus targeted
-  scenario 04 rerun `019e9f7d-d65b-724f-9dd0-900db4d0c7b3` after clarifying chronological reading
-  order in the prompt. The main numbers below exclude the demoted hard-stop workflow scenario from
-  the full run and replace scenario 04's original baseline score with the targeted rerun score.
-  - Combined: with-context 1500 / 1500, without-context 628 / 1500, raw score ratio 2.39x.
-  - Natural subset: with-context 500 / 500, without-context 146 / 500.
-  - Explicit subset: with-context 1000 / 1000, without-context 482 / 1000.
-  - Demoted hard-stop workflow scenario: with-context 100 / 100, without-context 83 / 100; report
-    this only as with-context workflow regression evidence.
-- Latest reference-suite hosted run: `019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7` on this branch.
-  Scenarios that scored 100 / 100 in both variants were moved to `evals-regression/`.
-  Skill-context-dependent hard-stop scan scenarios were also moved to `evals-regression/`, because
-  their exact scan-command recall is only fair as with-context regression coverage, regardless of
-  without-context score.
-  - Remaining nonzero positive reference deltas: CPU-heavy parallel review 5 percentage points,
-    primary-contact review 5 percentage points.
-- Targeted rerun `019e9fa8-ccf2-77c7-885f-2cba4939e16f` confirmed
-  `16-java11-report-review` at with-context 100 / 100 and without-context 100 / 100 after a rubric
-  precision fix, so it moved to `evals-regression/`.
+- Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
+  run IDs, baseline scores, with-context scores, or lift ratios until they are verified against the
+  current `evals/` contents, denominators, natural/explicit split, and commit/ref.
+- Scenario movement notes in `evals-reference/NUMBERING.md` and `evals-regression/NUMBERING.md`
+  preserve historical classification rationale, but they are not current benchmark claims.
 
 ## Checks
 
