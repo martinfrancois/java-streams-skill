@@ -131,7 +131,7 @@ benchmark claims, or scoring rules.
   - `evals-regression/`: run `with-context` only by default, because it is safety coverage rather
     than lift discovery. Run `without-context` for regression only when intentionally checking
     whether a scenario should move back to reference.
-- Keep hosted eval usage minimal while preserving confidence:
+- Keep hosted eval usage minimal while preserving confidence and Tessl daily rate-limit budget:
   - For skill or eval changes, first run only the affected scenario directories, using the variant
     rule above for the suite the scenario belongs to.
   - If any affected with-context result is below 100%, keep rerunning only those targeted scenarios
@@ -141,6 +141,8 @@ benchmark claims, or scoring rules.
     nearby behavior.
   - Run `evals-regression/` with context only as a final safety check before release or after broad
     changes, not on every tuning loop.
+  - If a broad run exposes isolated failures, fix those exact scenarios and rerun them targeted
+    before spending rate-limit budget on another broad suite run.
 
 ## Current Suite Composition
 

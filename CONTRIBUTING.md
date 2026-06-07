@@ -90,7 +90,8 @@ tessl plugin publish --dry-run --bump patch .
 
 Hosted evals require Tessl authentication and a linked Tessl project. Use Sonnet 4.6 for this
 repository's main eval checks. Prefer `scripts/run_eval_suite.sh`; it runs from a temporary plugin
-copy so with-context variants can see the skill bundle:
+copy so with-context variants can see the skill bundle. Start with targeted runs when possible to
+conserve Tessl daily rate-limit budget:
 
 ```bash
 scripts/run_eval_suite.sh main
@@ -191,7 +192,8 @@ When with-context is below 100%, keep the scenario wherever it already lives. Fi
 there, then rerun only that targeted scenario until it is clean before running broader suites. After
 targeted failures are clean, run `evals/` for the main score, relevant `evals-reference/` scenarios
 with both variants for nearby behavior, and `evals-regression/` with context only for final release
-safety or broad changes.
+safety or broad changes. If a broad run finds only isolated failures, fix and rerun those scenarios
+targeted before spending rate-limit budget on another broad suite run.
 
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
