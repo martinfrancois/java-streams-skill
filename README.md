@@ -245,7 +245,9 @@ Poor fit:
 
 The skill is tested on Java stream implementation, review, and cleanup tasks. Each task is run
 without the skill and with the skill, then scored mainly on stream-specific quality, with compile and
-behavior checks included as safety checks.
+behavior checks included as safety checks. The main eval set is evidence-weighted: it focuses on
+areas where the skill is expected to change agent behavior, not on an evenly sampled survey of every
+Java Streams and Collectors API.
 
 The evals check that agents:
 
@@ -272,7 +274,7 @@ Results should be read by subset:
 - explicit invocation scenarios directly ask for `$java-streams`;
 - stream-quality subtotal shows the skill-specific effect;
 - the main eval set focuses on realistic tasks where stream-specific guidance should change the
-  answer;
+  answer, so it should not be read as representative of all Java Stream and Collector work;
 - `evals-reference/` keeps broader candidate and diagnostic cases;
 - `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
 
@@ -281,39 +283,18 @@ Current local suite structure:
 - main eval set: 5 scenarios, 1500 total checklist points;
 - natural subset: 2 scenarios;
 - explicit subset: 3 scenarios;
+- Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 points;
+- Java 17 collector, prefix-operation, and indexing coverage: 2 scenarios, 300 points;
 - reference suite: 2 scenarios, 160 total checklist points, reported separately;
 - regression suite: 19 scenarios, 1820 total checklist points, reported separately.
 
-Latest hosted evidence, counting only scenarios that remain in the main eval set:
+Scenario 01 is focused Java 24 runtime-guidance coverage. It checks whether the skill helps agents
+apply the bundled bounded `Gatherers.mapConcurrent` guidance to a blocking remote-call stream task.
+Do not over-read that scenario as independent evidence for all Java Streams and Collectors work.
 
-- full main run:
-  [`019e9f67-8102-7517-8d4b-d2044a1d3f08`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f67-8102-7517-8d4b-d2044a1d3f08);
-- targeted scenario 04 rerun after prompt clarification:
-  [`019e9f7d-d65b-724f-9dd0-900db4d0c7b3`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f7d-d65b-724f-9dd0-900db4d0c7b3);
-- with skill: 1500 / 1500;
-- without skill: 628 / 1500;
-- combined main score ratio: 2.39x;
-- natural subset: with skill 500 / 500, without skill 146 / 500;
-- explicit subset: with skill 1000 / 1000, without skill 482 / 1000.
-
-The demoted hard-stop workflow scenario was also present in that hosted run and scored with skill
-100 / 100 and without skill 83 / 100, but it is now reported only as with-skill workflow regression
-evidence.
-
-Latest reference-suite hosted run:
-
-- run:
-  [`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7);
-- scenarios that scored 100 / 100 both with and without the skill were moved to
-  `evals-regression/`;
-- skill-context-dependent scenarios that require exact skill-provided text, commands, procedures,
-  checklists, headers, or bundled reference text were also moved to `evals-regression/`, because
-  they are useful with-skill checks but are not fair without-skill lift evidence;
-- remaining reference scenarios keep ordinary stream-review lift evidence;
-- targeted rerun
-  [`019e9fa8-ccf2-77c7-885f-2cba4939e16f`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9fa8-ccf2-77c7-885f-2cba4939e16f)
-  confirmed `16-java11-report-review` at 100 / 100 both with and without the skill, so it moved to
-  `evals-regression/`.
+Hosted benchmark evidence is pending rerun for the current active suite. Exact hosted run IDs and
+score claims are intentionally kept out of this public README until they are verified against the
+current active `evals/` contents, denominators, natural/explicit split, and commit.
 
 ## Origin
 
