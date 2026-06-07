@@ -1,5 +1,5 @@
 {
-  "context": "Main eval natural implementation: non-overlapping Java 17 collector scenario for flattening nested data, grouping, duplicate-key handling, sorted unique downstream results, and short-circuit existence checks. Rerun hosted evals before updating benchmark claims.",
+  "context": "Reference natural implementation: Java 17 collector scenario for flattening nested data, grouping, duplicate-key handling, sorted unique downstream results, and short-circuit existence checks. Demoted from main because hosted history showed a high without-context score, so it is useful broad stream coverage but weak main-lift evidence.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -48,7 +48,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
-    "main_eval_weight_multiplier": 1,
-    "main_eval_selection": "added to improve natural activation coverage and broaden active stream/collector capability coverage; rerun hosted evals before updating benchmark claims"
+    "evidence_type": "ordinary_lift",
+    "reference_selection": "demoted from active main eval coverage because release run 019ea20b-cf1b-73da-955f-d782db861b86 scored 92/100 without context and 100/100 with context; keep as reference coverage unless future hosted evidence shows stronger delta"
   }
 }

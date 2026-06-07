@@ -6,6 +6,11 @@ Number `12` was removed from reference coverage after the remote blocking-call r
 by the active main eval set. Do not include deleted or promoted reference numbers in reference
 aggregation.
 
+Number `15` contains the session roster indexes scenario demoted from active main eval number `06`.
+Hosted release run `019ea20b-cf1b-73da-955f-d782db861b86` scored it `92/100` without context and
+`100/100` with context, so it remains ordinary reference lift evidence but should not drive the
+evidence-weighted main score unless future hosted history shows a stronger delta.
+
 Number `25` contains the explicit hard-stop scan workflow audit that was demoted from the main eval
 set and later moved to `evals-regression/`. It requires exact skill-provided text, so report it as
 with-context regression coverage rather than as main or reference Java stream reasoning lift.

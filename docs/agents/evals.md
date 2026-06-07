@@ -160,8 +160,8 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 5 active scenarios, 1500 total checklist points.
-- Natural activation subset: 2 scenarios.
+- Main eval set: 4 active scenarios, 1400 total checklist points.
+- Natural activation subset: 1 scenario.
 - Explicit invocation subset: 3 scenarios.
 - Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
   points. This dominates the current main score because hosted evidence previously showed strong
@@ -170,9 +170,12 @@ Update this section whenever active eval membership or scoring changes.
   coverage. It should remain a different domain and result-carrier pattern from the bundled bounded
   `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
   rather than broad independent lift evidence.
-- Java 17 collector, prefix-operation, and indexing coverage: 2 scenarios, 300 checklist points.
+- Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
+- Session roster indexing moved from main number `06` to reference number `15` after release run
+  `019ea20b-cf1b-73da-955f-d782db861b86` scored it `92/100` without context and `100/100` with
+  context. It remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 2 scenarios, 160 total checklist points. Deleted reference number 12 and
+- Reference suite: 3 scenarios, 260 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
