@@ -41,6 +41,7 @@
   ],
   "metadata": {
     "invocation": "explicit",
-    "task_type": "cleanup"
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
   }
 }

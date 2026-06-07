@@ -47,6 +47,7 @@
   ],
   "metadata": {
     "invocation": "explicit",
-    "task_type": "review"
+    "task_type": "review",
+    "evidence_type": "solved_regression"
   }
 }

@@ -344,6 +344,14 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
         failures.append(
             f"{criteria_file}: metadata.evidence_type must be one of {sorted(EVIDENCE_TYPES)}"
         )
+    if scenario.parent.name == "evals-regression" and evidence_type not in {
+        "solved_regression",
+        "skill_context_dependent",
+    }:
+        failures.append(
+            f"{criteria_file}: regression scenarios must set metadata.evidence_type to "
+            "solved_regression or skill_context_dependent"
+        )
     scenario_text = f"{scenario.name}\n{task_text}\n{json.dumps(data, sort_keys=True)}"
     detected_skill_context = is_skill_context_dependent_text(scenario_text)
     if evidence_type == "skill_context_dependent" and scenario.parent.name != "evals-regression":
