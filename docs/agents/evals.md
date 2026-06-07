@@ -88,9 +88,9 @@ Update this section whenever active eval membership or scoring changes.
 - Natural activation subset: 2 scenarios.
 - Explicit invocation subset: 3 scenarios.
 - Hard-stop scan audits: reference explicit workflow-use only.
-- Reference suite: 21 scenarios, 1980 total checklist points. Deleted reference number 12 is not
-  counted.
-- Regression suite: currently empty.
+- Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
+  regression-moved scenarios are not counted.
+- Regression suite: 15 scenarios, 1420 total checklist points.
 - Latest hosted evidence: full main run `019e9f67-8102-7517-8d4b-d2044a1d3f08`, plus targeted
   scenario 04 rerun `019e9f7d-d65b-724f-9dd0-900db4d0c7b3` after clarifying chronological reading
   order in the prompt. The main numbers below exclude the demoted hard-stop workflow scenario from
@@ -100,7 +100,13 @@ Update this section whenever active eval membership or scoring changes.
   - Explicit subset: with-context 1000 / 1000, without-context 482 / 1000.
   - Demoted hard-stop workflow scenario: with-context 100 / 100, without-context 83 / 100; report
     this only as reference workflow evidence.
-  - Reference and regression suites were not otherwise run in this hosted check.
+- Latest reference-suite hosted run: `019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7` on this branch.
+  Scenarios that scored 100 / 100 in both variants were moved to `evals-regression/`.
+  - Remaining nonzero positive reference deltas: hard-stop scan audit 29 percentage points,
+    collector/order scan 24 percentage points, Java 8 API drift scan 24 percentage points,
+    CPU-heavy parallel review 5 percentage points, primary-contact review 5 percentage points.
+  - `16-java11-report-review` stayed in reference because with-context scored 99 / 100 while
+    without-context scored 100 / 100; fix or rerun it targeted before moving it to regression.
 
 ## Checks
 
