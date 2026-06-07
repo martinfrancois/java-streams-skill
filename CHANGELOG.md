@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.3...v0.1.4) (2026-06-07)
+
+
+### Bug Fixes
+
+* **evals:** publish updated main eval suite ([8e34491](https://github.com/martinfrancois/java-streams-skill/commit/8e3449165aff8296c09802711d73a13e5b8fe3f1))
+
 ## [0.1.3](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.2...v0.1.3) (2026-06-07)
 
 
