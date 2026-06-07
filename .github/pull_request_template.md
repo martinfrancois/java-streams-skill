@@ -44,6 +44,7 @@ Tessl-authenticated checks:
 - [ ] `tessl skill review --threshold 100 skills/java-streams/SKILL.md`, if skill text or references changed
 - [ ] Targeted main/reference `scripts/run_eval_suite.sh <main|reference> <scenario-name>`, if skill behavior or those evals changed
 - [ ] Targeted regression `scripts/run_eval_suite.sh regression <scenario-name>`, if regression evals changed
+- [ ] `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`, if a scenario was added or moved between suites
 - [ ] Full/main `scripts/run_eval_suite.sh main`, if benchmark claims changed or targeted with-context results are clean
 
 Details:
@@ -59,6 +60,7 @@ Details:
 - [ ] If Java stream guidance changed, Java baseline compatibility plus ordering, null handling, and parallelism were considered.
 - [ ] If evals or benchmark claims changed, the eval scenarios remain fair and do not leak answer keys, run IDs, or fixed score claims into runtime references.
 - [ ] Main and reference evals were run with both variants when hosted evals were needed; regression evals were run with context only unless reclassification back to reference was being checked.
+- [ ] New or moved eval scenarios follow the classifier recommendation, or the PR explains the maintainer-approved override.
 - [ ] If any with-context result was below 100%, targeted failing scenarios were fixed and rerun before broader eval suites.
 - [ ] PR title or squash title uses Conventional Commits.
 - [ ] Redaction checked: no tokens, private links, private eval artifacts, local host paths, or proprietary Java source.

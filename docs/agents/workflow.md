@@ -54,6 +54,16 @@ release-readiness.
   changes. Run regression without-context only when intentionally checking whether a scenario should
   move back to reference.
 
+- When adding or moving one scenario, classify it from the isolated run before choosing the final
+  suite:
+
+  ```bash
+  tessl eval view <run-id> --json > /tmp/eval-run.json
+  scripts/classify_eval_result.py /tmp/eval-run.json --scenario-dir <scenario-dir>
+  ```
+
+  Follow the recommendation unless the pull request documents a maintainer-approved override.
+
 - Run the Tessl skill review at threshold 100 when changing runtime skill content:
 
   ```bash
