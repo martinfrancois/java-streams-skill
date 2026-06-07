@@ -1,0 +1,1 @@
+Review stream performance advice for external mutation and parallelStream safety.

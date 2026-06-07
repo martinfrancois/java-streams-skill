@@ -1,0 +1,48 @@
+{
+  "context": "Reference natural implementation: high-volume uppercase conversion should use a result-producing stream chain rather than external collection mutation or unsafe parallelStream advice.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Creates UppercaseNames.java with the requested uppercaseNames(List<String> names) method, necessary imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves requested behavior",
+      "category": "safety",
+      "max_score": 15,
+      "description": "Returns every input name converted with String::toUpperCase in the original encounter order and does not mutate the input list."
+    },
+    {
+      "name": "Uses direct stream result production",
+      "category": "stream_quality",
+      "max_score": 35,
+      "description": "Uses a direct stream chain such as names.stream().map(String::toUpperCase).toList(), or an equivalent direct collector, instead of creating a list and mutating it from forEach."
+    },
+    {
+      "name": "Avoids unsafe parallel shortcut",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Does not use parallelStream(), .parallel(), or manual concurrent workers together with shared mutable accumulation. Full credit may be awarded for either sequential direct collection or a pure side-effect-free parallelStream map plus ordered collector/toList implementation that preserves behavior for the large-list performance task."
+    },
+    {
+      "name": "Keeps performance scope focused",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Keeps the implementation O(n), avoids extra unnecessary passes, and does not add caching, batching frameworks, or unrelated memory-heavy transformations."
+    },
+    {
+      "name": "Keeps API focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the implementation limited to the requested helper without unrelated methods, dependencies, or broad API redesign."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/4"
+  }
+}

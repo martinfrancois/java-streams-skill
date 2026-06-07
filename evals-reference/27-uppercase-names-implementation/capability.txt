@@ -1,0 +1,1 @@
+Implement high-volume uppercase name conversion without external stream mutation.
