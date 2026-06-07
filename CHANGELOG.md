@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.2...v0.1.3) (2026-06-07)
+
+
+### Bug Fixes
+
+* **skill:** add inline actionability example ([46e4e0c](https://github.com/martinfrancois/java-streams-skill/commit/46e4e0c4b3c69bb10d7dfc2c12b1c829018d75c8))
+
 ## [0.1.2](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.1...v0.1.2) (2026-06-07)
 
 
