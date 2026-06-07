@@ -22,19 +22,20 @@ benchmark claims, or scoring rules.
     hosted data is available.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
-- Context-dependent workflow evals ask for exact text, commands, or procedures that only the skill
-  context provides, such as the hard-stop scan header and `rg` command. Keep them in
-  `evals-regression/` as explicit with-context workflow-use evidence. Do not count them in the main
-  or reference lift score, do not describe them as natural activation or independent Java stream
-  reasoning, and do not call weighted checklist items hard gates.
+- Skill-context-dependent evals require information that only comes from the skill package or agent
+  instructions, such as exact wording, commands, procedures, checklists, headers, or bundled
+  reference text. Keep them in `evals-regression/` once with-context is 100%, regardless of the
+  without-context score. Do not count them in the main or reference lift score, do not describe them
+  as natural activation or independent Java stream reasoning, and do not call weighted checklist
+  items hard gates.
 - Keep three eval buckets:
   - `evals/` is the main eval set used for public lift reporting.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
     help tune or promote future main evals.
   - `evals-regression/` is for scenarios that hosted history shows are consistently solved by both
-    with-context and without-context, plus explicit context-dependent workflow checks that are only
-    fair as with-context regression coverage. These protect against regressions but should not be
-    part of normal lift discovery runs.
+    with-context and without-context, plus skill-context-dependent checks that are only fair as
+    with-context regression coverage. These protect against regressions but should not be part of
+    normal lift discovery runs.
 - Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
 - Every main eval criterion must classify `category` as `safety`, `stream_quality`, or
@@ -63,22 +64,23 @@ benchmark claims, or scoring rules.
   - `with-context = 100` and `without-context < 100`: useful lift evidence; keep in main or
     reference depending on coverage, delta, and weighting.
   - `with-context = 100` and `without-context = 100`: regression coverage.
-  - `with-context = 100` and without-context is intentionally not applicable because the scenario
-    depends on exact skill-provided workflow text: regression coverage.
+  - `with-context = 100` and the scenario requires skill-only context, exact skill-provided text, a
+    bundled command, or a skill-specific procedure: regression coverage, regardless of the
+    without-context score.
 - Classify new scenarios with the same evidence rule every time:
   - Draft ordinary new scenarios in `evals-reference/`.
-  - Draft context-dependent workflow scenarios that require exact skill-provided text, commands, or
-    procedures, such as the hard-stop scan command, in `evals-regression/`.
+  - Draft skill-context-dependent scenarios that require exact skill-provided text, commands,
+    procedures, checklists, headers, or bundled reference text in `evals-regression/`.
   - Run the scenario in isolation with `scripts/run_eval_suite.sh reference <scenario-name>` for
     ordinary scenarios or `scripts/run_eval_suite.sh regression <scenario-name>` for
-    context-dependent workflow scenarios.
+    skill-context-dependent scenarios.
   - Save `tessl eval view <run-id> --json` output and run
     `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`.
   - Follow the classifier unless there is a documented maintainer reason to override it. The
     default rule is: with-context below 100 -> fix required before classification;
-    context-dependent workflow -> regression once with-context is 100; both variants 100 ->
-    regression; clean with-context plus without-context below 100 -> reference or main depending on
-    delta, coverage, and weighting.
+    skill-context-dependent -> regression once with-context is 100, regardless of without-context
+    score; both variants 100 -> regression; clean with-context plus without-context below 100 ->
+    reference or main depending on delta, coverage, and weighting.
 - Main promotion floor: a new scenario should not move to main unless its percentage-point delta is
   at least as strong as the weakest current main scenario and it improves capability coverage. The
   current floor is 27.5 percentage points, from `04-invoice-bounds-and-temperature-windows`
@@ -153,8 +155,9 @@ Update this section whenever active eval membership or scoring changes.
     this only as with-context workflow regression evidence.
 - Latest reference-suite hosted run: `019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7` on this branch.
   Scenarios that scored 100 / 100 in both variants were moved to `evals-regression/`.
-  Context-dependent hard-stop scan workflow scenarios were also moved to `evals-regression/`,
-  because their exact scan-command recall is only fair as with-context regression coverage.
+  Skill-context-dependent hard-stop scan scenarios were also moved to `evals-regression/`, because
+  their exact scan-command recall is only fair as with-context regression coverage, regardless of
+  without-context score.
   - Remaining nonzero positive reference deltas: CPU-heavy parallel review 5 percentage points,
     primary-contact review 5 percentage points.
 - Targeted rerun `019e9fa8-ccf2-77c7-885f-2cba4939e16f` confirmed

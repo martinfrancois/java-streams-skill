@@ -1,5 +1,5 @@
 {
-  "context": "Regression context-dependent workflow audit: measures use of the skill-provided hard-stop scan command before classifying dense Java 17 stream issues. This scenario requires runtime skill context and must not be counted as independent without-context Java stream reasoning.",
+  "context": "Regression skill-context-dependent audit: measures use of the skill-provided hard-stop scan command before classifying dense Java 17 stream issues. This scenario requires runtime skill context and must not be counted as independent without-context Java stream reasoning.",
   "type": "weighted_checklist",
   "checklist": [
     {

@@ -47,21 +47,40 @@ def scenario_text_from_dir(path: Path | None) -> str:
     return "\n".join(parts)
 
 
-def is_context_dependent_workflow(text: str) -> bool:
+def is_skill_context_dependent(text: str) -> bool:
     lowered = text.lower()
     context_terms = (
         "skill bundle",
+        "skill package",
         "skill-provided",
+        "skill-only context",
+        "agent instructions",
         "from the skill",
         "from the skill bundle",
+        "bundled reference",
+        "bundled reference text",
+        "exact skill-provided text",
+        "exact wording",
+        "exact text",
         "exact scan",
         "exact scan header",
+        "exact checklist",
+        "exact procedure",
+        "exact command",
         "scan command from the skill",
         "hard-stop rg scan command",
     )
-    workflow_terms = ("workflow", "scan command", "scan header", "hard-stop scan")
+    required_terms = (
+        "exact",
+        "skill-provided",
+        "skill-only context",
+        "skill package",
+        "agent instructions",
+        "from the skill",
+        "bundled reference",
+    )
     return any(term in lowered for term in context_terms) and any(
-        term in lowered for term in workflow_terms
+        term in lowered for term in required_terms
     )
 
 
@@ -93,7 +112,7 @@ def classify(
     *,
     with_score: tuple[float, float] | None,
     without_score: tuple[float, float] | None,
-    context_dependent_workflow: bool,
+    skill_context_dependent: bool,
     main_delta_floor: float,
 ) -> tuple[str, str]:
     if with_score is None:
@@ -110,10 +129,10 @@ def classify(
             "with-context is below 100%; fix the skill or eval and rerun targeted before choosing a suite",
         )
 
-    if context_dependent_workflow:
+    if skill_context_dependent:
         return (
             "regression",
-            "context-dependent workflow recall is only fair as with-context regression coverage",
+            "skill-context-dependent recall is only fair as with-context regression coverage",
         )
 
     if without_score is None:
@@ -138,7 +157,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_json", type=Path, help="Path to Tessl eval view --json output")
     parser.add_argument("--scenario", help="Scenario title, directory name, or distinctive text")
-    parser.add_argument("--scenario-dir", type=Path, help="Local scenario directory for workflow detection")
+    parser.add_argument(
+        "--scenario-dir",
+        type=Path,
+        help="Local scenario directory for skill-context-dependent detection",
+    )
     parser.add_argument(
         "--main-delta-floor",
         type=float,
@@ -160,12 +183,12 @@ def main() -> int:
     title = scenario.get("shortDescription") or "(untitled scenario)"
     task_text = scenario.get("task") or ""
     local_text = scenario_text_from_dir(args.scenario_dir)
-    context_dependent_workflow = is_context_dependent_workflow(f"{title}\n{task_text}\n{local_text}")
+    skill_context_dependent = is_skill_context_dependent(f"{title}\n{task_text}\n{local_text}")
 
     suite, reason = classify(
         with_score=with_score,
         without_score=without_score,
-        context_dependent_workflow=context_dependent_workflow,
+        skill_context_dependent=skill_context_dependent,
         main_delta_floor=args.main_delta_floor,
     )
 
@@ -180,7 +203,7 @@ def main() -> int:
     print(f"scenario: {title}")
     print(f"with-context: {fmt(with_score)}")
     print(f"without-context: {fmt(without_score)}")
-    print(f"context-dependent-workflow: {'yes' if context_dependent_workflow else 'no'}")
+    print(f"skill-context-dependent: {'yes' if skill_context_dependent else 'no'}")
     print(f"recommended-suite: {suite}")
     print(f"reason: {reason}")
     return 0
