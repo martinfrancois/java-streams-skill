@@ -286,8 +286,16 @@ Current local suite structure:
 - reference suite: 20 scenarios, reported separately;
 - regression suite: currently empty.
 
-Hosted benchmark numbers are pending a rerun for the current active suite. Do not compare older run
-IDs or older denominators against this version.
+Latest hosted active-suite run on commit `9212a87`:
+
+- run: [`019e9f67-8102-7517-8d4b-d2044a1d3f08`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f67-8102-7517-8d4b-d2044a1d3f08);
+- with skill: 1600 / 1600;
+- without skill: 701 / 1600;
+- combined main score ratio: 2.28x;
+- natural subset: with skill 500 / 500, without skill 146 / 500;
+- explicit subset: with skill 1100 / 1100, without skill 555 / 1100.
+
+Reference and regression suites were not run in that hosted check, so report them separately.
 
 ## Origin
 
