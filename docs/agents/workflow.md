@@ -59,13 +59,16 @@ release-readiness.
   scripts/run_eval_suite.sh main
   ```
 
-  For runtime skill text or runtime reference changes, progressively widen the hosted checks: first
-  affected scenarios, then the full main suite, then relevant reference scenarios, and before final
-  release/open-source-ready claims, all reference scenarios with both variants plus all regression
-  scenarios with context only. Run regression without-context only when intentionally checking
-  whether a scenario should move back to reference. If a broad run finds only isolated failures,
-  fix and rerun those scenarios targeted after the fix before spending rate-limit budget on another
-  broad suite run.
+  For runtime skill text or runtime reference changes, progressively widen the hosted checks before
+  calling the PR done: first affected scenarios, then the full main suite, then every reference
+  scenario with both variants, then every regression scenario with context only. The final post-change
+  evidence must show 100% with context for every retained scenario in every suite. Run regression
+  without-context only when intentionally checking whether a scenario should move back to reference.
+  If a broad run finds isolated failures, fix and rerun those scenarios targeted after the fix before
+  spending rate-limit budget on another broad suite run; once targeted failures are clean, finish the
+  remaining broad suites that have not yet run against the final skill state. If Tessl hosted evals
+  are unavailable or rate-limited, document the exact missing runs and do not call the PR
+  release-ready.
 
 - When adding or moving one scenario, classify it from the isolated run before choosing the final
   suite:
@@ -84,10 +87,22 @@ release-readiness.
   ```
 
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
-  `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases. When Release Please creates a
-  release with `GITHUB_TOKEN`, the normal `release: published` trigger does not fire, so the Release
-  Please workflow dispatches `.github/workflows/publish-tessl.yml` with the created tag. Tessl
-  publishing still happens only in `.github/workflows/publish-tessl.yml`.
+  `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
+  - Use `fix(skill): ...` for corrections to `skills/java-streams/SKILL.md` or files it links as
+    runtime references.
+  - Use `feat(skill): ...` when adding a new runtime capability or materially broader skill behavior.
+  - Use `test(evals): ...` when adding, moving, or reclassifying scenarios without changing their
+    scoring intent.
+  - Use `fix(evals): ...` when correcting a flawed task, criterion, score interpretation, or unfair
+    eval expectation.
+  - Use `docs: ...` only for user/contributor/agent docs that do not change runtime skill behavior
+    and do not change eval scoring or suite membership.
+  - Use the PR title type/scope for the highest-impact change in the PR; if runtime skill behavior
+    changed, the PR title should normally be `fix(skill)` or `feat(skill)`, not `docs`.
+
+  When Release Please creates a release with `GITHUB_TOKEN`, the normal `release: published` trigger
+  does not fire, so the Release Please workflow dispatches `.github/workflows/publish-tessl.yml` with
+  the created tag. Tessl publishing still happens only in `.github/workflows/publish-tessl.yml`.
 - When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit
   `CHANGELOG.md`, `.release-please-manifest.json`, `.tessl-plugin/plugin.json`, tags, or GitHub
   releases by hand unless the maintainer explicitly asks to repair broken release state.
