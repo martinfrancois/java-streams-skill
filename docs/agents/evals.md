@@ -90,7 +90,11 @@ Update this section whenever active eval membership or scoring changes.
 - Reference suite: 20 scenarios, 1880 total checklist points. Deleted reference number 12 is not
   counted.
 - Regression suite: currently empty.
-- Hosted benchmark claims: pending rerun for the current active suite.
+- Latest hosted active-suite run: `019e9f67-8102-7517-8d4b-d2044a1d3f08` on commit `9212a87`.
+  - Combined: with-context 1600 / 1600, without-context 701 / 1600, raw score ratio 2.28x.
+  - Natural subset: with-context 500 / 500, without-context 146 / 500.
+  - Explicit subset: with-context 1100 / 1100, without-context 555 / 1100.
+  - Reference and regression suites were not run in this hosted check.
 
 ## Checks
 
