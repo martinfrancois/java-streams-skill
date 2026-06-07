@@ -30,7 +30,7 @@
       "name": "Uses flatMap and counting for item sales",
       "category": "stream_quality",
       "max_score": 20,
-      "description": "Flattens orders to line items and computes salesByItemName with groupingBy(Item::name, counting()) or an equivalent collector, rather than nested manual map updates."
+      "description": "Flattens orders to line items and computes salesByItemName with groupingBy(Item::name, counting()) or an equivalent collector, rather than nested manual map updates. Award full credit if the implementation flattens once into a local item list and reuses it for both salesByItemName and quantityStats."
     },
     {
       "name": "Uses summarizingInt for quantity stats",
