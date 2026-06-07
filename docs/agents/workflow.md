@@ -26,8 +26,8 @@ release-readiness.
   ```
 
 - For skill behavior or eval changes, run hosted evals with Sonnet 4.6, but start with the smallest
-  useful set. Use `scripts/run_eval_suite.sh` so the run uses plugin context and the right variant
-  policy.
+  useful set to conserve Tessl daily rate-limit budget. Use `scripts/run_eval_suite.sh` so the run
+  uses plugin context and the right variant policy.
 
   Run targeted affected main or reference scenarios with both variants:
 
@@ -52,7 +52,8 @@ release-readiness.
   Run relevant `evals-reference/` scenarios with both variants for nearby behavior. Run
   `evals-regression/` with context only as a final safety check before release or after broad
   changes. Run regression without-context only when intentionally checking whether a scenario should
-  move back to reference.
+  move back to reference. If a broad run finds only isolated failures, rerun those scenarios
+  targeted after the fix before spending rate-limit budget on another broad suite run.
 
 - When adding or moving one scenario, classify it from the isolated run before choosing the final
   suite:
