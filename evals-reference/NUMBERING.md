@@ -11,6 +11,16 @@ Hosted release run `019ea20b-cf1b-73da-955f-d782db861b86` scored it `92/100` wit
 `100/100` with context, so it remains ordinary reference lift evidence but should not drive the
 evidence-weighted main score unless future hosted history shows a stronger delta.
 
+Number `26` was promoted to `evals/07-uppercase-side-effect-review` after targeted Sonnet 4.6 run
+`019ea268-bdfe-70de-a54a-d0810faa1be7` scored it `62/100` without context and `100/100` with
+context.
+
+Number `27` covers high-volume uppercase implementation from
+<https://github.com/martinfrancois/java-streams-skill/issues/4>. Targeted Sonnet 4.6 run
+`019ea26a-754b-718f-ac66-cd111d4b1e79` scored it `99/100` without context and `100/100` with
+context. Keep it in `evals-reference/` unless future hosted history shows it should move to main or
+regression.
+
 Number `25` contains the explicit hard-stop scan workflow audit that was demoted from the main eval
 set and later moved to `evals-regression/`. It requires exact skill-provided text, so report it as
 with-context regression coverage rather than as main or reference Java stream reasoning lift.

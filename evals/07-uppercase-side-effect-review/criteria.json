@@ -1,0 +1,48 @@
+{
+  "context": "Reference natural review: performance advice for a stream that mutates an external ArrayList and tempts agents to suggest parallelStream for a 10-million-element input.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates review artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates review.md with a clear recommendation."
+    },
+    {
+      "name": "Identifies external mutation",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Explains that forEach mutates the external ArrayList and that the stream should produce the result list directly instead."
+    },
+    {
+      "name": "Warns against unsafe parallelStream shortcut",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Does not recommend simply changing stream() to parallelStream() while keeping the external ArrayList mutation. Full credit may still be awarded when the review first makes the code side-effect-free, then prominently recommends benchmarking a pure parallelStream map plus collector/toList version for the 10-million-name case before relying on it for throughput."
+    },
+    {
+      "name": "Suggests direct result-producing replacement",
+      "category": "stream_quality",
+      "max_score": 25,
+      "description": "Shows or clearly recommends a replacement such as names.stream().map(String::toUpperCase).toList(), or collect(Collectors.toList()) when Java-version compatibility or mutability requires it."
+    },
+    {
+      "name": "Addresses performance honestly",
+      "category": "stream_quality",
+      "max_score": 15,
+      "description": "Distinguishes the correctness fix from the performance decision: does not claim direct collection alone is a guaranteed throughput win, strongly recommends benchmarking a pure parallel stream for the 10-million-name case, and warns that parallelStream can be slower for small lists or mostly-small call paths."
+    },
+    {
+      "name": "Keeps review focused",
+      "category": "maintainability",
+      "max_score": 5,
+      "description": "Keeps the review concise and focused on the stream/performance issue without unrelated rewrites, broad style commentary, or internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/4"
+  }
+}

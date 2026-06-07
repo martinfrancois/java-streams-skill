@@ -67,6 +67,10 @@ benchmark claims, or scoring rules.
   100%, the scenario is not ready to classify or report. Fix the skill or eval in place and run that
   scenario targeted until it is clean before running broader suites. Do not move failing
   with-context scenarios to hide them.
+- For external-mutation evals, criteria should fail unsafe shared mutation, not pure parallelism
+  itself. A pure ordered `parallelStream().map(...).toList()` answer can be correct for a large
+  CPU-bound implementation task, while a review task should still require measurement and small-list
+  caveats before recommending parallelism as a performance fix.
 - Promote or demote scenarios based on purpose and evidence:
   - `with-context < 100`: fix/rerun targeted before choosing or changing a suite.
   - `with-context = 100` and `without-context < 100`: useful lift evidence; keep in main or
@@ -165,8 +169,8 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 4 active scenarios, 1400 total checklist points.
-- Natural activation subset: 1 scenario.
+- Main eval set: 5 active scenarios, 1500 total checklist points.
+- Natural activation subset: 2 scenarios.
 - Explicit invocation subset: 3 scenarios.
 - Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
   points. This dominates the current main score because hosted evidence previously showed strong
@@ -175,12 +179,16 @@ Update this section whenever active eval membership or scoring changes.
   coverage. It should remain a different domain and result-carrier pattern from the bundled bounded
   `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
   rather than broad independent lift evidence.
-- Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
-- Session roster indexing moved from main number `06` to reference number `15` after release run
-  `019ea20b-cf1b-73da-955f-d782db861b86` scored it `92/100` without context and `100/100` with
-  context. It remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
+- Java 17 collector, prefix-operation, and external-mutation coverage: 2 scenarios, 300 checklist
+  points.
+- Scenario `07-uppercase-side-effect-review` covers external stream mutation, lambda purity, and
+  careful `parallelStream()` performance advice. It moved to main because targeted hosted evidence
+  showed a clean with-context result and a delta above the current main promotion floor.
+- Session roster indexing moved from main number `06` to reference number `15` because hosted
+  evidence showed the without-context result was already high while with-context was clean. It
+  remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 3 scenarios, 260 total checklist points. Deleted reference number 12 and
+- Reference suite: 4 scenarios, 360 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
