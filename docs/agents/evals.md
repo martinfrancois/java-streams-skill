@@ -62,6 +62,19 @@ benchmark claims, or scoring rules.
     reference depending on coverage and weighting.
   - `with-context = 100` and `without-context = 100` repeatedly: candidate for
     `evals-regression/`.
+- Classify new scenarios with the same evidence rule every time:
+  - Draft ordinary new scenarios in `evals-reference/`.
+  - Draft scenarios that require exact bundled skill text, such as the hard-stop scan command, in
+    `evals-regression/`.
+  - Run the scenario in isolation with `scripts/run_eval_suite.sh reference <scenario-name>` for
+    ordinary scenarios or `scripts/run_eval_suite.sh regression <scenario-name>` for bundled
+    workflow scenarios.
+  - Save `tessl eval view <run-id> --json` output and run
+    `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`.
+  - Follow the classifier unless there is a documented maintainer reason to override it. The
+    default rule is: bundled workflow -> regression; with-context below 100 -> keep in reference and
+    fix targeted; both variants 100 -> regression; clean with-context plus delta at least as strong
+    as the weakest current main scenario -> main; otherwise reference.
 - A 2x raw score ratio is useful only when earned by honest, realistic eval design. Don't suppress
   legitimate coverage just to improve lift.
 - Track raw score, percentage-point lift, raw score ratio, missed-point reduction, and the

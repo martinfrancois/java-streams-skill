@@ -148,6 +148,23 @@ Do not hide baseline-solved scenarios just to improve lift. Move repeatedly base
 scenarios to `evals-regression/` only when hosted evidence shows both variants are consistently
 100%. Keep low-delta but still diagnostic scenarios in `evals-reference/`.
 
+When adding a new scenario, classify it from an isolated hosted run:
+
+1. Put ordinary candidate scenarios in `evals-reference/`. Put scenarios that require exact bundled
+   skill text, such as the hard-stop scan command, in `evals-regression/`.
+2. Run `scripts/run_eval_suite.sh reference <scenario-name>` for ordinary scenarios, or
+   `scripts/run_eval_suite.sh regression <scenario-name>` for bundled workflow scenarios.
+3. Save `tessl eval view <run-id> --json` output and run:
+
+   ```bash
+   scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>
+   ```
+
+4. Use the recommended suite unless the pull request documents a maintainer-approved reason to
+   override it. In short: bundled workflow checks stay regression; with-context below 100 stays in
+   reference for targeted fixing; both variants 100 goes to regression; clean with-context plus a
+   main-strength delta goes to main; everything else stays reference.
+
 When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
 there, then rerun only that targeted scenario until it is clean before running broader suites. After
 targeted failures are clean, run `evals/` for the main score, relevant `evals-reference/` scenarios
