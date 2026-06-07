@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.2](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.1...v0.1.2) (2026-06-07)
+
+
+### Bug Fixes
+
+* accept clear availability carriers in the offer availability eval ([d4be973](https://github.com/martinfrancois/java-streams-skill/commit/d4be9734d7de5b93f54306ba9b93fb5f6386ba5b))
+* optimize Java streams skill review guidance ([eb69f58](https://github.com/martinfrancois/java-streams-skill/commit/eb69f58ee544cf1a4aaa462e3601901bdae18b61))
+
+
+### Documentation
+
+* simplify eval explanation in the README ([f3153c9](https://github.com/martinfrancois/java-streams-skill/commit/f3153c9b010dfdd8de1e2f9a1d9d2e56d8186481))
+
 ## [0.1.1](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.0...v0.1.1) (2026-06-07)
 
 
