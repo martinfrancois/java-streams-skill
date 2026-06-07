@@ -306,9 +306,9 @@ Latest reference-suite hosted run:
   [`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7);
 - scenarios that scored 100 / 100 both with and without the skill were moved to
   `evals-regression/`;
-- context-dependent workflow scenarios that require exact skill-provided text, commands, or
-  procedures were also moved to `evals-regression/`, because they are useful with-skill workflow
-  checks but are not fair without-skill lift evidence;
+- skill-context-dependent scenarios that require exact skill-provided text, commands, procedures,
+  checklists, headers, or bundled reference text were also moved to `evals-regression/`, because
+  they are useful with-skill checks but are not fair without-skill lift evidence;
 - remaining reference scenarios keep ordinary stream-review lift evidence;
 - targeted rerun
   [`019e9fa8-ccf2-77c7-885f-2cba4939e16f`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9fa8-ccf2-77c7-885f-2cba4939e16f)

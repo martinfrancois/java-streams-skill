@@ -59,7 +59,7 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 - `evals-reference/` keeps candidate, diagnostic, and broad coverage scenarios that should not
   drive main eval lift claims.
 - `evals-regression/` keeps scenarios that hosted history shows are consistently solved by both
-  with-context and without-context, plus context-dependent workflow checks that are only fair as
+  with-context and without-context, plus skill-context-dependent checks that are only fair as
   with-context regression coverage.
 - `scripts/` contains portable validation checks used by CI.
 
@@ -131,7 +131,7 @@ Common types in this repository:
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.
 `evals-reference/` contains candidate and diagnostic coverage that helps tune the skill or decide
-what to promote later. `evals-regression/` contains solved scenarios and context-dependent workflow
+what to promote later. `evals-regression/` contains solved scenarios and skill-context-dependent
 checks; these are useful with-context safety checks, but they do not directly drive the main lift
 claim.
 
@@ -154,11 +154,11 @@ still diagnostic scenarios in `evals-reference/`.
 
 When adding a new scenario, classify it from an isolated hosted run:
 
-1. Put ordinary candidate scenarios in `evals-reference/`. Put context-dependent workflow scenarios
-   that require exact skill-provided text, commands, or procedures, such as the hard-stop scan
-   command, in `evals-regression/`.
+1. Put ordinary candidate scenarios in `evals-reference/`. Put skill-context-dependent scenarios
+   that require exact skill-provided text, commands, procedures, checklists, headers, or bundled
+   reference text in `evals-regression/`.
 2. Run `scripts/run_eval_suite.sh reference <scenario-name>` for ordinary scenarios, or
-   `scripts/run_eval_suite.sh regression <scenario-name>` for context-dependent workflow scenarios.
+   `scripts/run_eval_suite.sh regression <scenario-name>` for skill-context-dependent scenarios.
 3. Save `tessl eval view <run-id> --json` output and run:
 
    ```bash
@@ -167,9 +167,9 @@ When adding a new scenario, classify it from an isolated hosted run:
 
 4. Use the recommended suite unless the pull request documents a maintainer-approved reason to
    override it. In short: with-context below 100 means fix required before classification;
-   context-dependent workflow checks go to regression once with-context is 100; both variants 100
-   goes to regression; clean with-context plus without-context below 100 goes to reference or main
-   depending on delta, coverage, and weighting.
+   skill-context-dependent checks go to regression once with-context is 100, regardless of the
+   without-context score; both variants 100 goes to regression; clean with-context plus
+   without-context below 100 goes to reference or main depending on delta, coverage, and weighting.
 
 The current main promotion floor is 27.5 percentage points, matching the weakest current main
 scenario delta. Main eval weights should stay evidence-weighted: put more points on scenario
@@ -186,6 +186,6 @@ safety or broad changes.
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
 
-Context-dependent workflow evals are explicit workflow-use scenarios because they ask for exact
-skill-provided text, commands, or procedures. Run and report them as with-context regression checks,
-not as natural activation, reference lift, or independent Java stream reasoning.
+Skill-context-dependent evals ask for exact skill-provided text, commands, procedures, checklists,
+headers, or bundled reference text. Run and report them as with-context regression checks, not as
+natural activation, reference lift, or independent Java stream reasoning.

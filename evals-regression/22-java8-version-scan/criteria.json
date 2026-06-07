@@ -1,5 +1,5 @@
 {
-  "context": "Regression context-dependent workflow audit: measures whether the agent uses the skill-provided hard-stop scan command to catch Java-version drift on a Java 8 baseline. This requires runtime skill context and must not be counted as fair without-context lift evidence.",
+  "context": "Regression skill-context-dependent audit: measures whether the agent uses the skill-provided hard-stop scan command to catch Java-version drift on a Java 8 baseline. This requires runtime skill context and must not be counted as fair without-context lift evidence.",
   "type": "weighted_checklist",
   "checklist": [
     {

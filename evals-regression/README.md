@@ -1,8 +1,8 @@
 # Regression Evals
 
 This directory is for scenarios that are consistently solved by both the with-context and
-without-context variants in hosted runs, plus explicit context-dependent workflow scenarios that are
-only fair as with-context regression checks.
+without-context variants in hosted runs, plus skill-context-dependent scenarios that are only fair as
+with-context regression checks.
 
 Keep these scenarios out of the main lift score and out of normal reference-candidate runs. Run
 them as a final safety check before release, after broad skill changes, or when the changed area is
@@ -31,6 +31,7 @@ context and with context.
 `019e9fa8-ccf2-77c7-885f-2cba4939e16f`, where both without-context and with-context scored
 100 / 100.
 
-Context-dependent workflow scenarios also live here. They require exact skill-provided text,
-commands, or procedures, so use their with-context results as workflow regression coverage and do
-not count their without-context scores as fair lift evidence.
+Skill-context-dependent scenarios also live here. They require exact skill-provided text, commands,
+procedures, checklists, headers, or bundled reference text. Use their with-context results as
+regression coverage and do not count their without-context scores as fair lift evidence, regardless
+of how the without-context variant happens to score.
