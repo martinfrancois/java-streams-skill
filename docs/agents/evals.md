@@ -22,9 +22,10 @@ benchmark claims, or scoring rules.
     hosted data is available.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
-- The hard-stop scan audit may ask for the exact bundled scan header and `rg` command, but treat it
-  as explicit workflow-use evidence. Do not describe it as natural activation or independent Java
-  stream reasoning, and do not call weighted checklist items hard gates.
+- Hard-stop scan audits may ask for the exact bundled scan header and `rg` command, but keep them in
+  `evals-reference/` as explicit workflow-use evidence. Do not count them in the main score, do not
+  describe them as natural activation or independent Java stream reasoning, and do not call weighted
+  checklist items hard gates.
 - Keep three eval buckets:
   - `evals/` is the main eval set used for public lift reporting.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
@@ -83,18 +84,21 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 6 active scenarios, 1600 total checklist points.
+- Main eval set: 5 active scenarios, 1500 total checklist points.
 - Natural activation subset: 2 scenarios.
-- Explicit invocation subset: 4 scenarios.
-- Hard-stop scan audit: explicit workflow-use only.
-- Reference suite: 20 scenarios, 1880 total checklist points. Deleted reference number 12 is not
+- Explicit invocation subset: 3 scenarios.
+- Hard-stop scan audits: reference explicit workflow-use only.
+- Reference suite: 21 scenarios, 1980 total checklist points. Deleted reference number 12 is not
   counted.
 - Regression suite: currently empty.
-- Latest hosted active-suite run: `019e9f67-8102-7517-8d4b-d2044a1d3f08` on commit `9212a87`.
-  - Combined: with-context 1600 / 1600, without-context 701 / 1600, raw score ratio 2.28x.
+- Latest hosted run: `019e9f67-8102-7517-8d4b-d2044a1d3f08` on commit `9212a87`; the main numbers
+  below exclude the demoted hard-stop workflow scenario from that run.
+  - Combined: with-context 1500 / 1500, without-context 618 / 1500, raw score ratio 2.43x.
   - Natural subset: with-context 500 / 500, without-context 146 / 500.
-  - Explicit subset: with-context 1100 / 1100, without-context 555 / 1100.
-  - Reference and regression suites were not run in this hosted check.
+  - Explicit subset: with-context 1000 / 1000, without-context 472 / 1000.
+  - Demoted hard-stop workflow scenario: with-context 100 / 100, without-context 83 / 100; report
+    this only as reference workflow evidence.
+  - Reference and regression suites were not otherwise run in this hosted check.
 
 ## Checks
 
