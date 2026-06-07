@@ -40,6 +40,13 @@ Fix these before finalizing:
 - `Stream.toList()` where a mutable result is required or later code mutates the list. Prefer a
   mutable collector; do not modernize this to `new ArrayList<>(stream.toList())` when the task or
   surrounding code says `Stream.toList()` is not valid.
+- `stream().forEach(...)` or `parallelStream().forEach(...)` that mutates an external
+  `Collection`, `Map`, array, counter, holder object, or `StringBuilder`. Make the stream produce
+  the result directly with `toList()`, `collect(...)`, `toMap(...)`, `joining`, `sum`, or another
+  matching terminal operation. Do not recommend `Collections.synchronizedList`, `AtomicInteger`, or
+  similar wrappers as the default fix when a collector or terminal operation owns the accumulation.
+  A terminal `forEach` can remain when the side effect is the actual goal, such as logging or
+  calling an API, and the side effect is safe for the chosen stream mode.
 - `parallelStream()` or `.parallel()` added without checking CPU-bound work, data size, ordering,
   shared state, blocking calls, and collector safety.
 - Blocking predicate-like checks that return the original element or `null` as a false sentinel.
@@ -82,7 +89,14 @@ Use parallel streams only after checking:
 5. The stream terminal operation or collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked
-because fork-join splitting, merging, and common-pool contention can outweigh the gain.
+because fork-join splitting, merging, and common-pool contention can outweigh the gain. For code
+whose main problem is external mutation such as `stream().map(...).forEach(result::add)`, recommend
+the direct collector/toList form as the correctness/readability baseline. Do not claim that direct
+collection is guaranteed faster, and do not say `parallelStream()` will be faster merely because the
+input is large. In reviews, show the sequential direct-collection fix before any parallel version.
+For large CPU-bound transformations, strongly recommend benchmarking a pure parallel version after
+the stream chain is side-effect-free; make the benchmark requirement visible next to that
+recommendation, and call out that small-list or mostly-small call paths can be slower.
 
 ## Scan Command
 
@@ -97,7 +111,7 @@ multiline mode so it catches normally formatted fluent chains. Some markers are 
 classify legitimate uses instead of deleting them mechanically.
 
 ```bash
-rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(\\)|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
+rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(|\\.forEach\\(|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix
@@ -105,6 +119,10 @@ stream-quality issues. If a marker remains because it is legitimate, state why. 
 for allowed stream markers or allowed usages, also call out plain `count()` when it is the requested
 numeric result rather than a `count() > 0` existence check, and state that plain `count()` is not a
 hit for the bundled scan regex.
+
+In ordinary code reviews, do not expose internal workflow labels such as "hard stop", "marker",
+"scan", or "skill checklist" in the final user-facing recommendation. Use those terms only when the
+task explicitly asks for a scan/workflow audit or exact skill-provided command.
 
 When the requested audit is specifically about Java-version drift, keep the report scoped to APIs
 that are unavailable for the stated baseline and to explicitly allowed markers. Do not add unrelated

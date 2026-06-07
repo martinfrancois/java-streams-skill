@@ -110,6 +110,54 @@ Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList
 mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
 in `new ArrayList<>(...)`; use the mutable collector directly.
 
+## External Mutation And Lambda Purity
+
+Do not build ordinary stream results by mutating external state from `forEach`:
+
+```java
+List<String> labels = new ArrayList<>();
+orders.stream()
+        .map(Order::label)
+        .forEach(labels::add);
+```
+
+Make the stream produce the result directly:
+
+```java
+List<String> labels = orders.stream()
+        .map(Order::label)
+        .toList();
+```
+
+Use `collect(Collectors.toList())` instead when the Java baseline is below 16 or the result must be
+mutable. The direct collector/toList form is the default correctness and readability fix. It may
+only marginally affect throughput by itself, but it removes shared mutation and gives a safe
+baseline for benchmarking.
+
+This parallel version is broken because it mutates a shared `ArrayList` from multiple workers:
+
+```java
+List<String> labels = new ArrayList<>();
+orders.parallelStream()
+        .map(Order::label)
+        .forEach(labels::add);
+```
+
+In reviews, show the sequential direct-collection form first as the safe baseline. For large
+CPU-bound transformations, then strongly recommend benchmarking a side-effect-free parallel stream
+as the performance experiment. Keep the benchmark note with the recommendation, and warn that small
+lists or mostly-small call paths can be slower because splitting, merging, ordering, and common-pool
+contention can outweigh the benefit:
+
+```java
+List<String> labels = orders.parallelStream()
+        .map(Order::label)
+        .toList();
+```
+
+Only keep terminal `forEach` when the side effect is the operation's purpose, such as logging or
+calling an API, and the side effect is safe for the chosen stream mode.
+
 ## Collectors
 
 ```java

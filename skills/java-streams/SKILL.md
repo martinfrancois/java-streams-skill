@@ -54,6 +54,11 @@ are equivalent.
    boolean hasLateOrders = orders.stream().anyMatch(Order::late);
    ```
 
+   External mutation: do not create an `ArrayList`, `HashMap`, array, counter, holder object, or
+   `StringBuilder` and mutate it from `forEach`; let the stream produce the result directly.
+   Performance review: show sequential direct collection as the correctness baseline first; mention
+   a pure parallel collection benchmark prominently for large CPU-bound inputs.
+
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
    reference-value emission. For primitive values from a subtype, filter/cast first then
@@ -71,6 +76,8 @@ are equivalent.
    - **Nullable sort keys**: filter nulls or use `Comparator.nullsFirst`/`nullsLast`.
    - **Mutable results**: use `Collectors.toList()` or `Collectors.toCollection(ArrayList::new)`, not `Stream.toList()`.
    - **Short-circuit**: omit stateful intermediate ops (e.g., `sorted`) before `findFirst`/`anyMatch` when order is irrelevant.
+   - **Lambda purity**: mapping/filtering lambdas should not mutate state visible outside the
+     lambda and should not depend on outside state that can change during the stream operation.
 7. Keep imperative code when it is the clearer boundary. Prefer a loop for stateful sequence
    output, checked IO, mutation-heavy logic, or complex early exits. Where a loop remains, use
    stream helpers for real lookups or aggregates when that improves clarity.
@@ -78,5 +85,7 @@ are equivalent.
    parallel-safety, and Java-baseline compatibility. Run the marker scan from
    [hard-stops.md](references/hard-stops.md); fix relevant hits and re-scan.
 
-Short reviews: decision first, direct stream issues only, one safer stream chain if useful. Omit scan
-details and unchanged-code critiques unless asked.
+Short reviews: decision first, direct stream issues only, one safer stream chain if useful. Avoid
+internal workflow labels such as "hard stop", "marker", "scan", "checklist", or skill names in
+user-facing output unless the task explicitly asks for that workflow. Omit scan details and
+unchanged-code critiques unless asked.
