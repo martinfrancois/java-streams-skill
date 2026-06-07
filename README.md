@@ -289,8 +289,9 @@ Current local suite structure:
 - regression suite: 19 scenarios, 1820 total checklist points, reported separately.
 
 Scenario 01 is focused Java 24 runtime-guidance coverage. It checks whether the skill helps agents
-apply the bundled bounded `Gatherers.mapConcurrent` guidance to a blocking remote-call stream task.
-Do not over-read that scenario as independent evidence for all Java Streams and Collectors work.
+apply bounded `Gatherers.mapConcurrent` guidance to a blocking remote-call stream task, while using a
+different domain and result-carrier pattern from the bundled runtime example. Do not over-read that
+scenario as independent evidence for all Java Streams and Collectors work.
 
 Hosted benchmark evidence is pending rerun for the current active suite. Exact hosted run IDs and
 score claims are intentionally kept out of this public README until they are verified against the

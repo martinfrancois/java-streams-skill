@@ -156,9 +156,9 @@ Update this section whenever active eval membership or scoring changes.
   points. This dominates the current main score because hosted evidence previously showed strong
   deltas in that family; do not over-read it as broad Java Streams coverage.
 - Scenario `01-offer-availability-mapconcurrent` is intentionally focused Java 24 runtime-guidance
-  coverage. Its expected solution is close to the bundled bounded `Gatherers.mapConcurrent` example
-  in `stream-examples.md`, so report it as focused skill-use coverage rather than broad independent
-  lift evidence.
+  coverage. It should remain a different domain and result-carrier pattern from the bundled bounded
+  `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
+  rather than broad independent lift evidence.
 - Java 17 collector, prefix-operation, and indexing coverage: 2 scenarios, 300 checklist points.
 - Hard-stop scan audits: regression explicit workflow-use only.
 - Reference suite: 2 scenarios, 160 total checklist points. Deleted reference number 12 and
