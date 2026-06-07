@@ -69,5 +69,19 @@ Details:
 
 ## AI Assistance (if used)
 
+<!--
+AI-assisted PRs are welcome. Mark this when an AI tool materially helped write, design, or edit the
+change so reviewers know what to look for.
+-->
+
 - [ ] AI-assisted PR
 - [ ] I confirm I understand and reviewed the change
+
+<details>
+<summary>AI prompts / session logs (optional)</summary>
+
+```text
+
+```
+
+</details>
