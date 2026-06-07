@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/martinfrancois/java-streams-skill/compare/v1.0.0...v1.1.0) (2026-06-07)
+
+
+### Features
+
+* **skill:** add stream lambda purity guidance ([302139b](https://github.com/martinfrancois/java-streams-skill/commit/302139b55e6cc70138513751f7110b93e48eff0a))
+
+
+### Bug Fixes
+
+* **evals:** clarify review focus scoring ([129c43f](https://github.com/martinfrancois/java-streams-skill/commit/129c43fa0e775fb0871cbf1df4d96876ae62c706))
+
 ## [1.0.0](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.4...v1.0.0) (2026-06-07)
 
 
