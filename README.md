@@ -270,32 +270,32 @@ Results should be read by subset:
 
 - natural activation scenarios do not name the skill;
 - explicit invocation scenarios directly ask for `$java-streams`;
-- the hard-stop scan audit is explicit workflow-use evidence because it asks for the bundled scan
-  header and command;
 - stream-quality subtotal shows the skill-specific effect;
 - the main eval set focuses on realistic tasks where stream-specific guidance should change the
   answer;
-- `evals-reference/` keeps broader candidate and diagnostic cases;
+- `evals-reference/` keeps broader candidate, diagnostic, and explicit workflow-use cases;
 - `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
 
 Current local suite structure:
 
-- main eval set: 6 scenarios, 1600 total checklist points;
+- main eval set: 5 scenarios, 1500 total checklist points;
 - natural subset: 2 scenarios;
-- explicit subset: 4 scenarios;
-- reference suite: 20 scenarios, reported separately;
+- explicit subset: 3 scenarios;
+- reference suite: 21 scenarios, reported separately;
 - regression suite: currently empty.
 
-Latest hosted active-suite run on commit `9212a87`:
+Latest hosted run on commit `9212a87`, counting only scenarios that remain in the main eval set:
 
 - run: [`019e9f67-8102-7517-8d4b-d2044a1d3f08`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f67-8102-7517-8d4b-d2044a1d3f08);
-- with skill: 1600 / 1600;
-- without skill: 701 / 1600;
-- combined main score ratio: 2.28x;
+- with skill: 1500 / 1500;
+- without skill: 618 / 1500;
+- combined main score ratio: 2.43x;
 - natural subset: with skill 500 / 500, without skill 146 / 500;
-- explicit subset: with skill 1100 / 1100, without skill 555 / 1100.
+- explicit subset: with skill 1000 / 1000, without skill 472 / 1000.
 
-Reference and regression suites were not run in that hosted check, so report them separately.
+The demoted hard-stop workflow scenario was also present in that hosted run and scored with skill
+100 / 100 and without skill 83 / 100, but it is now reported only as reference workflow evidence.
+Reference and regression suites were not otherwise run in that hosted check.
 
 ## Origin
 

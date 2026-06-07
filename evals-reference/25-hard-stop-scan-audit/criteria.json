@@ -1,5 +1,5 @@
 {
-  "context": "Main eval weighted explicit workflow audit: measures use of the bundled hard-stop scan command before classifying dense Java 17 stream issues. Hosted benchmark provenance is pending rerun for the current active suite.",
+  "context": "Reference explicit workflow audit: measures use of the bundled hard-stop scan command before classifying dense Java 17 stream issues. This scenario requires runtime bundle access and must not be counted as independent without-context Java stream reasoning.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -37,6 +37,6 @@
     "invocation": "explicit",
     "task_type": "review",
     "main_eval_weight_multiplier": 1,
-    "main_eval_selection": "kept for explicit hard-stop workflow coverage; rerun hosted evals before updating benchmark claims"
+    "reference_selection": "demoted from the main eval set because exact bundled scan command recall is not a fair without-context benchmark target"
   }
 }
