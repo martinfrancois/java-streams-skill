@@ -1,5 +1,5 @@
 {
-  "context": "Reference explicit workflow audit: measures use of the bundled hard-stop scan command before classifying dense Java 17 stream issues. This scenario requires runtime bundle access and must not be counted as independent without-context Java stream reasoning.",
+  "context": "Regression context-dependent workflow audit: measures use of the skill-provided hard-stop scan command before classifying dense Java 17 stream issues. This scenario requires runtime skill context and must not be counted as independent without-context Java stream reasoning.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,7 +9,7 @@
       "description": "Creates review.md with a clear hard-stop audit."
     },
     {
-      "name": "Includes bundled scan command",
+      "name": "Includes skill-provided scan command",
       "category": "stream_quality",
       "max_score": 20,
       "description": "Includes the scan header 'java-streams hard-stop scan v1' and the rg command from hard-stops.md with complete marker coverage and the '<touched Java files>' placeholder. Equivalent shell escaping or formatting is acceptable; do not require character-perfect parity if all marker categories are present, but do not award this for a reduced, approximate, or hand-written scan command."
@@ -37,6 +37,6 @@
     "invocation": "explicit",
     "task_type": "review",
     "main_eval_weight_multiplier": 1,
-    "reference_selection": "demoted from the main eval set because exact bundled scan command recall is not a fair without-context benchmark target"
+    "reference_selection": "demoted from the main eval set because exact skill-provided scan command recall is not a fair without-context benchmark target"
   }
 }

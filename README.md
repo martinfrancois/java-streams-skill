@@ -273,7 +273,7 @@ Results should be read by subset:
 - stream-quality subtotal shows the skill-specific effect;
 - the main eval set focuses on realistic tasks where stream-specific guidance should change the
   answer;
-- `evals-reference/` keeps broader candidate, diagnostic, and explicit workflow-use cases;
+- `evals-reference/` keeps broader candidate and diagnostic cases;
 - `evals-regression/` keeps solved safety-net cases and is reported separately from the main score.
 
 Current local suite structure:
@@ -281,8 +281,8 @@ Current local suite structure:
 - main eval set: 5 scenarios, 1500 total checklist points;
 - natural subset: 2 scenarios;
 - explicit subset: 3 scenarios;
-- reference suite: 3 scenarios, 260 total checklist points, reported separately;
-- regression suite: 18 scenarios, 1720 total checklist points, reported separately.
+- reference suite: 2 scenarios, 160 total checklist points, reported separately;
+- regression suite: 19 scenarios, 1820 total checklist points, reported separately.
 
 Latest hosted evidence, counting only scenarios that remain in the main eval set:
 
@@ -306,11 +306,14 @@ Latest reference-suite hosted run:
   [`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7);
 - scenarios that scored 100 / 100 both with and without the skill were moved to
   `evals-regression/`;
-- scenarios that require exact bundled hard-stop scan workflow text were also moved to
-  `evals-regression/`, because they are useful with-skill workflow checks but are not fair
-  without-skill lift evidence;
-- remaining reference scenarios keep ordinary stream-review lift evidence or a with-skill result
-  that needs targeted follow-up before it can be treated as solved regression coverage.
+- context-dependent workflow scenarios that require exact skill-provided text, commands, or
+  procedures were also moved to `evals-regression/`, because they are useful with-skill workflow
+  checks but are not fair without-skill lift evidence;
+- remaining reference scenarios keep ordinary stream-review lift evidence;
+- targeted rerun
+  [`019e9fa8-ccf2-77c7-885f-2cba4939e16f`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9fa8-ccf2-77c7-885f-2cba4939e16f)
+  confirmed `16-java11-report-review` at 100 / 100 both with and without the skill, so it moved to
+  `evals-regression/`.
 
 ## Origin
 

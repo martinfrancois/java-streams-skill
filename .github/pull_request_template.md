@@ -32,7 +32,7 @@ Checks most contributors can run:
 
 - [ ] `python3 scripts/validate_skill.py skills/java-streams`
 - [ ] `python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression`
-- [ ] `python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py`
+- [ ] `python3 -m py_compile scripts/*.py`
 - [ ] `bash -n scripts/*.sh`
 - [ ] `tessl plugin lint .`
 - [ ] Manual rendered-doc or example review, if docs or examples changed
@@ -61,7 +61,7 @@ Details:
 - [ ] If evals or benchmark claims changed, the eval scenarios remain fair and do not leak answer keys, run IDs, or fixed score claims into runtime references.
 - [ ] Main and reference evals were run with both variants when hosted evals were needed; regression evals were run with context only unless reclassification back to reference was being checked.
 - [ ] New or moved eval scenarios follow the classifier recommendation, or the PR explains the maintainer-approved override.
-- [ ] If any with-context result was below 100%, targeted failing scenarios were fixed and rerun before broader eval suites.
+- [ ] Every retained eval scenario has a 100% with-context result, or any below-100 result is documented as blocking follow-up rather than classified/reportable coverage.
 - [ ] PR title or squash title uses Conventional Commits.
 - [ ] Redaction checked: no tokens, private links, private eval artifacts, local host paths, or proprietary Java source.
 

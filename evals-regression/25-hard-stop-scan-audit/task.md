@@ -5,10 +5,10 @@ Use `$java-streams` to audit this Java stream-heavy class with the hard-stop sca
 
 Assume Java 17.
 
-In `review.md`, start with the exact scan header and hard-stop `rg` scan command from the skill
-bundle, including the full marker regex and `<touched Java files>` placeholder. Then list every
-hard-stop marker hit that should be changed, plus any marker hit that is acceptable and why. Keep
-the review concise, but do not skip scan hits.
+In `review.md`, start with the exact skill-provided scan header and hard-stop `rg` scan command,
+including the full marker regex and `<touched Java files>` placeholder. Then list every hard-stop
+marker hit that should be changed, plus any marker hit that is acceptable and why. Keep the review
+concise, but do not skip scan hits.
 
 ```java
 import java.math.BigDecimal;
