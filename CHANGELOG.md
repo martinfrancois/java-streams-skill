@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.4...v1.0.0) (2026-06-07)
+
+
+### Bug Fixes
+
+* **release:** publish 1.0.0 ([5e527f0](https://github.com/martinfrancois/java-streams-skill/commit/5e527f039c7ac12832f89eb8ec3236c91eced760))
+
 ## [0.1.4](https://github.com/martinfrancois/java-streams-skill/compare/v0.1.3...v0.1.4) (2026-06-07)
 
 
