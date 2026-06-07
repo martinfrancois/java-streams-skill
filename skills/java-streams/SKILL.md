@@ -47,6 +47,13 @@ are equivalent.
    12+ min/max pair over the same input, and primitive stream terminal operations for primitive
    totals.
 
+   ```java
+   // Before: counts all matches just to test existence
+   boolean hasLateOrders = orders.stream().filter(Order::late).count() > 0;
+   // After: short-circuits when the first match is found
+   boolean hasLateOrders = orders.stream().anyMatch(Order::late);
+   ```
+
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
    reference-value emission. For primitive values from a subtype, filter/cast first then
