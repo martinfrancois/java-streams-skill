@@ -281,8 +281,8 @@ Current local suite structure:
 - main eval set: 5 scenarios, 1500 total checklist points;
 - natural subset: 2 scenarios;
 - explicit subset: 3 scenarios;
-- reference suite: 6 scenarios, 560 total checklist points, reported separately;
-- regression suite: 15 scenarios, 1420 total checklist points, reported separately.
+- reference suite: 3 scenarios, 260 total checklist points, reported separately;
+- regression suite: 18 scenarios, 1720 total checklist points, reported separately.
 
 Latest hosted evidence, counting only scenarios that remain in the main eval set:
 
@@ -297,7 +297,8 @@ Latest hosted evidence, counting only scenarios that remain in the main eval set
 - explicit subset: with skill 1000 / 1000, without skill 482 / 1000.
 
 The demoted hard-stop workflow scenario was also present in that hosted run and scored with skill
-100 / 100 and without skill 83 / 100, but it is now reported only as reference workflow evidence.
+100 / 100 and without skill 83 / 100, but it is now reported only as with-skill workflow regression
+evidence.
 
 Latest reference-suite hosted run:
 
@@ -305,9 +306,11 @@ Latest reference-suite hosted run:
   [`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7);
 - scenarios that scored 100 / 100 both with and without the skill were moved to
   `evals-regression/`;
-- remaining reference scenarios keep nonzero lift evidence, explicit workflow evidence, or a
-  with-skill result that needs targeted follow-up before it can be treated as solved regression
-  coverage.
+- scenarios that require exact bundled hard-stop scan workflow text were also moved to
+  `evals-regression/`, because they are useful with-skill workflow checks but are not fair
+  without-skill lift evidence;
+- remaining reference scenarios keep ordinary stream-review lift evidence or a with-skill result
+  that needs targeted follow-up before it can be treated as solved regression coverage.
 
 ## Origin
 
