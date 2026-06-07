@@ -51,12 +51,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          pr_json="$(gh pr list \
-            --state open \
-            --author "github-actions[bot]" \
-            --head release-please--branches--main--components--java-streams \
-            --json title,headRefName,author \
-            --jq '.[0] // empty')"
+          pr_json=""
+          for attempt in $(seq 1 12); do
+            pr_json="$(gh pr list \
+              --state open \
+              --author "github-actions[bot]" \
+              --head release-please--branches--main--components--java-streams \
+              --json title,headRefName,author \
+              --jq '.[0] // empty')"
+
+            if [ -n "$pr_json" ]; then
+              break
+            fi
+
+            if [ "$attempt" -lt 12 ]; then
+              echo "Release PR not visible yet; waiting before attempt $((attempt + 1))."
+              sleep 5
+            fi
+          done
 
           if [ -z "$pr_json" ]; then
             echo "No open release PR to check."
