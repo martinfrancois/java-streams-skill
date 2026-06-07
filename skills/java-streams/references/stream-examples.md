@@ -130,9 +130,9 @@ List<String> labels = orders.stream()
 ```
 
 Use `collect(Collectors.toList())` instead when the Java baseline is below 16 or the result must be
-mutable. The direct collector/toList form is the default correctness and readability fix. It may
-only marginally affect throughput by itself, but it removes shared mutation and gives a safe
-baseline for benchmarking.
+mutable. The direct collector/toList form is the default correctness and readability fix, not a
+guaranteed throughput win. It may only marginally affect throughput by itself, but it removes shared
+mutation and gives a safe baseline for benchmarking.
 
 This parallel version is broken because it mutates a shared `ArrayList` from multiple workers:
 
@@ -143,10 +143,11 @@ orders.parallelStream()
         .forEach(labels::add);
 ```
 
-In reviews, show the sequential direct-collection form first as the safe baseline. For large
-CPU-bound transformations, then strongly recommend benchmarking a side-effect-free parallel stream
-as the performance experiment. Keep the benchmark note with the recommendation, and warn that small
-lists or mostly-small call paths can be slower because splitting, merging, ordering, and common-pool
+In reviews, show the sequential direct-collection form first as the safe baseline. Keep the
+performance decision separate: for large CPU-bound transformations, strongly recommend benchmarking
+a side-effect-free parallel stream as the performance experiment before relying on it for speed.
+Put that benchmark requirement next to the parallel recommendation, and warn that small lists or
+mostly-small call paths can be slower because splitting, merging, ordering, and common-pool
 contention can outweigh the benefit:
 
 ```java

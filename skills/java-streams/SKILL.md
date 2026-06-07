@@ -56,8 +56,9 @@ are equivalent.
 
    External mutation: do not create an `ArrayList`, `HashMap`, array, counter, holder object, or
    `StringBuilder` and mutate it from `forEach`; let the stream produce the result directly.
-   Performance review: show sequential direct collection as the correctness baseline first; mention
-   a pure parallel collection benchmark prominently for large CPU-bound inputs.
+   Performance review: say direct collection is the safe baseline, not a guaranteed throughput win;
+   for large CPU-bound mapping, prominently recommend benchmarking a pure parallel version and warn
+   that mostly-small inputs can be slower.
 
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
