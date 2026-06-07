@@ -195,6 +195,18 @@ with both variants for nearby behavior, and `evals-regression/` with context onl
 safety or broad changes. If a broad run finds only isolated failures, fix and rerun those scenarios
 targeted before spending rate-limit budget on another broad suite run.
 
+Every eval scenario edit requires a targeted hosted rerun of that scenario before the PR is ready.
+This includes changes to `task.md`, `criteria.json`, or `capability.txt`, even if the edit looks like
+wording cleanup. The changed scenario's with-context result must be 100% before benchmark claims,
+suite classification, or release-readiness claims are trusted. If Tessl hosted evals are unavailable,
+document the blocker and exact remaining targeted runs in the PR; benchmark and release-readiness
+claims remain blocked until those runs pass.
+
+For runtime skill text or runtime reference changes, widen hosted checks progressively after targeted
+affected scenarios are clean: run the full main suite, then relevant reference scenarios, and before
+final release/open-source-ready claims run all reference scenarios with both variants and all
+regression scenarios with context only.
+
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
 

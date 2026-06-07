@@ -29,6 +29,13 @@ release-readiness.
   useful set to conserve Tessl daily rate-limit budget. Use `scripts/run_eval_suite.sh` so the run
   uses plugin context and the right variant policy.
 
+  If any eval scenario's `task.md`, `criteria.json`, or `capability.txt` changed, run that exact
+  scenario before finishing the PR. The with-context result for every changed scenario must be 100%
+  before broader suite results, benchmark claims, or release-readiness claims are trusted. This rule
+  applies even when the edit looks like a prompt cleanup or metadata-only scoring clarification. If
+  Tessl hosted evals are unavailable, the PR must document the blocker and remaining targeted runs;
+  do not make benchmark or release-readiness claims until those runs pass.
+
   Run targeted affected main or reference scenarios with both variants:
 
   ```bash
@@ -49,11 +56,13 @@ release-readiness.
   scripts/run_eval_suite.sh main
   ```
 
-  Run relevant `evals-reference/` scenarios with both variants for nearby behavior. Run
-  `evals-regression/` with context only as a final safety check before release or after broad
-  changes. Run regression without-context only when intentionally checking whether a scenario should
-  move back to reference. If a broad run finds only isolated failures, rerun those scenarios
-  targeted after the fix before spending rate-limit budget on another broad suite run.
+  For runtime skill text or runtime reference changes, progressively widen the hosted checks: first
+  affected scenarios, then the full main suite, then relevant reference scenarios, and before final
+  release/open-source-ready claims, all reference scenarios with both variants plus all regression
+  scenarios with context only. Run regression without-context only when intentionally checking
+  whether a scenario should move back to reference. If a broad run finds only isolated failures,
+  fix and rerun those scenarios targeted after the fix before spending rate-limit budget on another
+  broad suite run.
 
 - When adding or moving one scenario, classify it from the isolated run before choosing the final
   suite:
