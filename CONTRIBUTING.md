@@ -145,6 +145,15 @@ implementation criteria must include compile/artifact checks and behavior correc
 safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
 
+Use `metadata.evidence_type` when scenario placement needs to be explicit:
+
+- `ordinary_lift`: both variants are fair to compare, so the scenario can live in main or reference.
+  This value is invalid in `evals-regression/`.
+- `solved_regression`: hosted history shows both variants solve the scenario at 100%. This value is
+  invalid outside `evals-regression/`.
+- `skill_context_dependent`: the scenario requires exact skill-provided text, commands, procedures,
+  checklists, headers, or bundled reference text. It must live in `evals-regression/`.
+
 With-context must be 100% for every retained scenario in every suite. If with-context is below
 100%, fix the skill or eval and rerun that scenario targeted before choosing or changing a suite.
 
@@ -156,7 +165,8 @@ When adding a new scenario, classify it from an isolated hosted run:
 
 1. Put ordinary candidate scenarios in `evals-reference/`. Put skill-context-dependent scenarios
    that require exact skill-provided text, commands, procedures, checklists, headers, or bundled
-   reference text in `evals-regression/`.
+   reference text in `evals-regression/` and set `metadata.evidence_type` to
+   `skill_context_dependent`.
 2. Run `scripts/run_eval_suite.sh reference <scenario-name>` for ordinary scenarios, or
    `scripts/run_eval_suite.sh regression <scenario-name>` for skill-context-dependent scenarios.
 3. Save `tessl eval view <run-id> --json` output and run:

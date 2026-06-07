@@ -35,3 +35,14 @@ Skill-context-dependent scenarios also live here. They require exact skill-provi
 procedures, checklists, headers, or bundled reference text. Use their with-context results as
 regression coverage and do not count their without-context scores as fair lift evidence, regardless
 of how the without-context variant happens to score.
+
+Mark skill-context-dependent scenarios with:
+
+```json
+"metadata": {
+  "evidence_type": "skill_context_dependent"
+}
+```
+
+The validator rejects that evidence type outside `evals-regression/` and also rejects scenarios that
+look skill-context-dependent but forgot the metadata.

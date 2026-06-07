@@ -36,6 +36,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "review",
+    "evidence_type": "skill_context_dependent",
     "main_eval_weight_multiplier": 1,
     "reference_selection": "demoted from the main eval set because exact skill-provided scan command recall is not a fair without-context benchmark target"
   }

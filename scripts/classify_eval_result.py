@@ -47,6 +47,22 @@ def scenario_text_from_dir(path: Path | None) -> str:
     return "\n".join(parts)
 
 
+def scenario_metadata_from_dir(path: Path | None) -> dict[str, Any]:
+    if path is None:
+        return {}
+    criteria_path = path / "criteria.json"
+    if not criteria_path.is_file():
+        return {}
+    try:
+        data = json.loads(criteria_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    metadata = data.get("metadata")
+    if not isinstance(metadata, dict):
+        return {}
+    return metadata
+
+
 def is_skill_context_dependent(text: str) -> bool:
     lowered = text.lower()
     context_terms = (
@@ -183,7 +199,11 @@ def main() -> int:
     title = scenario.get("shortDescription") or "(untitled scenario)"
     task_text = scenario.get("task") or ""
     local_text = scenario_text_from_dir(args.scenario_dir)
-    skill_context_dependent = is_skill_context_dependent(f"{title}\n{task_text}\n{local_text}")
+    local_metadata = scenario_metadata_from_dir(args.scenario_dir)
+    skill_context_dependent = (
+        local_metadata.get("evidence_type") == "skill_context_dependent"
+        or is_skill_context_dependent(f"{title}\n{task_text}\n{local_text}")
+    )
 
     suite, reason = classify(
         with_score=with_score,

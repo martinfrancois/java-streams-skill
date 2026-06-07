@@ -38,6 +38,14 @@ benchmark claims, or scoring rules.
     normal lift discovery runs.
 - Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
+- Use `metadata.evidence_type` when scenario placement needs to be explicit:
+  - `ordinary_lift`: an ordinary main or reference scenario where both variants are fair to compare.
+    This value is invalid in `evals-regression/`.
+  - `solved_regression`: a regression scenario that hosted history shows both variants solve at
+    100%. This value is invalid outside `evals-regression/`.
+  - `skill_context_dependent`: a regression scenario that requires exact skill-provided text,
+    commands, procedures, checklists, headers, or bundled reference text. This value is required for
+    such scenarios and is invalid outside `evals-regression/`.
 - Every main eval criterion must classify `category` as `safety`, `stream_quality`, or
   `maintainability`.
 - Main eval implementation scenarios need compile/artifact and behavior checks as safety checks, but
@@ -70,7 +78,8 @@ benchmark claims, or scoring rules.
 - Classify new scenarios with the same evidence rule every time:
   - Draft ordinary new scenarios in `evals-reference/`.
   - Draft skill-context-dependent scenarios that require exact skill-provided text, commands,
-    procedures, checklists, headers, or bundled reference text in `evals-regression/`.
+    procedures, checklists, headers, or bundled reference text in `evals-regression/` and set
+    `metadata.evidence_type` to `skill_context_dependent`.
   - Run the scenario in isolation with `scripts/run_eval_suite.sh reference <scenario-name>` for
     ordinary scenarios or `scripts/run_eval_suite.sh regression <scenario-name>` for
     skill-context-dependent scenarios.
