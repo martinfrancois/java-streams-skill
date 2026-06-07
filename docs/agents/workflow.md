@@ -105,8 +105,9 @@ release-readiness.
   the created tag. Tessl publishing still happens only in `.github/workflows/publish-tessl.yml`.
   Release Please PRs created or updated with `GITHUB_TOKEN` may not trigger ordinary `pull_request`
   workflows, so `.github/workflows/release-please.yml` also posts the required release-PR
-  `Commitlint` and `Validate skill and plugin` statuses. Keep the release-PR lookup retry in that
-  workflow; the PR can appear a few seconds after the Release Please step completes.
+  `Commitlint` and `Validate skill and plugin` statuses. Keep that workflow based on the Release
+  Please `pr` output instead of a separate `gh pr list` lookup, so status setup does not depend on
+  GitHub search timing.
 - When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit
   `CHANGELOG.md`, `.release-please-manifest.json`, `.tessl-plugin/plugin.json`, tags, or GitHub
   releases by hand unless the maintainer explicitly asks to repair broken release state.
