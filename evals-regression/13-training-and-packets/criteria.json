@@ -1,5 +1,5 @@
 {
-  "context": "Reference implementation: Java 17 mapMulti is a strong fit for conditional developer email extraction, and takeWhile is required for prefix semantics.",
+  "context": "Regression implementation: Java 17 conditional developer email extraction should use a clean direct stream chain, and takeWhile is required for prefix semantics.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -21,7 +21,7 @@
       "description": "Uses companies.stream().flatMap(company -> company.employees().stream()) or equivalent direct flattening rather than collecting nested employee sets before flattening."
     },
     {
-      "name": "Uses mapMulti or equivalent conditional emission cleanly",
+      "name": "Uses clean conditional developer emission",
       "category": "stream_quality",
       "max_score": 30,
       "description": "Uses Java 17 mapMulti with pattern matching for Developer, or gives full credit for an equivalently concise filter/cast/map stream chain, without unsafe casts before type checks. A cast after a verified instanceof/Class::isInstance filter is acceptable. Do not deduct merely because the safe equivalent does not use mapMulti, does not reuse a pattern variable, or uses an explicit safe cast in the following map step."
