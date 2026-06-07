@@ -27,6 +27,11 @@ guidance, or auto-selection wording.
   ordering or priority contract depends on the first match.
 - Keep `parallelStream()` guidance defensive. It should require CPU-bound stateless work, enough
   data, no blocking IO, no unsafe shared mutable state, and collector safety.
+- For external stream mutation such as `stream().map(...).forEach(result::add)`, document direct
+  collection as the correctness/readability baseline, not as a guaranteed throughput win. A pure
+  ordered `parallelStream().map(...).toList()` is the benchmark candidate for large CPU-bound
+  transformations; recommend benchmarking it prominently after the safe baseline, and never allow
+  parallel shared mutable accumulation.
 - Avoid `pipeline` for Java stream behavior; use `stream chain`, `stream operation`, or more specific
   wording. Reserve `pipeline` for CI/release contexts.
 - Avoid `shape` for Java stream behavior; use `stream chain`, `collector approach`, `result`, or
@@ -34,6 +39,9 @@ guidance, or auto-selection wording.
   that name.
 - The skill should not force streams over clear stateful loops. Stateful sequence output, checked IO,
   prompts, mutation-heavy code, or complex early exits can remain imperative.
+- Runtime guidance should keep internal workflow language out of ordinary user-facing reviews. Avoid
+  terms such as "hard stop", "marker", "scan", "checklist", and skill names unless the user asked
+  for an explicit skill workflow, audit, or scan command.
 - Runtime references must not contain eval answer keys, scenario inventories, hosted run IDs, or
   fixed score claims.
 
