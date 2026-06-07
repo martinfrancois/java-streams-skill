@@ -10,3 +10,7 @@ directly related to one of these scenarios.
 Do not move a scenario here just because it currently fails with context. If with-context is below
 100%, keep the scenario in its current suite, fix the skill or eval in place, and run that scenario
 targeted until it is clean before moving on to broader eval runs.
+
+Current regression scenarios were moved from `evals-reference/` after hosted run
+`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`, where each moved scenario scored 100 / 100 both without
+context and with context.

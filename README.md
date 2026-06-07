@@ -281,8 +281,8 @@ Current local suite structure:
 - main eval set: 5 scenarios, 1500 total checklist points;
 - natural subset: 2 scenarios;
 - explicit subset: 3 scenarios;
-- reference suite: 21 scenarios, reported separately;
-- regression suite: currently empty.
+- reference suite: 6 scenarios, 560 total checklist points, reported separately;
+- regression suite: 15 scenarios, 1420 total checklist points, reported separately.
 
 Latest hosted evidence, counting only scenarios that remain in the main eval set:
 
@@ -298,7 +298,16 @@ Latest hosted evidence, counting only scenarios that remain in the main eval set
 
 The demoted hard-stop workflow scenario was also present in that hosted run and scored with skill
 100 / 100 and without skill 83 / 100, but it is now reported only as reference workflow evidence.
-Reference and regression suites were not otherwise run in that hosted check.
+
+Latest reference-suite hosted run:
+
+- run:
+  [`019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7);
+- scenarios that scored 100 / 100 both with and without the skill were moved to
+  `evals-regression/`;
+- remaining reference scenarios keep nonzero lift evidence, explicit workflow evidence, or a
+  with-skill result that needs targeted follow-up before it can be treated as solved regression
+  coverage.
 
 ## Origin
 
