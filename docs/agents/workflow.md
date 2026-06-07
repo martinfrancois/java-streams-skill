@@ -18,7 +18,7 @@ release-readiness.
   python3 scripts/validate_skill.py skills/java-streams
   python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
   python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
-  bash -n scripts/check_publish_dry_run.sh
+  bash -n scripts/*.sh
   tessl plugin lint .
   bash scripts/check_publish_dry_run.sh .
   tessl plugin publish --dry-run --bump patch .
@@ -26,21 +26,33 @@ release-readiness.
   ```
 
 - For skill behavior or eval changes, run hosted evals with Sonnet 4.6, but start with the smallest
-  useful set. Run targeted affected scenarios first:
+  useful set. Use `scripts/run_eval_suite.sh` so the run uses plugin context and the right variant
+  policy.
+
+  Run targeted affected main or reference scenarios with both variants:
 
   ```bash
-  tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context <scenario-dir>
+  scripts/run_eval_suite.sh main <scenario-name>
+  scripts/run_eval_suite.sh reference <scenario-name>
+  ```
+
+  Run targeted affected regression scenarios with context only by default:
+
+  ```bash
+  scripts/run_eval_suite.sh regression <scenario-name>
   ```
 
   If any targeted with-context result is below 100%, fix the skill or eval and rerun only those
   targeted scenarios until they are clean. Then run the main eval set:
 
   ```bash
-  tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
+  scripts/run_eval_suite.sh main
   ```
 
-  Run relevant `evals-reference/` scenarios for nearby behavior and `evals-regression/` only as a
-  final safety check before release or after broad changes.
+  Run relevant `evals-reference/` scenarios with both variants for nearby behavior. Run
+  `evals-regression/` with context only as a final safety check before release or after broad
+  changes. Run regression without-context only when intentionally checking whether a scenario should
+  move back to reference.
 
 - Run the Tessl skill review at threshold 100 when changing runtime skill content:
 

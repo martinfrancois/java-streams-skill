@@ -38,7 +38,7 @@ jobs:
         run: python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
 
       - name: Check shell scripts
-        run: bash -n scripts/check_publish_dry_run.sh
+        run: bash -n scripts/*.sh
 
       - name: Parse JSON files
         run: |
