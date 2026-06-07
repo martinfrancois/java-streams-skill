@@ -52,11 +52,14 @@ are equivalent.
    `mapToInt`/`mapToLong`/`mapToDouble` directly; do not emit boxed primitives only to unbox them.
 4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
    op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
-5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. When a
-   later step needs an expensive check result, carry `element + result`; do not use `null` sentinels.
+5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. Treat
+   possible null classifier keys for `groupingBy` as a required fix unless upstream code proves
+   non-null. When a later step needs an expensive check result, carry `element + result`; do not use
+   `null` sentinels.
 6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
    nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
-   mutable collector.
+   mutable collector such as `Collectors.toList()` or `Collectors.toCollection(ArrayList::new)`, not
+   `Stream.toList()` wrapped in a new mutable list.
 7. Keep imperative code when it is the clearer boundary. Stateful sequence output, checked IO,
    prompts, mutation-heavy code, or complex early exits may be better as a loop. If a loop remains,
    still use small stream helpers for real lookups or aggregates when that improves clarity.

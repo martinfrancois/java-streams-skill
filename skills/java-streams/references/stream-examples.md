@@ -107,7 +107,8 @@ Pitfall: natural sorting throws if null reaches the comparator. Filter nulls fir
 
 Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList()` or use
 `Collectors.toCollection(ArrayList::new)` when the result is sorted, appended to, or otherwise
-mutated later.
+mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
+in `new ArrayList<>(...)`; use the mutable collector directly.
 
 ## Collectors
 
@@ -146,6 +147,9 @@ IntSummaryStatistics stats = orders.stream()
 Map<Boolean, List<Product>> partitionedProducts = products.stream()
         .collect(Collectors.partitioningBy(product -> product.getStock() > 0));
 ```
+
+If a `groupingBy` classifier can return null, filter nulls or map them to an explicit non-null key
+before collecting. Do not treat possible null classifier keys as acceptable without proof.
 
 Java 12+ `teeing` can combine two independent reductions over the same input. Prefer this for a
 min/max pair or price range instead of running two separate stream passes:
