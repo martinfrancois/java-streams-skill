@@ -6,9 +6,8 @@ description: Write, review, and refactor Java Stream and Collector code using be
 
 # Java Streams Skill
 
-Use this skill before writing, reviewing, or refactoring Java stream and collector code. Preserve
-behavior, encounter order, exceptions, null handling, side effects, mutability, and Java-version
-compatibility.
+Preserve behavior, encounter order, exceptions, null handling, side effects, mutability, and
+Java-version compatibility.
 
 ## Reference Bundle
 
@@ -30,53 +29,47 @@ are equivalent.
 0. Check the Java baseline before choosing APIs. Read build/toolchain docs; if unclear, use Java
    8-compatible code or state the assumption. Use [java-stream-api.md](references/java-stream-api.md)
    for minimum Java versions.
-1. Identify the requested result:
-   - one arbitrary/equivalent match: `filter(...).findAny()`;
-   - first encounter-order, priority, chronological, or user-visible match:
-     `filter(...).findFirst()`;
-   - existence: `anyMatch`, `noneMatch`, or `allMatch`;
-   - transformed list/set: `map`/`filter` then collect;
-   - concatenated text: `Collectors.joining`;
-   - numeric primitive result: `mapToInt`/`mapToLong`/`mapToDouble` plus primitive stream terminal
-     operations;
-   - two independent aggregates over the same input on Java 12+: `Collectors.teeing`;
-   - grouping/indexing: `groupingBy`, downstream collectors, `partitioningBy`, or `toMap` with
-     explicit merge/null handling.
-2. Prefer stream terminal operations that encode intent directly: `anyMatch` for existence, `count`
+1. Identify the requested result and pick the matching terminal or collector:
+
+   | Goal | Preferred API |
+   |---|---|
+   | Arbitrary/equivalent match | `filter(...).findAny()` |
+   | First encounter-order match | `filter(...).findFirst()` |
+   | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
+   | Transformed list/set | `map`/`filter` then collect |
+   | Concatenated text | `Collectors.joining` |
+   | Numeric primitive result | `mapToInt`/`mapToLong`/`mapToDouble` terminals |
+   | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
+   | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
+
+2. Prefer terminal operations that encode intent directly: `anyMatch` for existence, `count`
    for numeric counts, `joining` for text, `min`/`max` for a single extreme, `teeing` for a Java
    12+ min/max pair over the same input, and primitive stream terminal operations for primitive
    totals.
+
 3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
    `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
-   reference-value emission. For primitive values from a subtype, filter/cast first, then use
-   `mapToInt`/`mapToLong`/`mapToDouble` directly; do not emit boxed primitives only to unbox them.
-4. Use primitive streams for primitive aggregation. Keep and explicitly classify `reduce(identity,
-   op)` as acceptable for immutable non-primitive accumulation such as `BigDecimal`.
-5. Choose collectors by result semantics, and state duplicate-key/null contracts explicitly. Treat
-   possible null classifier keys for `groupingBy` as a required fix unless upstream code proves
-   non-null. When a later step needs an expensive check result, carry `element + result`; do not use
-   `null` sentinels.
-6. Preserve ordering, mutability, and short-circuit behavior. For top-N, sort before `limit`; for
-   nullable sort keys, filter or use `Comparator.nullsFirst/nullsLast`; for mutable results, keep a
-   mutable collector such as `Collectors.toList()` or `Collectors.toCollection(ArrayList::new)`, not
-   `Stream.toList()` wrapped in a new mutable list.
-7. Keep imperative code when it is the clearer boundary. Stateful sequence output, checked IO,
-   prompts, mutation-heavy code, or complex early exits may be better as a loop. If a loop remains,
-   still use small stream helpers for real lookups or aggregates when that improves clarity.
-8. Verify each changed branch. Check empty inputs, one element, duplicates, nulls, ordering,
+   reference-value emission. For primitive values from a subtype, filter/cast first then
+   `mapToInt`/`mapToLong`/`mapToDouble` directly; do not box and immediately unbox.
+
+4. Use primitive streams for primitive aggregation. Use `reduce(identity, op)` for immutable
+   non-primitive accumulation such as `BigDecimal`.
+5. Choose collectors by result semantics. For `toMap`, specify duplicate-key merge behavior; for
+   `groupingBy`, prove classifier keys are non-null or handle nulls first; for boolean splits, use
+   `partitioningBy`; when a later step needs an expensive result, carry `element + result`, never
+   null sentinels.
+
+6. Preserve ordering, mutability, and short-circuit behavior:
+   - **Top-N**: sort before `limit`.
+   - **Nullable sort keys**: filter nulls or use `Comparator.nullsFirst`/`nullsLast`.
+   - **Mutable results**: use `Collectors.toList()` or `Collectors.toCollection(ArrayList::new)`, not `Stream.toList()`.
+   - **Short-circuit**: omit stateful intermediate ops (e.g., `sorted`) before `findFirst`/`anyMatch` when order is irrelevant.
+7. Keep imperative code when it is the clearer boundary. Prefer a loop for stateful sequence
+   output, checked IO, mutation-heavy logic, or complex early exits. Where a loop remains, use
+   stream helpers for real lookups or aggregates when that improves clarity.
+8. Verify each changed branch: empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and Java-baseline compatibility. Run the marker scan from
-   [hard-stops.md](references/hard-stops.md); copy its header and command verbatim when documenting
-   a scan. Fix relevant hits and re-scan.
+   [hard-stops.md](references/hard-stops.md); fix relevant hits and re-scan.
 
 Short reviews: decision first, direct stream issues only, one safer stream chain if useful. Omit scan
 details and unchanged-code critiques unless asked.
-
-Quick examples:
-
-```java
-boolean hasOutOfStock = products.stream()
-        .anyMatch(product -> product.stock() == 0);
-
-Optional<Product> newest = products.stream()
-        .max(Comparator.comparing(Product::updatedAt));
-```
