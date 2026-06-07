@@ -31,7 +31,8 @@ benchmark claims, or scoring rules.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
     help tune or promote future main evals.
   - `evals-regression/` is for scenarios that hosted history shows are consistently solved by both
-    with-context and without-context. These protect against regressions but should not be part of
+    with-context and without-context, plus explicit bundled-workflow checks that are only fair as
+    with-context regression coverage. These protect against regressions but should not be part of
     normal lift discovery runs.
 - Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
@@ -87,10 +88,10 @@ Update this section whenever active eval membership or scoring changes.
 - Main eval set: 5 active scenarios, 1500 total checklist points.
 - Natural activation subset: 2 scenarios.
 - Explicit invocation subset: 3 scenarios.
-- Hard-stop scan audits: reference explicit workflow-use only.
-- Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
+- Hard-stop scan audits: regression explicit workflow-use only.
+- Reference suite: 3 scenarios, 260 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
-- Regression suite: 15 scenarios, 1420 total checklist points.
+- Regression suite: 18 scenarios, 1720 total checklist points.
 - Latest hosted evidence: full main run `019e9f67-8102-7517-8d4b-d2044a1d3f08`, plus targeted
   scenario 04 rerun `019e9f7d-d65b-724f-9dd0-900db4d0c7b3` after clarifying chronological reading
   order in the prompt. The main numbers below exclude the demoted hard-stop workflow scenario from
@@ -99,12 +100,13 @@ Update this section whenever active eval membership or scoring changes.
   - Natural subset: with-context 500 / 500, without-context 146 / 500.
   - Explicit subset: with-context 1000 / 1000, without-context 482 / 1000.
   - Demoted hard-stop workflow scenario: with-context 100 / 100, without-context 83 / 100; report
-    this only as reference workflow evidence.
+    this only as with-context workflow regression evidence.
 - Latest reference-suite hosted run: `019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7` on this branch.
   Scenarios that scored 100 / 100 in both variants were moved to `evals-regression/`.
-  - Remaining nonzero positive reference deltas: hard-stop scan audit 29 percentage points,
-    collector/order scan 24 percentage points, Java 8 API drift scan 24 percentage points,
-    CPU-heavy parallel review 5 percentage points, primary-contact review 5 percentage points.
+  Explicit bundled hard-stop scan workflow scenarios were also moved to `evals-regression/`, because
+  their exact scan-command recall is only fair as with-context regression coverage.
+  - Remaining nonzero positive reference deltas: CPU-heavy parallel review 5 percentage points,
+    primary-contact review 5 percentage points.
   - `16-java11-report-review` stayed in reference because with-context scored 99 / 100 while
     without-context scored 100 / 100; fix or rerun it targeted before moving it to regression.
 

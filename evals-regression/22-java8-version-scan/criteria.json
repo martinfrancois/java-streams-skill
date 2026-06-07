@@ -1,5 +1,5 @@
 {
-  "context": "Reference audit: measures whether the agent uses the bundled hard-stop scan command to catch Java-version drift on a Java 8 baseline.",
+  "context": "Regression explicit workflow audit: measures whether the agent uses the bundled hard-stop scan command to catch Java-version drift on a Java 8 baseline. This requires runtime bundle access and must not be counted as fair without-context lift evidence.",
   "type": "weighted_checklist",
   "checklist": [
     {
