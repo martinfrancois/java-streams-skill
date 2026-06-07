@@ -128,6 +128,31 @@ Common types in this repository:
 - `chore`: repository maintenance that doesn't change user-facing behavior.
 - `refactor`: restructure docs, scripts, or skill text without changing behavior.
 
+## Releases
+
+Release Please owns release files, tags, GitHub releases, and Tessl publishing handoff. Do not edit
+`CHANGELOG.md`, `.release-please-manifest.json`, `.tessl-plugin/plugin.json`, tags, or releases by
+hand for a normal release.
+
+If a Release Please PR is already open, validate that it only changes the generated release files,
+wait for `Validate skill and plugin` and `Commitlint`, then merge that PR with the repository's
+linear-history merge method. The Release Please workflow creates the GitHub release and dispatches
+`publish-tessl.yml`; wait for the publish workflow to pass.
+
+If no Release Please PR is open and a maintainer asks for a release, check unreleased commits since
+the latest tag. If they include a releasable Conventional Commit (`fix:` or `feat:`), rerun or wait
+for Release Please on `main`. If they only include non-releasable commits and the maintainer still
+wants a new published version, add an empty releasable commit that states the publication reason,
+push `main`, and let Release Please open the release PR:
+
+```bash
+git commit --allow-empty -m "fix(evals): publish updated main eval suite"
+git push origin main
+```
+
+After merging the release PR, confirm the GitHub release exists, the Tessl plugin shows the new
+latest version, publish passed, and no stale Release Please PR or branch remains.
+
 ## Hosted Evals
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.

@@ -88,6 +88,47 @@ release-readiness.
   release with `GITHUB_TOKEN`, the normal `release: published` trigger does not fire, so the Release
   Please workflow dispatches `.github/workflows/publish-tessl.yml` with the created tag. Tessl
   publishing still happens only in `.github/workflows/publish-tessl.yml`.
+- When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit
+  `CHANGELOG.md`, `.release-please-manifest.json`, `.tessl-plugin/plugin.json`, tags, or GitHub
+  releases by hand unless the maintainer explicitly asks to repair broken release state.
+
+  If a Release Please PR is already open:
+
+  ```bash
+  gh pr list --state open --author "github-actions[bot]" \
+    --head release-please--branches--main--components--java-streams
+  gh pr checks <release-pr-number> --fail-fast=false
+  ```
+
+  Make sure the PR only contains Release Please files (`CHANGELOG.md`,
+  `.release-please-manifest.json`, `.tessl-plugin/plugin.json`) and that required checks pass. If
+  the release PR has no checks because it was just created, rerun the Release Please workflow for the
+  current `main` run so it finds the existing PR and attaches the validation statuses. Then merge the
+  release PR with the repository's linear-history merge method, normally squash merge, and wait for
+  `.github/workflows/publish-tessl.yml` to finish.
+
+  If no Release Please PR is open:
+
+  ```bash
+  git status --short --branch
+  git log --oneline "$(git describe --tags --abbrev=0)"..main
+  gh run list --workflow release-please.yml --limit 5
+  ```
+
+  If unreleased commits already include a releasable Conventional Commit such as `fix:` or `feat:`,
+  rerun or trigger the Release Please workflow on `main` and wait for the release PR. If the only
+  unreleased commits are non-releasable types such as `docs:`, `test:`, or `chore:`, and the
+  maintainer still wants a new published version, create an empty releasable commit that accurately
+  describes why a release is needed, for example:
+
+  ```bash
+  git commit --allow-empty -m "fix(evals): publish updated main eval suite"
+  git push origin main
+  ```
+
+  Then let Release Please open the release PR, validate it, merge it, and wait for the Tessl publish
+  workflow. After the publish run completes, confirm the GitHub release, Tessl latest version, and
+  that no stale Release Please PR or branch remains.
 - Keep the GitHub repository private until the maintainer explicitly asks to make it public. Still
   keep docs, metadata, license, security policy, and contribution workflow open-source ready.
 - Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real
