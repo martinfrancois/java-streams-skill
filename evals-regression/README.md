@@ -46,3 +46,13 @@ Mark skill-context-dependent scenarios with:
 
 The validator rejects that evidence type outside `evals-regression/` and also rejects scenarios that
 look skill-context-dependent but forgot the metadata.
+
+Mark solved regression scenarios with:
+
+```json
+"metadata": {
+  "evidence_type": "solved_regression"
+}
+```
+
+Every regression scenario must declare either `solved_regression` or `skill_context_dependent`.
