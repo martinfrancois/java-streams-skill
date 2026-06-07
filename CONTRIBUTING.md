@@ -59,7 +59,8 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 - `evals-reference/` keeps candidate, diagnostic, and broad coverage scenarios that should not
   drive main eval lift claims.
 - `evals-regression/` keeps scenarios that hosted history shows are consistently solved by both
-  with-context and without-context.
+  with-context and without-context, plus bundled-workflow checks that are only fair as with-context
+  regression coverage.
 - `scripts/` contains portable validation checks used by CI.
 
 ## Local Checks
@@ -70,7 +71,7 @@ Run these before committing skill, eval, README, package, script, or CI changes:
 python3 scripts/validate_skill.py skills/java-streams
 python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
 python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
-bash -n scripts/check_publish_dry_run.sh
+bash -n scripts/*.sh
 tessl plugin lint .
 ```
 
@@ -88,11 +89,22 @@ tessl plugin publish --dry-run --bump patch .
 ```
 
 Hosted evals require Tessl authentication and a linked Tessl project. Use Sonnet 4.6 for this
-repository's main eval checks:
+repository's main eval checks. Prefer `scripts/run_eval_suite.sh`; it runs from a temporary plugin
+copy so with-context variants can see the skill bundle:
 
 ```bash
-tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
+scripts/run_eval_suite.sh main
 ```
+
+Run hosted eval variants by suite purpose:
+
+- `evals/`: run both `without-context` and `with-context`; these runs support public lift
+  reporting. Use `scripts/run_eval_suite.sh main`.
+- `evals-reference/`: run both `without-context` and `with-context`; these runs decide whether a
+  scenario has meaningful lift or should move suites. Use `scripts/run_eval_suite.sh reference`.
+- `evals-regression/`: run `with-context` only by default; these runs are safety checks, not lift
+  discovery. Run regression `without-context` only when deliberately checking whether a scenario
+  should move back to `evals-reference/`. Use `scripts/run_eval_suite.sh regression`.
 
 ## Commit Messages
 
@@ -119,9 +131,8 @@ Common types in this repository:
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.
 `evals-reference/` contains candidate and diagnostic coverage that helps tune the skill or decide
-what to promote later. `evals-regression/` contains scenarios that are consistently solved by both
-with-context and without-context; these are useful safety checks, but they do not directly drive the
-main lift claim.
+what to promote later. `evals-regression/` contains solved scenarios and bundled workflow checks;
+these are useful with-context safety checks, but they do not directly drive the main lift claim.
 
 The main eval set should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
@@ -140,11 +151,12 @@ scenarios to `evals-regression/` only when hosted evidence shows both variants a
 When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
 there, then rerun only that targeted scenario until it is clean before running broader suites. After
 targeted failures are clean, run `evals/` for the main score, relevant `evals-reference/` scenarios
-for nearby behavior, and `evals-regression/` only for final release safety or broad changes.
+with both variants for nearby behavior, and `evals-regression/` with context only for final release
+safety or broad changes.
 
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
 
-The hard-stop scan audit is an explicit workflow-use scenario because it asks for the bundled scan
-header and `rg` command. Report it with explicit invocation results, not as natural activation or
-independent Java stream reasoning.
+Hard-stop scan audits are explicit workflow-use scenarios because they ask for bundled scan headers
+and `rg` commands. Run and report them as with-context regression checks, not as natural activation,
+reference lift, or independent Java stream reasoning.

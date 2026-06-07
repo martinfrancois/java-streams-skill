@@ -8,6 +8,16 @@ Keep these scenarios out of the main lift score and out of normal reference-cand
 them as a final safety check before release, after broad skill changes, or when the changed area is
 directly related to one of these scenarios.
 
+Run regression evals with context only by default:
+
+```bash
+scripts/run_eval_suite.sh regression
+```
+
+Do not run regression `without-context` during normal maintenance. Without-context regression runs
+are only useful when deliberately checking whether a scenario should move back to
+`evals-reference/`.
+
 Do not move a scenario here just because it currently fails with context. If with-context is below
 100%, keep the scenario in its current suite, fix the skill or eval in place, and run that scenario
 targeted until it is clean before moving on to broader eval runs.

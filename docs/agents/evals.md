@@ -23,9 +23,9 @@ benchmark claims, or scoring rules.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
 - Hard-stop scan audits may ask for the exact bundled scan header and `rg` command, but keep them in
-  `evals-reference/` as explicit workflow-use evidence. Do not count them in the main score, do not
-  describe them as natural activation or independent Java stream reasoning, and do not call weighted
-  checklist items hard gates.
+  `evals-regression/` as explicit with-context workflow-use evidence. Do not count them in the main
+  or reference lift score, do not describe them as natural activation or independent Java stream
+  reasoning, and do not call weighted checklist items hard gates.
 - Keep three eval buckets:
   - `evals/` is the main eval set used for public lift reporting.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
@@ -66,20 +66,39 @@ benchmark claims, or scoring rules.
   legitimate coverage just to improve lift.
 - Track raw score, percentage-point lift, raw score ratio, missed-point reduction, and the
   `stream_quality` subtotal when updating benchmark claims.
-- Use Sonnet 4.6 for this repository's main eval runs:
+- Use `scripts/run_eval_suite.sh` for hosted evals. It runs from a temporary plugin copy so
+  with-context variants can see the skill bundle, and it enforces the suite variant policy. Use
+  Sonnet 4.6 unless intentionally comparing another model.
+
+  ```bash
+  scripts/run_eval_suite.sh main
+  scripts/run_eval_suite.sh reference
+  scripts/run_eval_suite.sh regression
+  ```
+
+- Direct equivalent for this repository's main eval runs:
 
   ```bash
   tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
   ```
+- Run variants by suite purpose:
+  - `evals/` main: always run both `without-context` and `with-context`, because it supports public
+    lift reporting.
+  - `evals-reference/`: always run both `without-context` and `with-context`, because it is used to
+    find meaningful lift and promotion candidates.
+  - `evals-regression/`: run `with-context` only by default, because it is safety coverage rather
+    than lift discovery. Run `without-context` for regression only when intentionally checking
+    whether a scenario should move back to reference.
 - Keep hosted eval usage minimal while preserving confidence:
-  - For skill or eval changes, first run only the affected scenario directories, with both variants
-    when lift or regression risk matters.
+  - For skill or eval changes, first run only the affected scenario directories, using the variant
+    rule above for the suite the scenario belongs to.
   - If any affected with-context result is below 100%, keep rerunning only those targeted scenarios
     after fixes until they are clean.
   - Then run `evals/` for the main score.
-  - Run relevant `evals-reference/` scenarios when deciding promotion or checking nearby behavior.
-  - Run `evals-regression/` as a final safety check before release or after broad changes, not on
-    every tuning loop.
+  - Run relevant `evals-reference/` scenarios with both variants when deciding promotion or checking
+    nearby behavior.
+  - Run `evals-regression/` with context only as a final safety check before release or after broad
+    changes, not on every tuning loop.
 
 ## Current Suite Composition
 
