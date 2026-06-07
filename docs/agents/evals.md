@@ -91,11 +91,13 @@ Update this section whenever active eval membership or scoring changes.
 - Reference suite: 21 scenarios, 1980 total checklist points. Deleted reference number 12 is not
   counted.
 - Regression suite: currently empty.
-- Latest hosted run: `019e9f67-8102-7517-8d4b-d2044a1d3f08` on commit `9212a87`; the main numbers
-  below exclude the demoted hard-stop workflow scenario from that run.
-  - Combined: with-context 1500 / 1500, without-context 618 / 1500, raw score ratio 2.43x.
+- Latest hosted evidence: full main run `019e9f67-8102-7517-8d4b-d2044a1d3f08`, plus targeted
+  scenario 04 rerun `019e9f7d-d65b-724f-9dd0-900db4d0c7b3` after clarifying chronological reading
+  order in the prompt. The main numbers below exclude the demoted hard-stop workflow scenario from
+  the full run and replace scenario 04's original baseline score with the targeted rerun score.
+  - Combined: with-context 1500 / 1500, without-context 628 / 1500, raw score ratio 2.39x.
   - Natural subset: with-context 500 / 500, without-context 146 / 500.
-  - Explicit subset: with-context 1000 / 1000, without-context 472 / 1000.
+  - Explicit subset: with-context 1000 / 1000, without-context 482 / 1000.
   - Demoted hard-stop workflow scenario: with-context 100 / 100, without-context 83 / 100; report
     this only as reference workflow evidence.
   - Reference and regression suites were not otherwise run in this hosted check.

@@ -284,14 +284,17 @@ Current local suite structure:
 - reference suite: 21 scenarios, reported separately;
 - regression suite: currently empty.
 
-Latest hosted run on commit `9212a87`, counting only scenarios that remain in the main eval set:
+Latest hosted evidence, counting only scenarios that remain in the main eval set:
 
-- run: [`019e9f67-8102-7517-8d4b-d2044a1d3f08`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f67-8102-7517-8d4b-d2044a1d3f08);
+- full main run:
+  [`019e9f67-8102-7517-8d4b-d2044a1d3f08`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f67-8102-7517-8d4b-d2044a1d3f08);
+- targeted scenario 04 rerun after prompt clarification:
+  [`019e9f7d-d65b-724f-9dd0-900db4d0c7b3`](https://tessl.io/workspaces/martinfrancois/eval-runs/019e9f7d-d65b-724f-9dd0-900db4d0c7b3);
 - with skill: 1500 / 1500;
-- without skill: 618 / 1500;
-- combined main score ratio: 2.43x;
+- without skill: 628 / 1500;
+- combined main score ratio: 2.39x;
 - natural subset: with skill 500 / 500, without skill 146 / 500;
-- explicit subset: with skill 1000 / 1000, without skill 472 / 1000.
+- explicit subset: with skill 1000 / 1000, without skill 482 / 1000.
 
 The demoted hard-stop workflow scenario was also present in that hosted run and scored with skill
 100 / 100 and without skill 83 / 100, but it is now reported only as reference workflow evidence.
