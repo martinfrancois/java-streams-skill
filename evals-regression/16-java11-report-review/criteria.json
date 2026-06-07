@@ -36,7 +36,7 @@
       "name": "Keeps review focused",
       "category": "maintainability",
       "max_score": 5,
-      "description": "Stays focused on the Java 11 Stream.toList incompatibility and mutable-result behavior. Award full credit when any extra notes are directly tied to this refactor and do not change the reject-as-written recommendation, including a brief note about the now-dead rank sort or import simplification."
+      "description": "Stays focused on the Java 11 Stream.toList incompatibility and mutable-result behavior. Award full credit when any extra notes are directly tied to this refactor and do not change the reject-as-written recommendation, including a brief note that the now-dead rank sort could be dropped or that imports could be simplified."
     }
   ],
   "metadata": {
