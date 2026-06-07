@@ -14,10 +14,11 @@ Rules:
 
 - `invoiceTotalBounds` should return the lowest-total and highest-total invoices. For an empty
   invoice list, both bounds values should be `null`.
-- `readingsBeforeFirstOverheat` returns the chronological prefix where
-  `temperatureCelsius <= maxSafeTemperature`.
-- `readingsAfterInitialSafeRun` skips the initial chronological prefix where
-  `temperatureCelsius <= maxSafeTemperature` and returns the rest.
+- `readings` is in chronological order.
+- `readingsBeforeFirstOverheat` returns the readings from the start of the list until the first
+  reading where `temperatureCelsius > maxSafeTemperature`.
+- `readingsAfterInitialSafeRun` skips the readings from the start of the list while
+  `temperatureCelsius <= maxSafeTemperature`, then returns everything after that.
 
 Use nested records:
 
