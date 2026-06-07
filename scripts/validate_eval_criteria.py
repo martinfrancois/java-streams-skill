@@ -102,6 +102,10 @@ SCENARIO_REFERENCE_FILES = (
     Path("README.md"),
     Path("CONTRIBUTING.md"),
     Path(".github/pull_request_template.md"),
+    Path("evals/NUMBERING.md"),
+    Path("evals-reference/NUMBERING.md"),
+    Path("evals-regression/NUMBERING.md"),
+    Path("evals-regression/README.md"),
 )
 SCENARIO_REFERENCE_DIRS = (Path("docs"),)
 
@@ -192,6 +196,17 @@ def domain_identifiers(text: str) -> set[str]:
             continue
         result.add(identifier)
     return result
+
+
+def api_markers(text: str) -> set[str]:
+    markers = set(
+        re.findall(
+            r"\b[A-Z][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+\b"
+            r"|\b[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*\b",
+            text,
+        )
+    )
+    return {marker for marker in markers if marker not in {"System.out"}}
 
 
 def is_skill_context_dependent_text(text: str) -> bool:
@@ -433,6 +448,58 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
     return failures
 
 
+def runtime_reference_overlap_warnings(dirs: list[Path]) -> list[str]:
+    warnings: list[str] = []
+    references_root = Path("skills/java-streams/references")
+    if not references_root.exists():
+        return warnings
+
+    runtime_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in sorted(references_root.glob("*.md"))
+    )
+    runtime_identifiers = domain_identifiers(runtime_text)
+    runtime_api_markers = api_markers(runtime_text)
+    runtime_words = normalized_words(runtime_text)
+    runtime_grams = ngrams(runtime_words, 12)
+
+    for scenario in dirs:
+        if scenario.parent.name != "evals":
+            continue
+        task_file = scenario / "task.md"
+        criteria_file = scenario / "criteria.json"
+        if not task_file.exists() or not criteria_file.exists():
+            continue
+        task_text = task_file.read_text(encoding="utf-8")
+        criteria_text = criteria_file.read_text(encoding="utf-8")
+        combined_text = f"{task_text}\n{criteria_text}"
+        if is_skill_context_dependent_text(f"{scenario.name}\n{combined_text}"):
+            continue
+
+        shared_identifiers = sorted(domain_identifiers(combined_text) & runtime_identifiers)
+        shared_api_markers = sorted(api_markers(combined_text) & runtime_api_markers)
+        combined_grams = ngrams(normalized_words(combined_text), 12)
+        long_overlap_count = len(combined_grams & runtime_grams)
+        repeated_api_shape = (
+            "blocking" in combined_text.lower()
+            and "bounded" in combined_text.lower()
+            and "Gatherers.mapConcurrent" in shared_api_markers
+            and "Map.entry" in shared_api_markers
+        )
+        if (
+            len(shared_identifiers) >= 4
+            or (len(shared_identifiers) >= 3 and long_overlap_count)
+            or repeated_api_shape
+        ):
+            warnings.append(
+                f"{scenario}: task.md plus criteria.json are close to runtime references; "
+                f"document a focused-coverage rationale if intentional. Shared identifiers: "
+                f"{', '.join(shared_identifiers[:12]) or '(none)'}; shared API markers: "
+                f"{', '.join(shared_api_markers[:12]) or '(none)'}"
+            )
+
+    return warnings
+
+
 def validate_scenario_path_references() -> list[str]:
     failures: list[str] = []
     files = [path for path in SCENARIO_REFERENCE_FILES if path.exists()]
@@ -568,8 +635,12 @@ def main() -> int:
             failures.extend(validate_numbering(path))
     failures.extend(validate_cross_suite_duplicates(dirs))
     failures.extend(validate_runtime_reference_overlap(dirs))
+    warnings = runtime_reference_overlap_warnings(dirs)
     failures.extend(validate_scenario_path_references())
     failures.extend(validate_runtime_references())
+
+    for warning in warnings:
+        print(f"warning: {warning}", file=sys.stderr)
 
     if failures:
         for failure in failures:
