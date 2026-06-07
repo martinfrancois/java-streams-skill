@@ -133,13 +133,24 @@ benchmark claims, or scoring rules.
     than lift discovery. Run `without-context` for regression only when intentionally checking
     whether a scenario should move back to reference.
 - Keep hosted eval usage minimal while preserving confidence and Tessl daily rate-limit budget:
-  - For skill or eval changes, first run only the affected scenario directories, using the variant
-    rule above for the suite the scenario belongs to.
+  - For any eval scenario edit, first run every changed scenario directory, using the variant rule
+    above for the suite the scenario belongs to. This is mandatory for changes to `task.md`,
+    `criteria.json`, or `capability.txt`, including wording-only prompt edits and metadata/scoring
+    clarifications.
+  - Do not finish the PR, update benchmark claims, or call the suite release-ready until every
+    changed scenario has a 100% with-context result. If Tessl hosted evals are unavailable, document
+    the blocker and exact remaining targeted runs in the PR; benchmark and release-readiness claims
+    remain blocked until those runs pass.
+  - For runtime skill text or runtime reference changes, start with the affected scenario
+    directories most likely to move, using the suite variant rule above.
   - If any affected with-context result is below 100%, keep rerunning only those targeted scenarios
     after fixes until they are clean.
   - Then run `evals/` for the main score.
   - Run relevant `evals-reference/` scenarios with both variants when deciding promotion or checking
     nearby behavior.
+  - Before final release/open-source-ready claims after a runtime skill change, run every reference
+    scenario with both variants and every regression scenario with context only. Do this after the
+    targeted failures are clean and the main suite has run.
   - Run `evals-regression/` with context only as a final safety check before release or after broad
     changes, not on every tuning loop.
   - If a broad run exposes isolated failures, fix those exact scenarios and rerun them targeted
