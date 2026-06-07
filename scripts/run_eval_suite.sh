@@ -108,24 +108,24 @@ if [[ "$has_agent" == false ]]; then
 fi
 
 tmp_dir="$(mktemp -d)"
-trap 'rm -rf "$tmp_dir"' EXIT
-tmp_repo="$tmp_dir/repo"
-mkdir -p "$tmp_repo"
+backup_evals="$tmp_dir/evals-original"
+staged_evals="$repo_root/evals"
+if [[ "$suite" == "main" ]]; then
+  source_path="$backup_evals"
+fi
 
-(
-  cd "$repo_root"
-  tar \
-    --exclude='./.git' \
-    --exclude='./.venv' \
-    --exclude='./node_modules' \
-    -cf - .
-) | (
-  cd "$tmp_repo"
-  tar -xf -
-)
+restore() {
+  set +e
+  if [[ -d "$backup_evals" ]]; then
+    rm -rf "$staged_evals"
+    mv "$backup_evals" "$staged_evals"
+  fi
+  rm -rf "$tmp_dir"
+}
+trap restore EXIT
 
-rm -rf "$tmp_repo/evals"
-mkdir -p "$tmp_repo/evals"
+mv "$staged_evals" "$backup_evals"
+mkdir -p "$staged_evals"
 
 copy_scenario() {
   local requested="$1"
@@ -146,7 +146,7 @@ copy_scenario() {
     fi
   fi
 
-  cp -a "$candidate" "$tmp_repo/evals/"
+  cp -a "$candidate" "$staged_evals/"
 }
 
 if [[ "${#scenarios[@]}" -eq 0 ]]; then
@@ -167,12 +167,12 @@ else
   done
 fi
 
-echo "Running $suite eval suite from a temporary plugin copy."
+echo "Running $suite eval suite from the linked plugin path with a temporary evals/ staging area."
 echo "Scenarios:"
-find "$tmp_repo/evals" -mindepth 1 -maxdepth 1 -type d -printf '  %f\n' | sort
+find "$staged_evals" -mindepth 1 -maxdepth 1 -type d -printf '  %f\n' | sort
 echo "Variants: ${variants[*]}"
 
 (
-  cd "$tmp_repo"
+  cd "$repo_root"
   tessl eval run "${agent_args[@]}" "${variants[@]}" "${extra_args[@]}" .
 )

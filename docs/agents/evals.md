@@ -22,7 +22,8 @@ benchmark claims, or scoring rules.
     hosted data is available.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
-- Hard-stop scan audits may ask for the exact bundled scan header and `rg` command, but keep them in
+- Context-dependent workflow evals ask for exact text, commands, or procedures that only the skill
+  context provides, such as the hard-stop scan header and `rg` command. Keep them in
   `evals-regression/` as explicit with-context workflow-use evidence. Do not count them in the main
   or reference lift score, do not describe them as natural activation or independent Java stream
   reasoning, and do not call weighted checklist items hard gates.
@@ -31,9 +32,9 @@ benchmark claims, or scoring rules.
   - `evals-reference/` is for candidate, diagnostic, and broad coverage scenarios that may still
     help tune or promote future main evals.
   - `evals-regression/` is for scenarios that hosted history shows are consistently solved by both
-    with-context and without-context, plus explicit bundled-workflow checks that are only fair as
-    with-context regression coverage. These protect against regressions but should not be part of
-    normal lift discovery runs.
+    with-context and without-context, plus explicit context-dependent workflow checks that are only
+    fair as with-context regression coverage. These protect against regressions but should not be
+    part of normal lift discovery runs.
 - Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
 - Every main eval criterion must classify `category` as `safety`, `stream_quality`, or
@@ -53,28 +54,45 @@ benchmark claims, or scoring rules.
 - Every Java scenario must state the Java version to assume, such as `Assume Java 17.`.
 - If the baseline is too high, first check whether the eval is too generic or too easy before
   changing the skill.
-- If with-context is below 100%, keep the scenario in its current suite. Fix the skill or eval in
-  place and run that scenario targeted until it is clean before running broader suites. Do not move
-  failing with-context scenarios to hide them.
+- With-context must be 100% for every retained scenario in every suite. If with-context is below
+  100%, the scenario is not ready to classify or report. Fix the skill or eval in place and run that
+  scenario targeted until it is clean before running broader suites. Do not move failing
+  with-context scenarios to hide them.
 - Promote or demote scenarios based on purpose and evidence:
-  - `with-context < 100`: targeted fix/rerun in place.
+  - `with-context < 100`: fix/rerun targeted before choosing or changing a suite.
   - `with-context = 100` and `without-context < 100`: useful lift evidence; keep in main or
-    reference depending on coverage and weighting.
-  - `with-context = 100` and `without-context = 100` repeatedly: candidate for
-    `evals-regression/`.
+    reference depending on coverage, delta, and weighting.
+  - `with-context = 100` and `without-context = 100`: regression coverage.
+  - `with-context = 100` and without-context is intentionally not applicable because the scenario
+    depends on exact skill-provided workflow text: regression coverage.
 - Classify new scenarios with the same evidence rule every time:
   - Draft ordinary new scenarios in `evals-reference/`.
-  - Draft scenarios that require exact bundled skill text, such as the hard-stop scan command, in
-    `evals-regression/`.
+  - Draft context-dependent workflow scenarios that require exact skill-provided text, commands, or
+    procedures, such as the hard-stop scan command, in `evals-regression/`.
   - Run the scenario in isolation with `scripts/run_eval_suite.sh reference <scenario-name>` for
-    ordinary scenarios or `scripts/run_eval_suite.sh regression <scenario-name>` for bundled
-    workflow scenarios.
+    ordinary scenarios or `scripts/run_eval_suite.sh regression <scenario-name>` for
+    context-dependent workflow scenarios.
   - Save `tessl eval view <run-id> --json` output and run
     `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`.
   - Follow the classifier unless there is a documented maintainer reason to override it. The
-    default rule is: bundled workflow -> regression; with-context below 100 -> keep in reference and
-    fix targeted; both variants 100 -> regression; clean with-context plus delta at least as strong
-    as the weakest current main scenario -> main; otherwise reference.
+    default rule is: with-context below 100 -> fix required before classification;
+    context-dependent workflow -> regression once with-context is 100; both variants 100 ->
+    regression; clean with-context plus without-context below 100 -> reference or main depending on
+    delta, coverage, and weighting.
+- Main promotion floor: a new scenario should not move to main unless its percentage-point delta is
+  at least as strong as the weakest current main scenario and it improves capability coverage. The
+  current floor is 27.5 percentage points, from `04-invoice-bounds-and-temperature-windows`
+  (`200/200` with context, `145/200` without context). Update this floor whenever main eval
+  membership, scoring, or hosted results change.
+- Main weighting policy:
+  - Keep weights evidence-weighted, not evenly sampled.
+  - Give more total points to scenario families with larger observed missed-point reduction, while
+    keeping the skill broadly about Java Streams and Collectors.
+  - Normalize ordinary 100-point main scenarios around 15 safety, 80 stream-quality, and 5
+    maintainability points unless the scenario has a documented reason to differ.
+  - Use `main_eval_weight_multiplier` only when a scenario family has stronger hosted delta or higher
+    benchmark importance; document why in `criteria.json` metadata and this file.
+  - Do not add or inflate weak-delta scenarios only to make coverage look balanced.
 - A 2x raw score ratio is useful only when earned by honest, realistic eval design. Don't suppress
   legitimate coverage just to improve lift.
 - Track raw score, percentage-point lift, raw score ratio, missed-point reduction, and the
@@ -121,9 +139,9 @@ Update this section whenever active eval membership or scoring changes.
 - Natural activation subset: 2 scenarios.
 - Explicit invocation subset: 3 scenarios.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 3 scenarios, 260 total checklist points. Deleted reference number 12 and
+- Reference suite: 2 scenarios, 160 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
-- Regression suite: 18 scenarios, 1720 total checklist points.
+- Regression suite: 19 scenarios, 1820 total checklist points.
 - Latest hosted evidence: full main run `019e9f67-8102-7517-8d4b-d2044a1d3f08`, plus targeted
   scenario 04 rerun `019e9f7d-d65b-724f-9dd0-900db4d0c7b3` after clarifying chronological reading
   order in the prompt. The main numbers below exclude the demoted hard-stop workflow scenario from
@@ -135,12 +153,13 @@ Update this section whenever active eval membership or scoring changes.
     this only as with-context workflow regression evidence.
 - Latest reference-suite hosted run: `019e9f8c-775f-75a8-bcb1-dd6ebe8f43d7` on this branch.
   Scenarios that scored 100 / 100 in both variants were moved to `evals-regression/`.
-  Explicit bundled hard-stop scan workflow scenarios were also moved to `evals-regression/`, because
-  their exact scan-command recall is only fair as with-context regression coverage.
+  Context-dependent hard-stop scan workflow scenarios were also moved to `evals-regression/`,
+  because their exact scan-command recall is only fair as with-context regression coverage.
   - Remaining nonzero positive reference deltas: CPU-heavy parallel review 5 percentage points,
     primary-contact review 5 percentage points.
-  - `16-java11-report-review` stayed in reference because with-context scored 99 / 100 while
-    without-context scored 100 / 100; fix or rerun it targeted before moving it to regression.
+- Targeted rerun `019e9fa8-ccf2-77c7-885f-2cba4939e16f` confirmed
+  `16-java11-report-review` at with-context 100 / 100 and without-context 100 / 100 after a rubric
+  precision fix, so it moved to `evals-regression/`.
 
 ## Checks
 

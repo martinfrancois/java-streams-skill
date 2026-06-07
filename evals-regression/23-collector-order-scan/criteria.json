@@ -1,5 +1,5 @@
 {
-  "context": "Regression explicit workflow audit: measures whether the agent uses the bundled hard-stop scan command to classify collector, ordering, null-sort, and parallel markers. This requires runtime bundle access and must not be counted as fair without-context lift evidence.",
+  "context": "Regression context-dependent workflow audit: measures whether the agent uses the skill-provided hard-stop scan command to classify collector, ordering, null-sort, and parallel markers. This requires runtime skill context and must not be counted as fair without-context lift evidence.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -9,7 +9,7 @@
       "description": "Creates review.md with a complete scan-hit classification."
     },
     {
-      "name": "Includes bundled scan command",
+      "name": "Includes skill-provided scan command",
       "category": "stream_quality",
       "max_score": 20,
       "description": "Includes the scan header 'java-streams hard-stop scan v1' and the complete rg command from hard-stops.md, including the full marker regex and '<touched Java files>' placeholder. Equivalent shell escaping is acceptable, but do not award this for a reduced, approximate, or hand-written scan command."

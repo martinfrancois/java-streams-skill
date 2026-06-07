@@ -59,8 +59,8 @@ For suspected vulnerabilities, don't open a public issue. Follow the private rep
 - `evals-reference/` keeps candidate, diagnostic, and broad coverage scenarios that should not
   drive main eval lift claims.
 - `evals-regression/` keeps scenarios that hosted history shows are consistently solved by both
-  with-context and without-context, plus bundled-workflow checks that are only fair as with-context
-  regression coverage.
+  with-context and without-context, plus context-dependent workflow checks that are only fair as
+  with-context regression coverage.
 - `scripts/` contains portable validation checks used by CI.
 
 ## Local Checks
@@ -70,7 +70,7 @@ Run these before committing skill, eval, README, package, script, or CI changes:
 ```bash
 python3 scripts/validate_skill.py skills/java-streams
 python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
-python3 -m py_compile scripts/validate_skill.py scripts/validate_eval_criteria.py
+python3 -m py_compile scripts/*.py
 bash -n scripts/*.sh
 tessl plugin lint .
 ```
@@ -131,8 +131,9 @@ Common types in this repository:
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.
 `evals-reference/` contains candidate and diagnostic coverage that helps tune the skill or decide
-what to promote later. `evals-regression/` contains solved scenarios and bundled workflow checks;
-these are useful with-context safety checks, but they do not directly drive the main lift claim.
+what to promote later. `evals-regression/` contains solved scenarios and context-dependent workflow
+checks; these are useful with-context safety checks, but they do not directly drive the main lift
+claim.
 
 The main eval set should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
@@ -144,16 +145,20 @@ implementation criteria must include compile/artifact checks and behavior correc
 safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
 
-Do not hide baseline-solved scenarios just to improve lift. Move repeatedly baseline-solved
-scenarios to `evals-regression/` only when hosted evidence shows both variants are consistently
-100%. Keep low-delta but still diagnostic scenarios in `evals-reference/`.
+With-context must be 100% for every retained scenario in every suite. If with-context is below
+100%, fix the skill or eval and rerun that scenario targeted before choosing or changing a suite.
+
+Do not hide baseline-solved scenarios just to improve lift. Move baseline-solved scenarios to
+`evals-regression/` when hosted evidence shows both variants are 100%. Keep clean low-delta but
+still diagnostic scenarios in `evals-reference/`.
 
 When adding a new scenario, classify it from an isolated hosted run:
 
-1. Put ordinary candidate scenarios in `evals-reference/`. Put scenarios that require exact bundled
-   skill text, such as the hard-stop scan command, in `evals-regression/`.
+1. Put ordinary candidate scenarios in `evals-reference/`. Put context-dependent workflow scenarios
+   that require exact skill-provided text, commands, or procedures, such as the hard-stop scan
+   command, in `evals-regression/`.
 2. Run `scripts/run_eval_suite.sh reference <scenario-name>` for ordinary scenarios, or
-   `scripts/run_eval_suite.sh regression <scenario-name>` for bundled workflow scenarios.
+   `scripts/run_eval_suite.sh regression <scenario-name>` for context-dependent workflow scenarios.
 3. Save `tessl eval view <run-id> --json` output and run:
 
    ```bash
@@ -161,9 +166,16 @@ When adding a new scenario, classify it from an isolated hosted run:
    ```
 
 4. Use the recommended suite unless the pull request documents a maintainer-approved reason to
-   override it. In short: bundled workflow checks stay regression; with-context below 100 stays in
-   reference for targeted fixing; both variants 100 goes to regression; clean with-context plus a
-   main-strength delta goes to main; everything else stays reference.
+   override it. In short: with-context below 100 means fix required before classification;
+   context-dependent workflow checks go to regression once with-context is 100; both variants 100
+   goes to regression; clean with-context plus without-context below 100 goes to reference or main
+   depending on delta, coverage, and weighting.
+
+The current main promotion floor is 27.5 percentage points, matching the weakest current main
+scenario delta. Main eval weights should stay evidence-weighted: put more points on scenario
+families with larger observed missed-point reduction, keep ordinary 100-point main scenarios around
+15 safety / 80 stream-quality / 5 maintainability points, and document any
+`main_eval_weight_multiplier` in `criteria.json` metadata.
 
 When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
 there, then rerun only that targeted scenario until it is clean before running broader suites. After
@@ -174,6 +186,6 @@ safety or broad changes.
 Runtime skill references must not contain eval inventories, expected answers, score rubrics, hosted
 run IDs, or benchmark claims. Put maintainer-only eval history in `docs/agents/`.
 
-Hard-stop scan audits are explicit workflow-use scenarios because they ask for bundled scan headers
-and `rg` commands. Run and report them as with-context regression checks, not as natural activation,
-reference lift, or independent Java stream reasoning.
+Context-dependent workflow evals are explicit workflow-use scenarios because they ask for exact
+skill-provided text, commands, or procedures. Run and report them as with-context regression checks,
+not as natural activation, reference lift, or independent Java stream reasoning.

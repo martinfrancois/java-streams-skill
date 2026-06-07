@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Classify one hosted eval scenario into main, reference, or regression.
+"""Classify one hosted eval scenario into main, reference, regression, or fix-required.
 
 The script reads Tessl `eval view --json` output and applies the repository's
 suite policy. It is intentionally conservative: promote to main only when an
@@ -47,11 +47,21 @@ def scenario_text_from_dir(path: Path | None) -> str:
     return "\n".join(parts)
 
 
-def is_bundled_workflow(text: str) -> bool:
+def is_context_dependent_workflow(text: str) -> bool:
     lowered = text.lower()
-    return (
-        "hard-stop scan" in lowered
-        and ("bundled" in lowered or "exact scan" in lowered or "scan command from the skill" in lowered)
+    context_terms = (
+        "skill bundle",
+        "skill-provided",
+        "from the skill",
+        "from the skill bundle",
+        "exact scan",
+        "exact scan header",
+        "scan command from the skill",
+        "hard-stop rg scan command",
+    )
+    workflow_terms = ("workflow", "scan command", "scan header", "hard-stop scan")
+    return any(term in lowered for term in context_terms) and any(
+        term in lowered for term in workflow_terms
     )
 
 
@@ -83,24 +93,28 @@ def classify(
     *,
     with_score: tuple[float, float] | None,
     without_score: tuple[float, float] | None,
-    bundled_workflow: bool,
+    context_dependent_workflow: bool,
     main_delta_floor: float,
 ) -> tuple[str, str]:
     if with_score is None:
-        return "reference", "with-context result is missing; run with context before classifying"
+        return "fix-required", "with-context result is missing; run with context before classifying"
 
     with_earned, with_max = with_score
     if with_max <= 0:
-        return "reference", "with-context max score is zero; scoring did not finish cleanly"
+        return "fix-required", "with-context max score is zero; scoring did not finish cleanly"
     with_percent = 100 * with_earned / with_max
 
-    if bundled_workflow:
-        if with_percent == 100:
-            return "regression", "bundled workflow recall is only fair as with-context regression coverage"
-        return "regression", "bundled workflow scenario needs targeted with-context fixes before release"
-
     if with_percent < 100:
-        return "reference", "with-context is below 100%; keep in reference and fix or rerun targeted"
+        return (
+            "fix-required",
+            "with-context is below 100%; fix the skill or eval and rerun targeted before choosing a suite",
+        )
+
+    if context_dependent_workflow:
+        return (
+            "regression",
+            "context-dependent workflow recall is only fair as with-context regression coverage",
+        )
 
     if without_score is None:
         return "reference", "without-context result is missing; run both variants before lift classification"
@@ -146,12 +160,12 @@ def main() -> int:
     title = scenario.get("shortDescription") or "(untitled scenario)"
     task_text = scenario.get("task") or ""
     local_text = scenario_text_from_dir(args.scenario_dir)
-    bundled_workflow = is_bundled_workflow(f"{title}\n{task_text}\n{local_text}")
+    context_dependent_workflow = is_context_dependent_workflow(f"{title}\n{task_text}\n{local_text}")
 
     suite, reason = classify(
         with_score=with_score,
         without_score=without_score,
-        bundled_workflow=bundled_workflow,
+        context_dependent_workflow=context_dependent_workflow,
         main_delta_floor=args.main_delta_floor,
     )
 
@@ -166,7 +180,7 @@ def main() -> int:
     print(f"scenario: {title}")
     print(f"with-context: {fmt(with_score)}")
     print(f"without-context: {fmt(without_score)}")
-    print(f"bundled-workflow: {'yes' if bundled_workflow else 'no'}")
+    print(f"context-dependent-workflow: {'yes' if context_dependent_workflow else 'no'}")
     print(f"recommended-suite: {suite}")
     print(f"reason: {reason}")
     return 0
