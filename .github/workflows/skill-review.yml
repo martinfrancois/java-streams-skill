@@ -39,7 +39,7 @@ jobs:
         if: ${{ env.TESSL_TOKEN != '' }}
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
-          version: "0.81.2"
+          version: "0.82.0"
           token: ${{ env.TESSL_TOKEN }}
 
       - name: Review skill

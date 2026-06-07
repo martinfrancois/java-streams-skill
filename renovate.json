@@ -38,8 +38,8 @@
         "version:\\s*[\"']?(?<currentValue>\\d+\\.\\d+\\.\\d+)[\"']?"
       ],
       "depNameTemplate": "tessl-cli",
-      "datasourceTemplate": "github-releases",
-      "packageNameTemplate": "tesslio/cli",
+      "datasourceTemplate": "npm",
+      "packageNameTemplate": "tessl",
       "versioningTemplate": "semver"
     }
   ],
