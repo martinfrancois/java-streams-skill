@@ -154,7 +154,7 @@ if [[ "${#scenarios[@]}" -eq 0 ]]; then
   for scenario in "$source_path"/*; do
     if [[ -d "$scenario" ]]; then
       found=true
-      cp -a "$scenario" "$tmp_repo/evals/"
+      cp -a "$scenario" "$staged_evals/"
     fi
   done
   if [[ "$found" == false ]]; then
