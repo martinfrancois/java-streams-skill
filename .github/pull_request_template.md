@@ -44,7 +44,8 @@ Tessl-authenticated checks:
 - [ ] `tessl skill review --threshold 100 skills/java-streams/SKILL.md`, if skill text or references changed
 - [ ] Targeted main/reference `scripts/run_eval_suite.sh <main|reference> <scenario-name>`, if skill behavior or those evals changed
 - [ ] Targeted regression `scripts/run_eval_suite.sh regression <scenario-name>`, if regression evals changed
-- [ ] Every changed eval scenario was rerun targeted and reached 100% with context, or the PR explains the Tessl blocker and remaining work
+- [ ] Every substantively changed eval scenario was rerun targeted and reached 100% with context, or the PR explains the Tessl blocker and remaining work
+- [ ] Pure eval suite moves did not change task wording, scoring criteria, or capability text beyond suite-placement metadata/numbering notes
 - [ ] `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`, if a scenario was added or moved between suites
 - [ ] Full/main `scripts/run_eval_suite.sh main`, if benchmark claims changed or targeted with-context results are clean
 

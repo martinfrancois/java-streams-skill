@@ -133,6 +133,11 @@ benchmark claims, or scoring rules.
     than lift discovery. Run `without-context` for regression only when intentionally checking
     whether a scenario should move back to reference.
 - Keep hosted eval usage minimal while preserving confidence and Tessl daily rate-limit budget:
+  - A pure suite move does not require a hosted rerun when `task.md`, `criteria.json`, and
+    `capability.txt` content are unchanged except for suite-placement metadata or numbering notes.
+    Run local validators and update suite totals/numbering instead. If the move also changes task
+    wording, scoring criteria, capability text, runtime skill behavior, or benchmark claims, follow
+    the targeted rerun rules below.
   - For any eval scenario edit, first run every changed scenario directory, using the variant rule
     above for the suite the scenario belongs to. This is mandatory for changes to `task.md`,
     `criteria.json`, or `capability.txt`, including wording-only prompt edits and metadata/scoring

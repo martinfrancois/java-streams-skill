@@ -30,11 +30,14 @@ release-readiness.
   uses plugin context and the right variant policy.
 
   If any eval scenario's `task.md`, `criteria.json`, or `capability.txt` changed, run that exact
-  scenario before finishing the PR. The with-context result for every changed scenario must be 100%
-  before broader suite results, benchmark claims, or release-readiness claims are trusted. This rule
-  applies even when the edit looks like a prompt cleanup or metadata-only scoring clarification. If
-  Tessl hosted evals are unavailable, the PR must document the blocker and remaining targeted runs;
-  do not make benchmark or release-readiness claims until those runs pass.
+  scenario before finishing the PR. A pure move between `evals/`, `evals-reference/`, and
+  `evals-regression/` does not need a hosted rerun when the task, scoring criteria, and capability
+  text are unchanged except for suite-placement metadata or numbering notes; run local validators
+  and update suite totals instead. The with-context result for every substantively changed scenario
+  must be 100% before broader suite results, benchmark claims, or release-readiness claims are
+  trusted. This rule applies even when the edit looks like a prompt cleanup or metadata-only scoring
+  clarification. If Tessl hosted evals are unavailable, the PR must document the blocker and
+  remaining targeted runs; do not make benchmark or release-readiness claims until those runs pass.
 
   Run targeted affected main or reference scenarios with both variants:
 
