@@ -45,6 +45,7 @@ BEHAVIOR_WORDS = (
     "redact",
 )
 CRITERION_CATEGORIES = {"safety", "stream_quality", "maintainability"}
+EVIDENCE_TYPES = {"ordinary_lift", "solved_regression", "skill_context_dependent"}
 EXPLICIT_INVOCATION_PATTERNS = (
     r"\$java-streams\b",
     r"\buse\s+java-streams\b",
@@ -193,9 +194,41 @@ def domain_identifiers(text: str) -> set[str]:
     return result
 
 
-def is_hard_stop_workflow_scenario(scenario: Path, task_text: str) -> bool:
-    lowered = f"{scenario.name}\n{task_text}".lower()
-    return "hard-stop scan" in lowered and "exact scan" in lowered
+def is_skill_context_dependent_text(text: str) -> bool:
+    lowered = text.lower()
+    context_terms = (
+        "skill bundle",
+        "skill package",
+        "skill-provided",
+        "skill-only context",
+        "agent instructions",
+        "from the skill",
+        "from the skill bundle",
+        "bundled reference",
+        "bundled reference text",
+        "exact skill-provided text",
+        "exact wording",
+        "exact text",
+        "exact scan",
+        "exact scan header",
+        "exact checklist",
+        "exact procedure",
+        "exact command",
+        "scan command from the skill",
+        "hard-stop rg scan command",
+    )
+    required_terms = (
+        "exact",
+        "skill-provided",
+        "skill-only context",
+        "skill package",
+        "agent instructions",
+        "from the skill",
+        "bundled reference",
+    )
+    return any(term in lowered for term in context_terms) and any(
+        term in lowered for term in required_terms
+    )
 
 
 def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
@@ -280,18 +313,42 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
         if any(word in haystack for word in BEHAVIOR_WORDS):
             behavior_score += max_score
 
+    task_text = task_file.read_text(encoding="utf-8") if task_file.is_file() else ""
     metadata = data.get("metadata")
     if not isinstance(metadata, dict):
         failures.append(f"{criteria_file}: missing metadata object")
         metadata = {}
     invocation = metadata.get("invocation")
     task_type = metadata.get("task_type")
+    evidence_type = metadata.get("evidence_type")
     if invocation not in {"natural", "explicit"}:
         failures.append(f"{criteria_file}: metadata.invocation must be natural or explicit")
     if task_type not in {"implementation", "cleanup", "review"}:
         failures.append(f"{criteria_file}: metadata.task_type must be implementation, cleanup, or review")
+    if evidence_type is not None and evidence_type not in EVIDENCE_TYPES:
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type must be one of {sorted(EVIDENCE_TYPES)}"
+        )
+    scenario_text = f"{scenario.name}\n{task_text}\n{json.dumps(data, sort_keys=True)}"
+    detected_skill_context = is_skill_context_dependent_text(scenario_text)
+    if evidence_type == "skill_context_dependent" and scenario.parent.name != "evals-regression":
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type=skill_context_dependent must live in evals-regression"
+        )
+    if evidence_type == "solved_regression" and scenario.parent.name != "evals-regression":
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type=solved_regression must live in evals-regression"
+        )
+    if evidence_type == "ordinary_lift" and scenario.parent.name == "evals-regression":
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type=ordinary_lift must live in evals or evals-reference"
+        )
+    if evidence_type != "skill_context_dependent" and detected_skill_context:
+        failures.append(
+            f"{criteria_file}: scenario appears skill-context-dependent; set "
+            "metadata.evidence_type to skill_context_dependent and keep it in evals-regression"
+        )
 
-    task_text = task_file.read_text(encoding="utf-8") if task_file.is_file() else ""
     if task_text and not re.search(r"\bAssume Java\s+\d+\b", task_text):
         failures.append(f"{task_file}: task must state the Java version to assume, e.g. 'Assume Java 17.'")
     has_explicit_invocation = invocation_from_task(task_text)
@@ -359,7 +416,7 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
         if not task_file.exists():
             continue
         task_text = task_file.read_text(encoding="utf-8")
-        if is_hard_stop_workflow_scenario(scenario, task_text):
+        if is_skill_context_dependent_text(f"{scenario.name}\n{task_text}"):
             continue
 
         task_identifiers = domain_identifiers(task_text)

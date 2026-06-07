@@ -35,6 +35,7 @@
   ],
   "metadata": {
     "invocation": "explicit",
-    "task_type": "review"
+    "task_type": "review",
+    "evidence_type": "skill_context_dependent"
   }
 }
