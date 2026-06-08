@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.2...v1.1.3) (2026-06-08)
+
+
+### Bug Fixes
+
+* **skill:** preserve requested Java artifact structure ([03600ea](https://github.com/martinfrancois/java-streams-skill/commit/03600ea00af4a12a059b1f35fe6ed2c4679bc0f0))
+
 ## [1.1.2](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.1...v1.1.2) (2026-06-08)
 
 
