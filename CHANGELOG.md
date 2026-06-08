@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.1...v1.1.2) (2026-06-08)
+
+
+### Bug Fixes
+
+* **evals:** rebalance main eval uplift ([#25](https://github.com/martinfrancois/java-streams-skill/issues/25)) ([135397e](https://github.com/martinfrancois/java-streams-skill/commit/135397e77ce0e17bb471f50cc67aa559ec0e2f2d))
+
 ## [1.1.1](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.0...v1.1.1) (2026-06-07)
 
 
