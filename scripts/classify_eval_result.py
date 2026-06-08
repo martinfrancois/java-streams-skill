@@ -3,8 +3,8 @@
 
 The script reads Tessl `eval view --json` output and applies the repository's
 suite policy. It is intentionally conservative: promote to main only when an
-isolated run shows clean with-context behavior and a delta at least as strong as
-the weakest current main scenario.
+isolated run shows clean with-context behavior and a delta meeting the
+repository main promotion floor.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_MAIN_DELTA_FLOOR = 27.5
+DEFAULT_MAIN_DELTA_FLOOR = 30.0
 
 
 def error(message: str) -> int:
