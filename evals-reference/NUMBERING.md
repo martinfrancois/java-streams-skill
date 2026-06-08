@@ -11,9 +11,11 @@ Hosted release run `019ea20b-cf1b-73da-955f-d782db861b86` scored it `92/100` wit
 `100/100` with context, so it remains ordinary reference lift evidence but should not drive the
 evidence-weighted main score unless future hosted history shows a stronger delta.
 
-Number `26` was promoted to `evals/07-uppercase-side-effect-review` after targeted Sonnet 4.6 run
-`019ea268-bdfe-70de-a54a-d0810faa1be7` scored it `62/100` without context and `100/100` with
-context.
+Number `26` contains the uppercase side-effect review scenario that was promoted to main eval
+number `07`, then demoted back to reference after release evidence showed useful ordinary lift but
+not enough public-uplift impact for the evidence-weighted main set. It remains useful natural
+review coverage for external stream mutation, lambda purity, and careful `parallelStream()`
+performance advice.
 
 Number `27` covers high-volume uppercase implementation from
 <https://github.com/martinfrancois/java-streams-skill/issues/4>. Targeted Sonnet 4.6 run

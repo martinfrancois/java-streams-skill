@@ -169,8 +169,8 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 5 active scenarios, 1500 total checklist points.
-- Natural activation subset: 2 scenarios.
+- Main eval set: 4 active scenarios, 1400 total checklist points.
+- Natural activation subset: 1 scenario.
 - Explicit invocation subset: 3 scenarios.
 - Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
   points. This dominates the current main score because hosted evidence previously showed strong
@@ -179,16 +179,16 @@ Update this section whenever active eval membership or scoring changes.
   coverage. It should remain a different domain and result-carrier pattern from the bundled bounded
   `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
   rather than broad independent lift evidence.
-- Java 17 collector, prefix-operation, and external-mutation coverage: 2 scenarios, 300 checklist
-  points.
-- Scenario `07-uppercase-side-effect-review` covers external stream mutation, lambda purity, and
-  careful `parallelStream()` performance advice. It moved to main because targeted hosted evidence
-  showed a clean with-context result and a delta above the current main promotion floor.
+- Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
+- Uppercase side-effect review moved from main number `07` back to reference number `26` because
+  release evidence showed useful ordinary lift, but it was the weakest active scenario for the
+  registry's unweighted public uplift calculation. Keep it in reference unless future evidence
+  shows stronger main-score value.
 - Session roster indexing moved from main number `06` to reference number `15` because hosted
   evidence showed the without-context result was already high while with-context was clean. It
   remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 4 scenarios, 360 total checklist points. Deleted reference number 12 and
+- Reference suite: 5 scenarios, 460 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
