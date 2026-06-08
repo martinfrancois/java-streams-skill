@@ -36,6 +36,10 @@ Fix these before finalizing:
   not a conditional caveat, unless the code already proves non-null before the collector. Also fix
   `toMap` where null keys or values would change the existing null-handling contract. Default
   `toMap` can preserve one null key in a `HashMap` result, but it rejects null values.
+  In scan audits, classify marker hits against the task's domain notes. If the task states an
+  invariant that makes a marker acceptable, such as globally unique `toMap` keys or non-null
+  `groupingBy` classifiers, list it as acceptable with that invariant. Do not turn a proven
+  invariant into a required fix unless the task asks for defensive hardening.
 - `sorted()` or `Comparator.naturalOrder()` where null elements or keys can reach the comparator.
 - `Stream.toList()` where a mutable result is required or later code mutates the list. Prefer a
   mutable collector; do not modernize this to `new ArrayList<>(stream.toList())` when the task or
@@ -57,6 +61,9 @@ Fix these before finalizing:
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
   For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
   not add unrelated `groupingBy` null-key or collector-safety caveats.
+  When one stream chain contains multiple unavailable APIs, list each unavailable API separately.
+  Example: `flatMap(Optional::stream).toList()` on a Java 8 baseline has two version-drift hits:
+  `Optional::stream` requires Java 9 and `Stream.toList()` requires Java 16.
 - Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
   `Collectors`, or `Gatherers`.
 
@@ -97,6 +104,10 @@ input is large. In reviews, show the sequential direct-collection fix before any
 For large CPU-bound transformations, strongly recommend benchmarking a pure parallel version after
 the stream chain is side-effect-free; make the benchmark requirement visible next to that
 recommendation, and call out that small-list or mostly-small call paths can be slower.
+For simple cache/index construction, filtering, or map population, explicitly say when there is no
+CPU-heavy stateless work to justify `parallelStream()`. Do not suggest `toConcurrentMap` or another
+parallel collector as the main fix unless the task provides measured need or genuinely CPU-heavy
+per-element work. Prefer sequential collector-owned accumulation.
 
 ## Scan Command
 
@@ -127,4 +138,5 @@ task explicitly asks for a scan/workflow audit or exact skill-provided command.
 When the requested audit is specifically about Java-version drift, keep the report scoped to APIs
 that are unavailable for the stated baseline and to explicitly allowed markers. Do not add unrelated
 collector/null-safety notes, such as `groupingBy` null-key caveats, unless the task also asks for a
-general stream safety review.
+general stream safety review. Reconcile every scan hit against the code before writing the final
+audit; do not drop a later hit just because an earlier hit appears in the same stream chain.
