@@ -97,6 +97,7 @@ release-readiness.
 
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
   `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
+  Any change that could affect hosted lift, baseline score, with-context score, skill activation, runtime skill behavior, active eval tasks, active eval criteria, or active eval membership must be made in a separate commit. Label it as lift-sensitive in the PR summary and include a revert strategy.
   - Use `fix(skill): ...` for corrections to `skills/java-streams/SKILL.md` or files it links as
     runtime references.
   - Use `feat(skill): ...` when adding a new runtime capability or materially broader skill behavior.
