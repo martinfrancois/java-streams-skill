@@ -4,9 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "Git ref to publish. Defaults to the selected workflow ref."
-        required: false
+        description: "Git ref to publish. Use refs/tags/v<plugin-version> for releases."
+        required: true
         type: string
+      allow_non_tag_ref:
+        description: "Allow publishing a non-v<plugin-version> ref. Use only for maintainer-approved recovery."
+        required: false
+        type: boolean
+        default: false
   release:
     types: [published]
 
@@ -27,7 +32,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
-          ref: ${{ inputs.ref || github.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Checkout release tag
         if: ${{ github.event_name == 'release' }}
@@ -38,10 +43,66 @@ jobs:
       - name: Show publish ref
         run: |
           echo "event_name=${{ github.event_name }}"
-          echo "requested_ref=${{ github.event.release.tag_name || inputs.ref || github.ref }}"
+          echo "requested_ref=${{ github.event.release.tag_name || inputs.ref }}"
           echo "checked_out_ref=$(git rev-parse --abbrev-ref HEAD)"
           echo "checked_out_sha=$(git rev-parse HEAD)"
           git describe --tags --always --dirty
+
+      - name: Validate publish ref
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          MANUAL_REF: ${{ inputs.ref }}
+          ALLOW_NON_TAG_REF: ${{ inputs.allow_non_tag_ref }}
+        run: |
+          set -euo pipefail
+
+          plugin_version="$(python3 - <<'PY'
+          import json
+          print(json.load(open(".tessl-plugin/plugin.json", encoding="utf-8"))["version"])
+          PY
+          )"
+          expected_tag="v${plugin_version}"
+
+          echo "plugin_version=${plugin_version}"
+          echo "expected_tag=${expected_tag}"
+
+          if [ "$EVENT_NAME" = "release" ]; then
+            if [ "${RELEASE_TAG:-}" != "$expected_tag" ]; then
+              echo "Release tag '${RELEASE_TAG:-}' must match plugin version tag '${expected_tag}'." >&2
+              exit 1
+            fi
+            exit 0
+          fi
+
+          if [ -z "${MANUAL_REF:-}" ]; then
+            echo "Manual publish requires an explicit ref input." >&2
+            exit 1
+          fi
+
+          git fetch --force --tags origin '+refs/tags/*:refs/tags/*'
+
+          if [ "$MANUAL_REF" = "refs/tags/${expected_tag}" ]; then
+            exit 0
+          fi
+
+          if [ "$MANUAL_REF" = "$expected_tag" ]; then
+            echo "Manual release publishes must use fully qualified tag ref 'refs/tags/${expected_tag}'." >&2
+            exit 1
+          fi
+
+          tag_ref="${MANUAL_REF#refs/tags/}"
+          if git show-ref --verify --quiet "refs/tags/${tag_ref}"; then
+            echo "Manual release tag '${MANUAL_REF}' must match 'refs/tags/${expected_tag}'." >&2
+            exit 1
+          fi
+
+          if [ "$ALLOW_NON_TAG_REF" != "true" ]; then
+            echo "Manual publish from non-tag ref '${MANUAL_REF}' requires allow_non_tag_ref=true." >&2
+            exit 1
+          fi
+
+          echo "Publishing non-tag ref '${MANUAL_REF}' with explicit maintainer override."
 
       - name: Require Tessl token
         env:
