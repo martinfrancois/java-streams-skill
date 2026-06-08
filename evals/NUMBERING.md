@@ -10,7 +10,7 @@ the without-context result was already high (`92/100` in release run
 `019ea20b-cf1b-73da-955f-d782db861b86`). It remains useful broad Java 17 collector and natural
 activation coverage, but it is weak evidence for the evidence-weighted main score.
 
-Number `07` is `evals/07-uppercase-side-effect-review`, promoted from reference number `26` after
-targeted Sonnet 4.6 run `019ea268-bdfe-70de-a54a-d0810faa1be7` scored it `62/100` without context
-and `100/100` with context. It covers external stream mutation, lambda purity, and careful
-`parallelStream()` performance advice from issue #4.
+Number `07` was demoted back to `evals-reference/26-uppercase-side-effect-review` after release
+evidence showed it still had useful ordinary lift, but was the weakest active main scenario for the
+registry's unweighted public uplift calculation. Keep the scenario in reference coverage unless
+future evidence shows it should return to main.
