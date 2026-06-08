@@ -40,17 +40,7 @@ jobs:
           node-version: "24"
 
       - name: Prepare commitlint
-        run: |
-          set -euo pipefail
-          commitlint_home="$RUNNER_TEMP/commitlint"
-          mkdir -p "$commitlint_home"
-          printf '{"private":true}\n' > "$commitlint_home/package.json"
-          cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
-          npm --prefix "$commitlint_home" install --silent --ignore-scripts \
-            @commitlint/cli@21.0.2 \
-            @commitlint/config-conventional@21.0.2
-          echo "COMMITLINT_BIN=$commitlint_home/node_modules/.bin/commitlint" >> "$GITHUB_ENV"
-          echo "COMMITLINT_CONFIG=$commitlint_home/commitlint.config.cjs" >> "$GITHUB_ENV"
+        run: scripts/install_commitlint.sh
 
       - name: Lint pull request title
         env:
@@ -63,12 +53,4 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           BASE_REF: ${{ inputs.base_ref || 'main' }}
           EVENT_NAME: ${{ github.event_name }}
-        run: |
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            "$COMMITLINT_BIN" --config "$COMMITLINT_CONFIG" \
-              --from "$PR_BASE_SHA" --to "$PR_HEAD_SHA" --verbose
-          else
-            git fetch origin "$BASE_REF"
-            "$COMMITLINT_BIN" --config "$COMMITLINT_CONFIG" \
-              --from "origin/$BASE_REF" --to HEAD --verbose
-          fi
+        run: scripts/lint_pr_commits.sh

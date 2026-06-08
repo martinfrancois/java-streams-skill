@@ -28,52 +28,24 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
       - name: Trigger Tessl publish
         if: ${{ steps.release.outputs.release_created == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ steps.release.outputs.tag_name }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${TAG_NAME:-}" ]; then
-            echo "Release Please reported a release but did not output tag_name." >&2
-            exit 1
-          fi
-
-          gh workflow run publish-tessl.yml --repo "$GITHUB_REPOSITORY" --ref main -f ref="refs/tags/${TAG_NAME}"
+        run: scripts/trigger_tessl_publish.sh "$TAG_NAME"
 
       - name: Read release PR output
         id: release-pr
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           RELEASE_PR: ${{ steps.release.outputs.pr }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${RELEASE_PR:-}" ] || [ "$RELEASE_PR" = "null" ]; then
-            echo "Release Please did not create or update a release PR."
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          title="$(printf '%s\n' "$RELEASE_PR" | jq -r '.title')"
-          branch="$(printf '%s\n' "$RELEASE_PR" | jq -r '.headBranchName')"
-
-          if [ -z "$title" ] || [ "$title" = "null" ] || [ -z "$branch" ] || [ "$branch" = "null" ]; then
-            echo "Release Please returned a release PR without title or headBranchName." >&2
-            printf '%s\n' "$RELEASE_PR" >&2
-            exit 1
-          fi
-
-          {
-            echo "found=true"
-            echo "title<<EOF"
-            printf '%s\n' "$title"
-            echo "EOF"
-            echo "branch<<EOF"
-            printf '%s\n' "$branch"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+        run: scripts/read_release_pr_output.sh
 
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         if: ${{ steps.release-pr.outputs.found == 'true' }}
@@ -82,37 +54,50 @@ jobs:
           persist-credentials: false
           ref: ${{ steps.release-pr.outputs.branch }}
 
-      - name: Setup Tessl CLI
+      - name: Check Tessl token
+        id: release-pr-tessl-token
         if: ${{ steps.release-pr.outputs.found == 'true' }}
+        env:
+          TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+        run: scripts/check_tessl_token_available.sh
+
+      - name: Setup Tessl CLI
+        if: ${{ steps.release-pr.outputs.found == 'true' && steps.release-pr-tessl-token.outputs.available != 'true' }}
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
           version: "0.82.0"
+
+      - name: Setup authenticated Tessl CLI
+        if: ${{ steps.release-pr.outputs.found == 'true' && steps.release-pr-tessl-token.outputs.available == 'true' }}
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: "0.82.0"
+          token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Mark release PR validation pending
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          release_sha="$(git rev-parse HEAD)"
-          gh api "repos/${GITHUB_REPOSITORY}/statuses/${release_sha}" \
-            -f state="pending" \
-            -f context="Validate skill and plugin" \
-            -f description="Release PR validation is running" \
-            -f target_url="$TARGET_URL" >/dev/null
+        run: >
+          scripts/post_commit_status.sh "$(git rev-parse HEAD)"
+          "Validate skill and plugin"
+          pending
+          "Release PR validation is running"
+          "$TARGET_URL"
 
       - name: Validate release PR
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         id: validate-release-pr
         continue-on-error: true
+        env:
+          TESSL_TOKEN_AVAILABLE: ${{ steps.release-pr-tessl-token.outputs.available }}
         run: |
-          set -euo pipefail
-
-          python3 scripts/validate_skill.py skills/java-streams
-          python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
-          python3 -m py_compile scripts/*.py
-          bash -n scripts/*.sh
-          tessl plugin lint .
+          scripts/validate_repo.sh
+          if [[ "$TESSL_TOKEN_AVAILABLE" == "true" ]]; then
+            bash scripts/check_publish_dry_run.sh .
+            tessl plugin publish --dry-run .
+          fi
 
       - name: Mark release PR validation result
         if: ${{ steps.release-pr.outputs.found == 'true' }}
@@ -120,25 +105,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           VALIDATION_OUTCOME: ${{ steps.validate-release-pr.outcome }}
-        run: |
-          set -euo pipefail
-
-          release_sha="$(git rev-parse HEAD)"
-          if [ "$VALIDATION_OUTCOME" = "success" ]; then
-            state="success"
-            description="Release PR validation passed"
-          else
-            state="failure"
-            description="Release PR validation failed"
-          fi
-
-          gh api "repos/${GITHUB_REPOSITORY}/statuses/${release_sha}" \
-            -f state="$state" \
-            -f context="Validate skill and plugin" \
-            -f description="$description" \
-            -f target_url="$TARGET_URL" >/dev/null
-
-          [ "$VALIDATION_OUTCOME" = "success" ]
+        run: >
+          scripts/post_commit_status_for_outcome.sh "$(git rev-parse HEAD)"
+          "Validate skill and plugin"
+          "$VALIDATION_OUTCOME"
+          "Release PR validation passed"
+          "Release PR validation failed"
+          "$TARGET_URL"
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         if: ${{ steps.release-pr.outputs.found == 'true' }}
@@ -150,13 +123,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          release_sha="$(git rev-parse HEAD)"
-          gh api "repos/${GITHUB_REPOSITORY}/statuses/${release_sha}" \
-            -f state="pending" \
-            -f context="Commitlint" \
-            -f description="Release PR commitlint is running" \
-            -f target_url="$TARGET_URL" >/dev/null
+        run: >
+          scripts/post_commit_status.sh "$(git rev-parse HEAD)"
+          "Commitlint"
+          pending
+          "Release PR commitlint is running"
+          "$TARGET_URL"
 
       - name: Commitlint release PR
         if: ${{ steps.release-pr.outputs.found == 'true' }}
@@ -164,23 +136,7 @@ jobs:
         continue-on-error: true
         env:
           PR_TITLE: ${{ steps.release-pr.outputs.title }}
-        run: |
-          set -euo pipefail
-
-          commitlint_home="$RUNNER_TEMP/commitlint"
-          mkdir -p "$commitlint_home"
-          printf '{"private":true}\n' > "$commitlint_home/package.json"
-          cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
-          npm --prefix "$commitlint_home" install --silent --ignore-scripts \
-            @commitlint/cli@21.0.2 \
-            @commitlint/config-conventional@21.0.2
-
-          commitlint_bin="$commitlint_home/node_modules/.bin/commitlint"
-          commitlint_config="$commitlint_home/commitlint.config.cjs"
-
-          printf '%s\n' "$PR_TITLE" | "$commitlint_bin" --config "$commitlint_config"
-          "$commitlint_bin" --config "$commitlint_config" \
-            --from origin/main --to HEAD --verbose
+        run: scripts/commitlint_release_pr.sh "$PR_TITLE"
 
       - name: Mark release PR commitlint result
         if: ${{ steps.release-pr.outputs.found == 'true' }}
@@ -188,22 +144,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           COMMITLINT_OUTCOME: ${{ steps.commitlint-release-pr.outcome }}
-        run: |
-          set -euo pipefail
-
-          release_sha="$(git rev-parse HEAD)"
-          if [ "$COMMITLINT_OUTCOME" = "success" ]; then
-            state="success"
-            description="Release PR commitlint passed"
-          else
-            state="failure"
-            description="Release PR commitlint failed"
-          fi
-
-          gh api "repos/${GITHUB_REPOSITORY}/statuses/${release_sha}" \
-            -f state="$state" \
-            -f context="Commitlint" \
-            -f description="$description" \
-            -f target_url="$TARGET_URL" >/dev/null
-
-          [ "$COMMITLINT_OUTCOME" = "success" ]
+        run: >
+          scripts/post_commit_status_for_outcome.sh "$(git rev-parse HEAD)"
+          "Commitlint"
+          "$COMMITLINT_OUTCOME"
+          "Release PR commitlint passed"
+          "Release PR commitlint failed"
+          "$TARGET_URL"

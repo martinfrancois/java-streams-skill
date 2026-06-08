@@ -41,29 +41,10 @@ jobs:
         run: bash -n scripts/*.sh
 
       - name: Parse JSON files
-        run: |
-          python3 - <<'PY'
-          import json
-          import pathlib
-          for path in pathlib.Path('.').rglob('*.json'):
-              json.load(open(path, encoding='utf-8'))
-          print('JSON ok')
-          PY
+        run: python3 scripts/validate_json_files.py
 
       - name: Validate YAML metadata
-        run: |
-          python3 - <<'PY'
-          import pathlib
-          from scripts.validate_skill import parse_openai_agent_metadata
-
-          for path in pathlib.Path('skills').glob('*/agents/openai.yaml'):
-              _, failures = parse_openai_agent_metadata(path.read_text(encoding='utf-8'))
-              if failures:
-                  for failure in failures:
-                      print(f'{path}: {failure}')
-                  raise SystemExit(1)
-          print('YAML metadata ok')
-          PY
+        run: python3 scripts/validate_openai_agent_yaml.py
 
       - name: Lint Tessl plugin
         run: tessl plugin lint .
@@ -79,13 +60,7 @@ jobs:
         id: tessl-token
         env:
           TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
-        run: |
-          if [ -n "${TESSL_TOKEN:-}" ]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "TESSL_TOKEN isn't configured; skipping Tessl publish dry-runs."
-          fi
+        run: scripts/check_tessl_token_available.sh
 
       - name: Setup Tessl CLI
         if: ${{ steps.tessl-token.outputs.available == 'true' }}

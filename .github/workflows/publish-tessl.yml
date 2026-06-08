@@ -54,64 +54,12 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           MANUAL_REF: ${{ inputs.ref }}
           ALLOW_NON_TAG_REF: ${{ inputs.allow_non_tag_ref }}
-        run: |
-          set -euo pipefail
-
-          plugin_version="$(python3 - <<'PY'
-          import json
-          print(json.load(open(".tessl-plugin/plugin.json", encoding="utf-8"))["version"])
-          PY
-          )"
-          expected_tag="v${plugin_version}"
-
-          echo "plugin_version=${plugin_version}"
-          echo "expected_tag=${expected_tag}"
-
-          if [ "$EVENT_NAME" = "release" ]; then
-            if [ "${RELEASE_TAG:-}" != "$expected_tag" ]; then
-              echo "Release tag '${RELEASE_TAG:-}' must match plugin version tag '${expected_tag}'." >&2
-              exit 1
-            fi
-            exit 0
-          fi
-
-          if [ -z "${MANUAL_REF:-}" ]; then
-            echo "Manual publish requires an explicit ref input." >&2
-            exit 1
-          fi
-
-          git fetch --force --tags origin '+refs/tags/*:refs/tags/*'
-
-          if [ "$MANUAL_REF" = "refs/tags/${expected_tag}" ]; then
-            exit 0
-          fi
-
-          if [ "$MANUAL_REF" = "$expected_tag" ]; then
-            echo "Manual release publishes must use fully qualified tag ref 'refs/tags/${expected_tag}'." >&2
-            exit 1
-          fi
-
-          tag_ref="${MANUAL_REF#refs/tags/}"
-          if git show-ref --verify --quiet "refs/tags/${tag_ref}"; then
-            echo "Manual release tag '${MANUAL_REF}' must match 'refs/tags/${expected_tag}'." >&2
-            exit 1
-          fi
-
-          if [ "$ALLOW_NON_TAG_REF" != "true" ]; then
-            echo "Manual publish from non-tag ref '${MANUAL_REF}' requires allow_non_tag_ref=true." >&2
-            exit 1
-          fi
-
-          echo "Publishing non-tag ref '${MANUAL_REF}' with explicit maintainer override."
+        run: scripts/validate_publish_ref.sh
 
       - name: Require Tessl token
         env:
           TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
-        run: |
-          if [ -z "${TESSL_TOKEN:-}" ]; then
-            echo "TESSL_TOKEN is required to publish the Tessl plugin." >&2
-            exit 1
-          fi
+        run: scripts/require_tessl_token.sh
 
       - name: Setup Tessl CLI
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
@@ -120,14 +68,7 @@ jobs:
           token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Validate plugin before publish
-        run: |
-          python3 scripts/validate_skill.py skills/java-streams
-          python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
-          python3 -m py_compile scripts/*.py
-          bash -n scripts/*.sh
-          tessl plugin lint .
-          tessl skill review --threshold 100 skills/java-streams/SKILL.md
-          tessl plugin publish --dry-run .
+        run: scripts/validate_publish_ready.sh
 
       - name: Publish plugin
         run: tessl plugin publish .

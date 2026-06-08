@@ -21,7 +21,8 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^\\.github/workflows/(?:commitlint|release-please)\\.yml$/"
+        "/^\\.github/workflows/(?:commitlint|release-please)\\.yml$/",
+        "/^scripts/(?:commitlint_release_pr|install_commitlint)\\.sh$/"
       ],
       "matchStrings": [
         "(?:\\s+)(?<depName>@commitlint/(?:cli|config-conventional))@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
