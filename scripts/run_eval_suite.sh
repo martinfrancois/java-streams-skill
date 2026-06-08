@@ -20,6 +20,17 @@ Do not pass --variant. This script chooses variants from the suite purpose.
 USAGE
 }
 
+print_suite_scenarios() {
+  local dir="$1"
+  local scenario
+
+  for scenario in "$dir"/*; do
+    if [[ -d "$scenario" ]]; then
+      printf '  %s\n' "$(basename "$scenario")"
+    fi
+  done | sort
+}
+
 if [[ $# -lt 1 ]]; then
   usage >&2
   exit 2
@@ -107,6 +118,19 @@ if [[ "$has_agent" == false ]]; then
   agent_args=(--agent claude:claude-sonnet-4-6)
 fi
 
+if [[ "$suite" == "main" && "${#scenarios[@]}" -eq 0 ]]; then
+  echo "Running main eval suite from the linked plugin path."
+  echo "Scenarios:"
+  print_suite_scenarios "$source_path"
+  echo "Variants: ${variants[*]}"
+
+  (
+    cd "$repo_root"
+    tessl eval run "${agent_args[@]}" "${variants[@]}" "${extra_args[@]}" .
+  )
+  exit 0
+fi
+
 tmp_dir="$(mktemp -d)"
 backup_evals="$tmp_dir/evals-original"
 staged_evals="$repo_root/evals"
@@ -169,7 +193,7 @@ fi
 
 echo "Running $suite eval suite from the linked plugin path with a temporary evals/ staging area."
 echo "Scenarios:"
-find "$staged_evals" -mindepth 1 -maxdepth 1 -type d -printf '  %f\n' | sort
+print_suite_scenarios "$staged_evals"
 echo "Variants: ${variants[*]}"
 
 (
