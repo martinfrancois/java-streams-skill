@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.3...v1.1.4) (2026-06-08)
+
+
+### Bug Fixes
+
+* **skill:** improve hard-stop audit guidance ([efc35bb](https://github.com/martinfrancois/java-streams-skill/commit/efc35bb326764756a46166eadfda449020949669))
+
 ## [1.1.3](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.2...v1.1.3) (2026-06-08)
 
 
