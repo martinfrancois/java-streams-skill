@@ -153,6 +153,11 @@ git push origin main
 After merging the release PR, confirm the GitHub release exists, the Tessl plugin shows the new
 latest version, publish passed, and no stale Release Please PR or branch remains.
 
+Manual Tessl publishing is for maintainer-approved recovery only. Dispatch `publish-tessl.yml` with
+an explicit `ref`; normal releases should use the fully qualified tag that matches
+`.tessl-plugin/plugin.json` as `refs/tags/v<version>`. Publishing a branch or other non-tag ref
+requires the workflow's explicit `allow_non_tag_ref` override.
+
 ## Hosted Evals
 
 In this repository, the main eval set lives in `evals/` and is used for public lift reporting.

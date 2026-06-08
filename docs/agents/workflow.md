@@ -112,6 +112,8 @@ release-readiness.
   When Release Please creates a release with `GITHUB_TOKEN`, the normal `release: published` trigger
   does not fire, so the Release Please workflow dispatches `.github/workflows/publish-tessl.yml` with
   the created tag. Tessl publishing still happens only in `.github/workflows/publish-tessl.yml`.
+  That workflow requires an explicit publish ref and validates that release tags match
+  `.tessl-plugin/plugin.json` as `v<version>`.
   Release Please PRs created or updated with `GITHUB_TOKEN` may not trigger ordinary `pull_request`
   workflows, so `.github/workflows/release-please.yml` also posts the required release-PR
   `Commitlint` and `Validate skill and plugin` statuses. Keep that workflow based on the Release
@@ -158,6 +160,12 @@ release-readiness.
   Then let Release Please open the release PR, validate it, merge it, and wait for the Tessl publish
   workflow. After the publish run completes, confirm the GitHub release, Tessl latest version, and
   that no stale Release Please PR or branch remains.
+
+  For a maintainer-approved manual publish, dispatch `publish-tessl.yml` with an explicit `ref`.
+  Normal releases should use the fully qualified release tag, which must equal
+  `refs/tags/v<plugin-version>`. Publishing a branch or other non-tag ref requires setting
+  `allow_non_tag_ref=true`; use that only for recovery when Release Please cannot complete the
+  normal handoff.
 
   If the release contains any runtime skill text or runtime reference change, do not stop after the
   registry main eval passes. Confirm the post-change eval evidence also includes:
