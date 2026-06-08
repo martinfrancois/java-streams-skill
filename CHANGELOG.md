@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.0...v1.1.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* **skill:** clarify uppercase performance guidance ([#22](https://github.com/martinfrancois/java-streams-skill/issues/22)) ([d8db2e7](https://github.com/martinfrancois/java-streams-skill/commit/d8db2e7ff295aac4a745357c15434a2d659d1d7a))
+
 ## [1.1.0](https://github.com/martinfrancois/java-streams-skill/compare/v1.0.0...v1.1.0) (2026-06-07)
 
 
