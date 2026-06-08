@@ -70,6 +70,15 @@ release-readiness.
   are unavailable or rate-limited, document the exact missing runs and do not call the PR
   release-ready.
 
+  Release evals only cover the published main suite. After any runtime skill text or runtime
+  reference change, a successful publish run is not enough by itself: before saying the release or
+  repository is done, also verify that every reference scenario has run with both variants and every
+  regression scenario has run with context only against the final skill state. These runs may be
+  split across targeted and suite runs to conserve Tessl quota, but they must be after the last
+  runtime-context change. If quota, auth, or hosted availability blocks the broad reference or
+  regression checks, open or update a GitHub issue with the exact missing commands, run IDs already
+  completed, and the blocking condition.
+
 - When adding or moving one scenario, classify it from the isolated run before choosing the final
   suite:
 
@@ -149,6 +158,20 @@ release-readiness.
   Then let Release Please open the release PR, validate it, merge it, and wait for the Tessl publish
   workflow. After the publish run completes, confirm the GitHub release, Tessl latest version, and
   that no stale Release Please PR or branch remains.
+
+  If the release contains any runtime skill text or runtime reference change, do not stop after the
+  registry main eval passes. Confirm the post-change eval evidence also includes:
+
+  ```bash
+  scripts/run_eval_suite.sh reference
+  scripts/run_eval_suite.sh regression
+  ```
+
+  `reference` must be run with both variants through the wrapper. `regression` must be run with
+  context only through the wrapper. If these broad suite runs were already completed after the final
+  runtime-context commit, reuse those run IDs; otherwise run them before reporting the release as
+  complete. The completion report must state the main release eval run plus the reference and
+  regression run IDs, or link the GitHub issue that records why the remaining checks are blocked.
 - Keep the GitHub repository private until the maintainer explicitly asks to make it public. Still
   keep docs, metadata, license, security policy, and contribution workflow open-source ready.
 - Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real
