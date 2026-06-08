@@ -6,8 +6,9 @@ description: Write, review, and refactor Java Stream and Collector code using be
 
 # Java Streams Skill
 
-Preserve behavior, encounter order, exceptions, null handling, side effects, mutability, and
-Java-version compatibility.
+Preserve behavior, requested public API, artifact structure, nested vs top-level type placement,
+encounter order, exceptions, null handling, side effects, mutability, and Java-version
+compatibility.
 
 ## Reference Bundle
 
