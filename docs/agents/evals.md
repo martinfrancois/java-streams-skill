@@ -95,10 +95,11 @@ benchmark claims, or scoring rules.
     score; both variants 100 -> regression; clean with-context plus without-context below 100 ->
     reference or main depending on delta, coverage, and weighting.
 - Main promotion floor: a new scenario should not move to main unless its percentage-point delta is
-  at least as strong as the weakest current main scenario and it improves capability coverage. The
-  current floor is 27.5 percentage points, from `04-invoice-bounds-and-temperature-windows`
-  (`200/200` with context, `145/200` without context). Update this floor whenever main eval
-  membership, scoring, or hosted results change.
+  at least 30 percentage points and it improves capability coverage. Treat 30 pp as maintainer
+  policy for future promotion or demotion decisions, not as a current hosted benchmark result. Old
+  hosted deltas are historical evidence only; do not use them for release-readiness claims, public
+  score/lift claims, or current benchmark claims until they are rerun against the current active
+  suite membership, denominator, commit/ref, natural/explicit split, and pinned CLI behavior.
 - Main weighting policy:
   - Keep weights evidence-weighted, not evenly sampled.
   - Do not describe the main eval set as representative of all Java Stream and Collector work.
@@ -180,10 +181,11 @@ Update this section whenever active eval membership or scoring changes.
   `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
   rather than broad independent lift evidence.
 - Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
-- Uppercase side-effect review moved from main number `07` back to reference number `26` because
-  release evidence showed useful ordinary lift, but it was the weakest active scenario for the
-  registry's unweighted public uplift calculation. Keep it in reference unless future evidence
-  shows stronger main-score value.
+- Uppercase side-effect review moved from main number `07` back to reference number `26` because it
+  remains useful ordinary reference lift evidence for external mutation and parallelism advice, but
+  the main suite should stay focused on the strongest evidence-weighted coverage. Keep it in
+  reference unless future current-suite evidence shows that it meets the 30 pp floor and improves
+  main coverage.
 - Session roster indexing moved from main number `06` to reference number `15` because hosted
   evidence showed the without-context result was already high while with-context was clean. It
   remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
@@ -194,8 +196,9 @@ Update this section whenever active eval membership or scoring changes.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
   run IDs, baseline scores, with-context scores, or lift ratios until they are verified against the
   current `evals/` contents, denominators, natural/explicit split, and commit/ref.
-- Scenario movement notes in `evals-reference/NUMBERING.md` and `evals-regression/NUMBERING.md`
-  preserve historical classification rationale, but they are not current benchmark claims.
+- Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
+  `evals-regression/NUMBERING.md` preserve historical classification rationale, but they are not
+  current benchmark claims.
 
 ## Checks
 

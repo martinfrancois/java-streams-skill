@@ -13,9 +13,10 @@ evidence-weighted main score unless future hosted history shows a stronger delta
 
 Number `26` contains the uppercase side-effect review scenario that was promoted to main eval
 number `07`, then demoted back to reference after release evidence showed useful ordinary lift but
-not enough public-uplift impact for the evidence-weighted main set. It remains useful natural
+weaker main-suite priority than the stronger evidence-weighted coverage. It remains useful natural
 review coverage for external stream mutation, lambda purity, and careful `parallelStream()`
-performance advice.
+performance advice. Keep it here unless future current-suite evidence shows it meets the 30 pp
+promotion floor and improves main coverage.
 
 Number `27` covers high-volume uppercase implementation from
 <https://github.com/martinfrancois/java-streams-skill/issues/4>. Targeted Sonnet 4.6 run

@@ -11,6 +11,6 @@ the without-context result was already high (`92/100` in release run
 activation coverage, but it is weak evidence for the evidence-weighted main score.
 
 Number `07` was demoted back to `evals-reference/26-uppercase-side-effect-review` after release
-evidence showed it still had useful ordinary lift, but was the weakest active main scenario for the
-registry's unweighted public uplift calculation. Keep the scenario in reference coverage unless
-future evidence shows it should return to main.
+evidence showed useful ordinary lift, but the main suite should stay focused on the strongest
+evidence-weighted coverage. Keep the scenario in reference coverage unless future current-suite
+evidence shows it meets the 30 pp promotion floor and improves main coverage.
