@@ -207,11 +207,14 @@ When adding a new scenario, classify it from an isolated hosted run:
    without-context score; both variants 100 goes to regression; clean with-context plus
    without-context below 100 goes to reference or main depending on delta, coverage, and weighting.
 
-The current main promotion floor is 27.5 percentage points, matching the weakest current main
-scenario delta. Main eval weights should stay evidence-weighted: put more points on scenario
-families with larger observed missed-point reduction, keep ordinary 100-point main scenarios around
-15 safety / 80 stream-quality / 5 maintainability points, and document any
-`main_eval_weight_multiplier` in `criteria.json` metadata.
+The main promotion floor is 30 percentage points. Treat that as maintainer policy for future
+promotion or demotion decisions, not as a current hosted benchmark result. Old hosted deltas are
+historical evidence only; do not use them for release-readiness claims, public score/lift claims, or
+current benchmark claims until they are rerun against the current active suite membership,
+denominator, commit/ref, natural/explicit split, and pinned CLI behavior. Main eval weights should
+stay evidence-weighted: put more points on scenario families with larger observed missed-point
+reduction, keep ordinary 100-point main scenarios around 15 safety / 80 stream-quality / 5
+maintainability points, and document any `main_eval_weight_multiplier` in `criteria.json` metadata.
 
 When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
 there, then rerun only that targeted scenario until it is clean before running broader suites. After
