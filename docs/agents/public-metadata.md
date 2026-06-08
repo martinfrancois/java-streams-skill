@@ -22,7 +22,8 @@ topics.
 - Tessl packaging currently uses `.tessl-plugin/plugin.json`. Keep docs, scripts, workflows, and
   release config aligned with plugin terminology unless official docs and CLI behavior change.
 - Do not add `tile.json` unless current Tessl docs and CLI behavior require it.
-- Pinned Tessl CLI `0.82.0` accepts the current plugin format with `.tessl-plugin/plugin.json`.
+- The workflow-pinned Tessl CLI version accepts the current plugin format with
+  `.tessl-plugin/plugin.json`.
   `tessl plugin lint .`, `tessl plugin publish --dry-run --skip-evals .`, and
   `tessl plugin publish --dry-run --bump patch .` are the authority for package validity here.
   `tessl plugin pack` must include `skills/java-streams/SKILL.md` and the referenced files under

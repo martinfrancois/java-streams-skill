@@ -10,7 +10,8 @@ release-readiness.
 - If a Tessl or GitHub command fails because auth, login, workspace, or permission state appears
   missing, re-check after the user says they changed it.
 - When the maintainer explicitly asks for autonomous repository work, carry it through
-  implementation, validation, commit, push, and repository creation unless they ask to stop earlier.
+  implementation, validation, commit, push, and pull request creation unless they ask to stop
+  earlier.
 - Before committing changes to the skill, README, evals, package metadata, scripts, CI, or agent
   docs, run:
 
@@ -24,6 +25,11 @@ release-readiness.
   tessl plugin publish --dry-run --bump patch .
   tessl plugin publish --dry-run .
   ```
+
+  If `tessl plugin publish --dry-run .` fails only because the current manifest version has already
+  been published, record that as expected for ordinary non-release changes and rely on the
+  patch-bump dry-run for PR safety. For skill, eval, package, or release changes that should publish
+  a new version, let Release Please bump the version before the exact-version publish check.
 
 - For skill behavior or eval changes, run hosted evals with Sonnet 4.6, but start with the smallest
   useful set to conserve Tessl daily rate-limit budget. Use `scripts/run_eval_suite.sh` so the run
@@ -117,9 +123,9 @@ release-readiness.
   `.tessl-plugin/plugin.json` as `v<version>`.
   Release Please PRs created or updated with `GITHUB_TOKEN` may not trigger ordinary `pull_request`
   workflows, so `.github/workflows/release-please.yml` also posts the required release-PR
-  `Commitlint` and `Validate skill and plugin` statuses. Keep that workflow based on the Release
-  Please `pr` output instead of a separate `gh pr list` lookup, so status setup does not depend on
-  GitHub search timing.
+  `Commitlint` and `Validate skill and plugin` statuses. Prefer the Release Please `pr` output for
+  those statuses, and fall back to the existing pending release PR only when Release Please emits no
+  PR output because the PR was unchanged.
 - When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit
   `CHANGELOG.md`, `.release-please-manifest.json`, `.tessl-plugin/plugin.json`, tags, or GitHub
   releases by hand unless the maintainer explicitly asks to repair broken release state.

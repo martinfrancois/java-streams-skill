@@ -129,8 +129,8 @@ benchmark claims, or scoring rules.
   ```bash
   tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
   ```
-  Pinned Tessl CLI `0.82.0` accepts this plugin eval workflow from the repository root. Public docs
-  may still show tile-oriented examples; for this repository, use the pinned CLI and
+  The workflow-pinned Tessl CLI version accepts this plugin eval workflow from the repository root.
+  Public docs may still show tile-oriented examples; for this repository, use the pinned CLI and
   `scripts/run_eval_suite.sh` as the source of truth.
 - Run variants by suite purpose:
   - `evals/` main: always run both `without-context` and `with-context`, because it supports public
