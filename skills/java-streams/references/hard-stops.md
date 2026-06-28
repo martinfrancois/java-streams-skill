@@ -32,6 +32,11 @@ Fix these before finalizing:
   `reduce(BigDecimal.ZERO, BigDecimal::add)` as acceptable.
 - Nested `map(... stream ... collect(...)).flatMap(...)` where a direct `flatMap` stream chain is
   clearer.
+- Nested `flatMap`, `Collectors.flatMapping`, or `anyMatch` callbacks whose bodies continue stream
+  chains across later lines. Extract stream-returning or boolean helpers so the outer chain reads as
+  glue while preserving flattening and short-circuit semantics.
+- Stream `filter` predicates with more than one meaningful domain condition when a named predicate
+  helper would explain the rule, such as "undelivered and past due".
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
 - `toMap` without a merge function when duplicate keys are possible.
 - `groupingBy` where null classifier keys can reach the collector. Treat this as a required fix,
@@ -94,6 +99,9 @@ markers belong to `java-functional-style`, not this stream hard-stop scan.
 - When reviewing a proposed replacement of ordered selection with `findAny()` or `parallelStream()`,
   recommend keeping the existing ordered `sorted(...).filter(...).findFirst()` chain first. Mention
   `min(...)`/`max(...)` only as an optional refactor when the task asks for optimization advice.
+  For a `parallelStream().findAny()` proposal, explicitly state that parallelism makes the ordered
+  selection less predictable or more expensive here, and that no CPU-bound work or measurement
+  justifies that overhead.
 - Use `findAny()` only when the domain explicitly says all matching domain values, such as
   primary/default/preferred values, are equivalent and encounter order does not matter. Use
   `findFirst()` for first configured, first listed, chronological, priority, fallback, or
@@ -131,6 +139,9 @@ input is large. Explain the rewrite in terms of ownership, correctness, and read
 low-level allocation details as secondary unless measurements make them relevant. Never describe
 ordinary `ArrayList` growth as `O(N^2)`; resizing is amortized O(N) total. In reviews, show the
 sequential direct-collection fix before any parallel version.
+For external-mutation performance reviews, include the distinction in plain text: direct collection
+fixes correctness/readability first; throughput still requires benchmarking a side-effect-free
+sequential stream against a side-effect-free parallel stream on the real workload.
 When the workload is not clearly CPU-bound or the input is expected to be small/tiny, explicitly state
 that parallelization is not justified here.
 For large CPU-bound transformations, strongly recommend benchmarking a pure parallel version after
@@ -170,6 +181,9 @@ stream-quality issues. If a marker remains because it is legitimate, state why. 
 for allowed stream markers or allowed usages, also call out plain `count()` when it is the requested
 numeric result rather than a `count() > 0` existence check, and state that plain `count()` is not a
 hit for the bundled scan regex.
+Also call out non-primitive reductions such as `reduce(BigDecimal.ZERO, BigDecimal::add)` as
+acceptable when the requested/domain type is non-primitive; do not force primitive aggregation for
+`BigDecimal`.
 
 In ordinary code reviews, do not expose internal workflow labels such as "hard stop", "marker",
 "scan", or "skill checklist" in headings, rationale, or recommendations. Use those terms only when

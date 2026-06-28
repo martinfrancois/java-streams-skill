@@ -178,6 +178,7 @@ Useful review wording for this pattern:
 
 ```text
 The first fix is to remove the external mutation; let the stream produce the list directly.
+That is a correctness/readability fix, not a guarantee that the sequential stream is faster.
 For throughput, benchmark the sequential version against a pure side-effect-free parallel stream on
 the real workload before relying on parallelStream. `parallelStream()` can be slower for small lists
 or mostly-small call paths.
@@ -257,6 +258,66 @@ private static Session longerSession(Session first, Session second) {
 }
 ```
 
+For nested `flatMap` callbacks, extract the full flattened element shape. Do not leave a callback
+that calls a helper and then continues the helper stream on later lines. If the collector needs keyed
+values, make the helper return entries directly:
+
+```java
+Map<String, List<String>> emailsByTrack = conferences.stream()
+        .flatMap(ConferenceIndexes::optedInEmailEntries)
+        .collect(Collectors.groupingBy(
+                Map.Entry::getKey,
+                Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+```
+
+For downstream `Collectors.flatMapping`, prefer a named helper when the nested stream filters or maps
+values. The collector should read as stream glue:
+
+```java
+Map<String, List<String>> emailsByTrack = conferences.stream()
+        .flatMap(conference -> conference.sessions().stream())
+        .filter(session -> session.track() != null)
+        .collect(Collectors.groupingBy(
+                Session::track,
+                Collectors.flatMapping(
+                        SessionIndexes::optedInEmails,
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(TreeSet::new),
+                                ArrayList::new))));
+
+private static Stream<String> optedInEmails(Session session) {
+    return session.registrations().stream()
+            .filter(Registration::optedIn)
+            .map(Registration::email)
+            .filter(Objects::nonNull);
+}
+```
+
+For nested existence checks, extract the inner stream checks too. Keep `anyMatch` short-circuiting,
+but do not stack multi-line callbacks:
+
+```java
+boolean hasWaitlistedRegistration(List<Conference> conferences) {
+    return conferences.stream()
+            .flatMap(conference -> conference.sessions().stream())
+            .anyMatch(SessionIndexes::hasWaitlistedRegistration);
+}
+
+private static boolean hasWaitlistedRegistration(Session session) {
+    return session.registrations().stream().anyMatch(Registration::waitlisted);
+}
+```
+
+For filters with more than one domain condition, extract a named predicate helper instead of leaving
+the combined condition inline:
+
+```java
+List<ShipmentNotice> notices = shipments.stream()
+        .filter(shipment -> isOverdue(shipment, today))
+        .map(shipment -> toNotice(shipment, today))
+        .toList();
+```
+
 When a task says to use nested records or helper types in the requested file, keep those types in
 that file instead of splitting them into separate top-level files.
 
@@ -331,6 +392,23 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
         .map(Map.Entry::getKey)
         .sorted(Comparator.comparing(Product::getName))
         .toList();
+```
+
+For a blocking yes/no service check, the same shape is a typed non-null carrier. Keep the
+concurrency bound inside `Gatherers.mapConcurrent`; do not create a separate executor, future fan-out
+pipeline, or service indirection:
+
+```java
+List<Job> acceptedJobs = jobs.stream()
+        .gather(Gatherers.mapConcurrent(
+                8,
+                job -> new ScheduleCheck(job, SchedulerApi.canAccept(job.token()))))
+        .filter(ScheduleCheck::accepted)
+        .map(ScheduleCheck::job)
+        .sorted(Comparator.comparing(Job::startsAt).thenComparing(Job::token))
+        .toList();
+
+record ScheduleCheck(Job job, boolean accepted) {}
 ```
 
 `Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
