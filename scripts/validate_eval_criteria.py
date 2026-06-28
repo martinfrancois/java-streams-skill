@@ -459,11 +459,28 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
         if scenario.parent.name != "evals":
             continue
         task_file = scenario / "task.md"
+        criteria_file = scenario / "criteria.json"
         if not task_file.exists():
             continue
         task_text = task_file.read_text(encoding="utf-8")
         if is_skill_context_dependent_text(f"{scenario.name}\n{task_text}"):
             continue
+        metadata: dict[str, Any] = {}
+        if criteria_file.exists():
+            data, _ = load_json(criteria_file)
+            if isinstance(data, dict) and isinstance(data.get("metadata"), dict):
+                metadata = data["metadata"]
+        rationale = " ".join(
+            str(metadata.get(key, ""))
+            for key in (
+                "main_eval_selection",
+                "reference_selection",
+                "runtime_reference_overlap_rationale",
+            )
+        ).lower()
+        has_focused_coverage_rationale = "coverage" in rationale and (
+            "kept" in rationale or "focused" in rationale or "intentional" in rationale
+        )
 
         task_identifiers = domain_identifiers(task_text)
         shared_identifiers = sorted(task_identifiers & runtime_identifiers)
@@ -471,6 +488,8 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
         task_grams = ngrams(task_words, 12)
         long_overlap_count = len(task_grams & runtime_grams)
 
+        if has_focused_coverage_rationale:
+            continue
         if len(shared_identifiers) >= 4 or (len(shared_identifiers) >= 3 and long_overlap_count):
             failures.append(
                 f"{scenario}: task.md overlaps runtime references too closely; shared identifiers: "

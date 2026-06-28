@@ -31,9 +31,23 @@ release-readiness.
   patch-bump dry-run for PR safety. For skill, eval, package, or release changes that should publish
   a new version, let Release Please bump the version before the exact-version publish check.
 
-- For skill behavior or eval changes, run hosted evals with Sonnet 4.6, but start with the smallest
-  useful set to conserve Tessl daily rate-limit budget. Use `scripts/run_eval_suite.sh` so the run
-  uses plugin context and the right variant policy.
+- For skill behavior or eval changes, run hosted evals with Tessl's default solver by default, but
+  start with the smallest useful set to conserve Tessl daily rate-limit budget. Use
+  `scripts/run_eval_suite.sh` so the run uses plugin context and the right variant policy. If the
+  account has model-selection entitlement, Sonnet 4.6 or a better frontier model is recommended for
+  a more representative real-world check.
+
+  Before any manual sequence, run the internal pre-submit gate plan:
+
+  ```bash
+  scripts/pre_submit_gate.sh --plan-only
+  ```
+
+  The gate enforces the quality-first + targeted-first ordering, validates that each stage is 100% with-context,
+  and helps avoid accidental broad-suite reruns between code changes.
+  Before the first hosted run, freeze intended runtime skill edits and do a local crosswalk against
+  affected scenario `task.md` and `criteria.json` files. Hosted evals should validate behavior, not
+  discover obvious missing artifact, Java-version, API, or rejection-pattern wording.
 
   If any eval scenario's `task.md`, `criteria.json`, or `capability.txt` changed, run that exact
   scenario before finishing the PR. A pure move between `evals/`, `evals-reference/`, and
@@ -68,13 +82,30 @@ release-readiness.
   For runtime skill text or runtime reference changes, progressively widen the hosted checks before
   calling the PR done: first affected scenarios, then the full main suite, then every reference
   scenario with both variants, then every regression scenario with context only. The final post-change
-  evidence must show 100% with context for every retained scenario in every suite. Run regression
+  evidence must show 100% with context for every retained scenario in every suite, but the evidence
+  is scenario-level: targeted scenarios that already passed after the last skill bundle change count
+  toward the final requirement and should be excluded from later broad stages. Run regression
   without-context only when intentionally checking whether a scenario should move back to reference.
   If a broad run finds isolated failures, fix and rerun those scenarios targeted after the fix before
-  spending rate-limit budget on another broad suite run; once targeted failures are clean, finish the
-  remaining broad suites that have not yet run against the final skill state. If Tessl hosted evals
-  are unavailable or rate-limited, document the exact missing runs and do not call the PR
-  release-ready.
+  spending rate-limit budget on another broad suite run; once targeted failures are clean, finish only
+  the scenarios that still lack evidence against the final skill state. If Tessl hosted evals are
+  unavailable or rate-limited, document the exact missing runs and do not call the PR release-ready.
+
+  For a scripted execution of this order, use:
+
+  ```bash
+  scripts/pre_submit_gate.sh --run-broad
+  ```
+
+  It pauses after each stage, enforces 100% with-context checks before proceeding, uses
+  impact-analysis probes plus historical risk probes for runtime-only changes, and uses the
+  run-history-tuned broad order while preserving the same final evidence requirement. The default
+  targeted stage runs ordered probes in tiny batches. Once those are clean, the broad stage uses
+  balanced chunks so small remainders run together and larger regression sweeps avoid one long
+  scoring wait per scenario. Override `--broad-order`, `--target-batch-size`, or
+  `--broad-batch-mode` only when current evidence points to a different risk or wall-clock tradeoff.
+  If a cycle consumes far more than the final evidence floor, pause to audit why before starting more
+  hosted work, then update the gate or agent docs with any better strategy found.
 
   Release evals only cover the published main suite. After any runtime skill text or runtime
   reference change, a successful publish run is not enough by itself: before saying the release or
@@ -95,10 +126,10 @@ release-readiness.
 
   Follow the recommendation unless the pull request documents a maintainer-approved override.
 
-- Run the Tessl skill review at threshold 100 when changing runtime skill content:
+- Run the Tessl skill quality review at threshold 100 when changing runtime skill content:
 
   ```bash
-  tessl skill review --threshold 100 skills/java-streams/SKILL.md
+  tessl review run --threshold 100 skills/java-streams/SKILL.md
   ```
 
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
@@ -199,3 +230,4 @@ release-readiness.
 - [Project Identity](project-identity.md)
 - [Eval Guidance](evals.md)
 - [Public Metadata And OSS Readiness](public-metadata.md)
+- [Pre-Submit Gate](pre-submit-gate.md)
