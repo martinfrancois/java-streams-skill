@@ -39,9 +39,9 @@ guidance, or auto-selection wording.
   that name.
 - The skill should not force streams over clear stateful loops. Stateful sequence output, checked IO,
   prompts, mutation-heavy code, or complex early exits can remain imperative.
-- Keep stream lambdas as short glue. Prefer method references or one-expression lambdas whose body
-  stays on the same line as `->`, and extract named helpers for branching, loops, temporary
-  variables, formatting, merge rules, or nested stream chains that would continue on later lines.
+- Generic lambda, method-reference, identity-function, no-op functional stage, supplier-laziness,
+  and callback readability guidance belongs to `java-functional-style`. Keep only stream and
+  collector semantics canonical here.
 - Runtime guidance should keep internal workflow language out of ordinary user-facing reviews. Avoid
   terms such as "hard stop", "marker", "scan", "checklist", and skill names unless the user asked
   for an explicit skill workflow, audit, or scan command.
@@ -52,3 +52,4 @@ guidance, or auto-selection wording.
 
 - [README Guidance](readme.md)
 - [Eval Guidance](evals.md)
+- [Ownership Boundaries](ownership-boundaries.md)

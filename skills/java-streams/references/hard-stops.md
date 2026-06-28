@@ -54,17 +54,6 @@ Fix these before finalizing:
 - `Stream.toList()` where a mutable result is required or later code mutates the list. Prefer a
   mutable collector; do not modernize this to `new ArrayList<>(stream.toList())` when the task or
   surrounding code says `Stream.toList()` is not valid.
-- Multi-line stream lambdas: block lambdas (`-> { ... }`), arrows whose body starts on the next
-  line, lambdas that rely on more than one helperless boolean check, or lambdas where the nested
-  stream body continues on later lines (for example `item -> item.children().stream()` followed by
-  `.filter(...)`). Keep lambdas as glue: prefer method references, concise one-expression lambdas
-  whose body stays on the same line as `->`, or extracted named helpers. For mapping, predicates,
-  severity/status selection, and record construction, extract helper methods when the lambda does
-  non-trivial work instead of fitting it into a wrapped lambda.
-
-In reviews, avoid examples that put substantial work behind one lambda body, including ad-hoc helper
-expressions like `-> input -> ...` or callbacks passed into custom parallel executors. If a non-trivial
-decision is needed, extract to a named method and keep the stream chain as glue.
 - `stream().forEach(...)` or `parallelStream().forEach(...)` that mutates an external
   `Collection`, `Map`, array, counter, holder object, or `StringBuilder`. Make the stream produce
   the result directly with `toList()`, `collect(...)`, `toMap(...)`, `joining`, `sum`, or another
@@ -83,18 +72,18 @@ decision is needed, extract to a named method and keep the stream chain as glue.
   For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
   not add unrelated modernization suggestions, import cleanup, `groupingBy` null-key, or
   collector-safety caveats.
-  When giving below-baseline replacement code, do not emulate the missing API with multi-line or
-  stateful block lambdas. Prefer a named helper or a clear loop for Java 8 replacements such as
-  `takeWhile`/`dropWhile` prefixes, downstream flat-mapping, or paired min/max aggregation.
-  For downstream flat-mapping, do not show `flatMap(c -> c.items().stream()` with a nested
-  `.map(...)`/`.filter(...)` chain continuing on later lines; extract that nested stream to a named
-  helper and call it with a method reference.
+  For below-baseline replacement code, preserve stream semantics with a small loop or helper when
+  no equivalent stream API exists, such as `takeWhile`/`dropWhile` prefixes, downstream
+  flat-mapping, or paired min/max aggregation.
   Java 8 replacement snippets must not use Java 9+ helpers such as `Map.entry`.
   When one stream chain contains multiple unavailable APIs, list each unavailable API separately.
   Example: `flatMap(Optional::stream).toList()` on a Java 8 baseline has two version-drift hits:
   `Optional::stream` requires Java 9 and `Stream.toList()` requires Java 16.
 - Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
-  `Collectors`, `Function`, `BinaryOperator`, or `Gatherers`.
+  `Collectors`, `BinaryOperator`, or `Gatherers`.
+
+Generic identity-function, no-op callback stage, supplier-laziness, and callback readability
+markers belong to `java-functional-style`, not this stream hard-stop scan.
 
 ## Ordering Rules
 
@@ -173,7 +162,7 @@ multiline mode so it catches normally formatted fluent chains. Some markers are 
 classify legitimate uses instead of deleting them mechanically.
 
 ```bash
-rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(|\\.forEach\\(|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(|->\\s*\\{|->\\s*$|->[^\\n]*\\.stream\\(\\)\\s*$" <touched Java files>
+rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(|\\.forEach\\(|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix

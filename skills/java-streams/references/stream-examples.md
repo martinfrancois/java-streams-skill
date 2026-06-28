@@ -123,122 +123,11 @@ Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList
 mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
 in `new ArrayList<>(...)`; use the mutable collector directly.
 
-## External Mutation And Lambda Purity
+## External Mutation
 
-Keep lambdas as short glue. If a stream operation needs branching, loops, temporary variables,
-formatting, a merge rule, or a nested stream chain that would continue after the lambda line,
-extract that work into a named method and pass a method reference or a concise one-expression
-lambda whose body stays on the same line as `->`.
-
-For predicate lambdas, any multi-check filter condition should be extracted to a named helper before
-the stream boundary if readability is at stake:
-
-```java
-List<ShipmentNotice> overdueNotices(List<Shipment> shipments, Clock clock) {
-    LocalDate today = LocalDate.now(clock);
-    return shipments.stream()
-            .filter(shipment -> isOverdue(shipment, today))
-            .map(shipment -> toNotice(shipment, today))
-            .toList();
-}
-
-private static boolean isOverdue(Shipment shipment, LocalDate today) {
-    return shipment.deliveredAt().isEmpty() && shipment.dueDate().isBefore(today);
-}
-
-private static ShipmentNotice toNotice(Shipment shipment, LocalDate today) {
-    long daysLate = ChronoUnit.DAYS.between(shipment.dueDate(), today);
-    return new ShipmentNotice(
-            shipment.id(),
-            shipment.customerEmail(),
-            daysLate,
-            daysLate >= 14 ? "critical" : "late");
-}
-```
-
-Avoid burying derivation logic in a block lambda:
-
-```java
-List<TicketEscalation> escalations = tickets.stream()
-        .filter(Ticket::isOpen)
-        .map(ticket -> {
-            Duration age = Duration.between(ticket.openedAt(), now);
-            EscalationLevel level = levelFor(ticket.priority(), age);
-            return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
-        })
-        .toList();
-```
-
-Extract the logic so the stream chain stays readable and the helper can be tested directly:
-
-```java
-List<TicketEscalation> escalations = tickets.stream()
-        .filter(Ticket::isOpen)
-        .map(ticket -> escalationFor(ticket, now))
-        .toList();
-
-private static TicketEscalation escalationFor(Ticket ticket, Instant now) {
-    Duration age = Duration.between(ticket.openedAt(), now);
-    EscalationLevel level = levelFor(ticket.priority(), age);
-    return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
-}
-```
-
-This is required even when the helper only builds one output record: temporary values and branching
-inside `map(x -> { ... })` are not glue.
-
-Avoid wrapping a nested stream body inside a collector callback:
-
-```java
-Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
-        .collect(Collectors.groupingBy(
-                Account::ownerTeam,
-                Collectors.flatMapping(
-                        account -> account.supportCases().stream()
-                                .filter(SupportCase::isOpen)
-                                .map(SupportCase::caseId),
-                        Collectors.toList())));
-```
-
-Extract the nested stream so the collector reads as composition:
-
-```java
-Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
-        .collect(Collectors.groupingBy(
-                Account::ownerTeam,
-                Collectors.flatMapping(
-                        AccountCaseReports::openCaseIds,
-                        Collectors.toList())));
-
-private static Stream<String> openCaseIds(Account account) {
-    return account.supportCases().stream()
-            .filter(SupportCase::isOpen)
-            .map(SupportCase::caseId);
-}
-```
-
-The same rule applies to downstream `flatMapping` for sorted or de-duplicated nested data. Keep the
-collector callback as a method reference:
-
-```java
-Map<String, List<String>> emailsByTrack = conferences.stream()
-        .flatMap(conference -> conference.sessions().stream())
-        .filter(session -> session.track() != null)
-        .collect(Collectors.groupingBy(
-                Session::track,
-                Collectors.flatMapping(
-                        SessionReports::optedInEmails,
-                        Collectors.collectingAndThen(
-                                Collectors.toCollection(TreeSet::new),
-                                ArrayList::new))));
-
-private static Stream<String> optedInEmails(Session session) {
-    return session.registrations().stream()
-            .filter(Registration::optedIn)
-            .map(Registration::email)
-            .filter(Objects::nonNull);
-}
-```
+Generic lambda and callback readability belongs to `java-functional-style`. This package still owns
+the stream-semantic rule that ordinary stream results should be produced by terminals and collectors
+rather than external mutation.
 
 Do not build ordinary stream results by mutating external state from `forEach`:
 
@@ -295,8 +184,7 @@ or mostly-small call paths.
 ```
 
 Do not include optional parallelism snippets for this pattern unless the user explicitly requests
-parallel code. If requested, avoid multiline lambda bodies and prefer method references or
-single-line helpers.
+parallel code.
 
 Only keep terminal `forEach` when the side effect is the operation's purpose, such as logging or
 calling an API, and the side effect is safe for the chosen stream mode.

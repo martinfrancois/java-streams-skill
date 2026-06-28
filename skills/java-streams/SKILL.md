@@ -1,7 +1,7 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams, collectors, stream pipelines, grouping, joining strings, first/any element lookup, sorting, limiting, distinct values, primitive totals, Optional values in streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams, collectors, stream pipelines, grouping, joining strings, first/any element lookup, sorting, limiting, distinct values, primitive totals, Optional values in streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
 ---
 
 # Java Streams Skill
@@ -27,8 +27,7 @@ When the prompt asks for a named artifact such as `review.md` or a Java source f
 exact file. Do not answer only in chat when a file artifact is requested.
 
 0. Check the Java baseline first. Use [java-stream-api.md](references/java-stream-api.md) for
-   minimum versions and fallbacks; do not emulate unavailable APIs with stateful or multi-line
-   lambdas.
+   minimum versions and fallbacks.
 1. Identify the requested result and pick the matching terminal or collector:
 
    | Goal | Preferred API |
@@ -80,9 +79,8 @@ exact file. Do not answer only in chat when a file artifact is requested.
    }
    ```
 3. Flatten nested sources deliberately. Use `flatMap`, `flatMap(Optional::stream)` on Java 9+,
-   and `mapMulti` on Java 16+ when clearer. Use helpers when nested lambdas would wrap. For subtype
-   primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble` directly. For
-   nested collector callbacks, extract a named `Stream<T>` helper.
+   and `mapMulti` on Java 16+ when clearer. For subtype primitives, filter/cast first, then call
+   `mapToInt`/`mapToLong`/`mapToDouble` directly.
 
    ```java
    // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
@@ -91,17 +89,19 @@ exact file. Do not answer only in chat when a file artifact is requested.
 4. Choose accumulation/collectors by result semantics: use `reduce(identity, op)` for immutable
    non-primitives, `toMap` with merge behavior and deliberate null-key/value handling, non-null keys
    for `groupingBy`, `partitioningBy` for boolean splits, and flattened nested indexes when clearer.
-   Extract duplicate-key merge rules into named helpers when ties, nulls, or ordering need more than
-   a same-line expression. Carry `element + result`, never null sentinels.
-5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
-   as short glue or method references; use named helpers for branching, merge logic, or nested stream
-   work.
+   Preserve duplicate-key merge rules, tie handling, null contracts, and map suppliers. Carry
+   `element + result`, never null sentinels.
+5. Preserve ordering, mutability, short-circuit behavior, and stream/collector semantics.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and baseline compatibility. Run the marker scan from
    [hard-stops.md](references/hard-stops.md), fix hits, and re-scan. In scan audits, keep
    hard-stop severities: required hits stay required unless explicitly acceptable.
+
+Generic lambda, method-reference, identity-function, no-op callback stage, supplier-laziness, and
+callback readability guidance belongs to the companion package `martinfrancois/java-functional-style`.
+Install both packages when stream cleanup also depends on non-trivial callback style.
 
 Review output:
 
