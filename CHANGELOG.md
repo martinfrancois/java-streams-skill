@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.4...v1.2.0) (2026-06-28)
+
+
+### Features
+
+* **readiness:** add budget-aware eval gate ([5241e24](https://github.com/martinfrancois/java-streams-skill/commit/5241e242f995efc186ac04a86c9637e4eff5dddc))
+
+
+### Bug Fixes
+
+* **evals:** align hosted eval runner ([6636310](https://github.com/martinfrancois/java-streams-skill/commit/663631025d35b8c04582027aede057f89509fcfa))
+* **skill:** tighten stream guidance ([98eeb2c](https://github.com/martinfrancois/java-streams-skill/commit/98eeb2c0478a971c22103a5062a83e4c66c9f9cb))
+
 ## [1.1.4](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.3...v1.1.4) (2026-06-08)
 
 
