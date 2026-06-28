@@ -23,7 +23,8 @@ benchmark claims, or scoring rules.
   Then execute only the printed targeted stages. The gate now enforces that each stage reaches
   100% with-context before allowing expansion to the next stage.
 - Keep natural activation prompts neutral. Explicit invocation prompts may name `$java-streams`, but
-  should not leak the desired fix beyond invoking the skill.
+  should not leak the desired fix beyond invoking the skill. Mark prompts that name `$java-streams`
+  as `metadata.invocation: "explicit"` and do not report them as natural activation evidence.
 - The main eval should focus on realistic failure modes where this skill should change the answer:
   Java stream code that may materialize
   unnecessarily, count for existence, sort for one extreme, mishandle order, misuse collectors,
@@ -54,7 +55,14 @@ benchmark claims, or scoring rules.
 - Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
 - Use `metadata.evidence_type` when scenario placement needs to be explicit:
   - `ordinary_lift`: an ordinary main or reference scenario where both variants are fair to compare.
-    This value is invalid in `evals-regression/`.
+    This value is invalid in `evals-regression/`, and it must not be used when the task overlaps
+    same-domain runtime skill references.
+  - `focused_main`: a main-suite scenario that intentionally covers a specific skill behavior and
+    may share bounded, documented runtime-reference overlap. Report it separately from ordinary
+    broad natural lift.
+  - `focused_reference`: a reference-suite scenario that intentionally emphasizes a specific skill
+    behavior or behavior delta. It may carry high weight on that focused behavior, but it is not
+    ordinary broad lift or unseen generalization evidence.
   - `solved_regression`: a regression scenario that hosted history shows both variants solve at
     100%. This value is invalid outside `evals-regression/`.
   - `skill_context_dependent`: a regression scenario that requires exact skill-provided text,
@@ -68,9 +76,17 @@ benchmark claims, or scoring rules.
   maintainability points per 100-point scenario unless a scenario has a documented reason to differ.
 - Runtime skill references must not contain eval inventories, expected answers, score rubrics,
   hosted run IDs, or fixed score claims.
-- Active evals must not be near-copies of runtime reference examples. It is fine for an eval to test
-  `Gatherers.mapConcurrent`, `Collectors.teeing`, `takeWhile`, or `dropWhile`; it is not fine to
-  reuse the same domain class, method, record, constant, and carrier pattern from a runtime example.
+- Don't cheat by leaking the desired fix in task prompts, and don't treat runtime-reference overlap
+  as ordinary lift. Same-domain or near-solution overlap between runtime skill references and eval
+  tasks is allowed only for explicitly classified focused main, focused reference, or regression
+  evidence.
+- Metadata rationale documents why an overlap classification is honest; it does not bypass
+  validation by itself. Vague words such as "focused", "coverage", "kept", or "intentional" are not
+  enough unless the suite placement and `metadata.evidence_type` agree.
+- Active main/general evals must stay neutral. It is fine for an eval to test `Gatherers.mapConcurrent`,
+  `Collectors.teeing`, `takeWhile`, or `dropWhile`; it is not fine for ordinary broad lift evidence
+  to reuse the same domain identifiers, record names, method names, constants, thresholds, long
+  phrasing, or near-solution helper shapes from a runtime example.
 - Active and reference/regression tasks must not be exact or near-exact duplicates. If a reference
   scenario is promoted or replaced by active coverage, delete or materially rewrite the reference
   copy and document the numbering gap.
@@ -230,19 +246,24 @@ Update this section whenever active eval membership or scoring changes.
 - Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
   points. This dominates the current main score because hosted evidence previously showed strong
   deltas in that family; do not over-read it as broad Java Streams coverage.
-- Scenario `01-offer-availability-mapconcurrent` is intentionally focused Java 24 runtime-guidance
-  coverage. It should remain a different domain and result-carrier pattern from the bundled bounded
-  `Gatherers.mapConcurrent` example in `stream-examples.md`; report it as focused skill-use coverage
-  rather than broad independent lift evidence.
+- Scenarios `01-offer-availability-mapconcurrent` and `02-delivery-appointments-mapconcurrent` are
+  intentionally focused Java 24 runtime-guidance coverage. They should remain different domains and
+  result-carrier patterns from the bundled bounded `Gatherers.mapConcurrent` example in
+  `stream-examples.md`; report them as focused skill-use coverage rather than broad independent lift
+  evidence.
 - Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
 - Uppercase side-effect review moved from main number `07` back to reference number `26` because it
-  remains useful ordinary reference lift evidence for external mutation and parallelism advice, but
+  remains useful explicit reference lift evidence for external mutation and parallelism advice, but
   the main suite should stay focused on the strongest evidence-weighted coverage. Keep it in
   reference unless future current-suite evidence shows that it meets the 30 pp floor and improves
   main coverage.
 - Session roster indexing moved from main number `06` to reference number `15` because hosted
-  evidence showed the without-context result was already high while with-context was clean. It
-  remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
+  evidence showed the without-context result was already high while with-context was clean, and the
+  runtime references contain same-domain session-registration examples. It remains useful focused
+  natural Java 17 collector coverage, but it is not ordinary broad lift evidence.
+- Overdue shipment notices is focused reference coverage for extracting non-trivial stream lambda
+  bodies into helpers. Its high multi-line-lambda criterion weight is intentional focused
+  behavior-delta coverage, not ordinary broad lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
 - Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.

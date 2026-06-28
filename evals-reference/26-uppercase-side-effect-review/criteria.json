@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural review: performance advice for a stream that mutates an external ArrayList and tempts agents to suggest parallelStream for a 10-million-element input.",
+  "context": "Reference explicit review: performance advice for a stream that mutates an external ArrayList and tempts agents to suggest parallelStream for a 10-million-element input.",
   "type": "weighted_checklist",
   "checklist": [
     {

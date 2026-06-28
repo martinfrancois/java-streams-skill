@@ -45,7 +45,14 @@ BEHAVIOR_WORDS = (
     "redact",
 )
 CRITERION_CATEGORIES = {"safety", "stream_quality", "maintainability"}
-EVIDENCE_TYPES = {"ordinary_lift", "solved_regression", "skill_context_dependent"}
+EVIDENCE_TYPES = {
+    "ordinary_lift",
+    "focused_main",
+    "focused_reference",
+    "solved_regression",
+    "skill_context_dependent",
+}
+REGRESSION_EVIDENCE_TYPES = {"solved_regression", "skill_context_dependent"}
 INTERNAL_LABEL_ALLOW_PATTERNS = (
     r"\bdo not deduct\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
     r"\baward full credit\b.{0,120}\b(?:hard[- ]stop|checklist|scan|marker|skill)\b",
@@ -77,6 +84,7 @@ IDENTIFIER_STOP_WORDS = {
     "hashmap",
     "integer",
     "intstream",
+    "foreach",
     "java",
     "list",
     "long",
@@ -88,11 +96,15 @@ IDENTIFIER_STOP_WORDS = {
     "parallel",
     "parallelstream",
     "predicate",
+    "private",
+    "public",
     "record",
     "runtimeexception",
     "set",
     "simpleimmutableentry",
+    "size",
     "sorted",
+    "static",
     "string",
     "stream",
     "streams",
@@ -101,6 +113,8 @@ IDENTIFIER_STOP_WORDS = {
     "tolist",
     "total",
     "null",
+    "return",
+    "this",
     "unsupportedoperationexception",
     "void",
 }
@@ -356,10 +370,7 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
         failures.append(
             f"{criteria_file}: metadata.evidence_type must be one of {sorted(EVIDENCE_TYPES)}"
         )
-    if scenario.parent.name == "evals-regression" and evidence_type not in {
-        "solved_regression",
-        "skill_context_dependent",
-    }:
+    if scenario.parent.name == "evals-regression" and evidence_type not in REGRESSION_EVIDENCE_TYPES:
         failures.append(
             f"{criteria_file}: regression scenarios must set metadata.evidence_type to "
             "solved_regression or skill_context_dependent"
@@ -373,6 +384,14 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     if evidence_type == "solved_regression" and scenario.parent.name != "evals-regression":
         failures.append(
             f"{criteria_file}: metadata.evidence_type=solved_regression must live in evals-regression"
+        )
+    if evidence_type == "focused_reference" and scenario.parent.name != "evals-reference":
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type=focused_reference must live in evals-reference"
+        )
+    if evidence_type == "focused_main" and scenario.parent.name != "evals":
+        failures.append(
+            f"{criteria_file}: metadata.evidence_type=focused_main must live in evals"
         )
     if evidence_type == "ordinary_lift" and scenario.parent.name == "evals-regression":
         failures.append(
@@ -452,102 +471,86 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
         path.read_text(encoding="utf-8") for path in sorted(references_root.glob("*.md"))
     )
     runtime_identifiers = domain_identifiers(runtime_text)
-    runtime_words = normalized_words(runtime_text)
-    runtime_grams = ngrams(runtime_words, 12)
+    runtime_grams = ngrams(normalized_words(runtime_text), 12)
+    runtime_api_markers = api_markers(runtime_text)
 
     for scenario in dirs:
-        if scenario.parent.name != "evals":
+        suite = scenario.parent.name
+        if suite not in {"evals", "evals-reference", "evals-regression"}:
             continue
         task_file = scenario / "task.md"
         criteria_file = scenario / "criteria.json"
         if not task_file.exists():
             continue
         task_text = task_file.read_text(encoding="utf-8")
-        if is_skill_context_dependent_text(f"{scenario.name}\n{task_text}"):
-            continue
         metadata: dict[str, Any] = {}
         if criteria_file.exists():
             data, _ = load_json(criteria_file)
             if isinstance(data, dict) and isinstance(data.get("metadata"), dict):
                 metadata = data["metadata"]
-        rationale = " ".join(
-            str(metadata.get(key, ""))
-            for key in (
-                "main_eval_selection",
-                "reference_selection",
-                "runtime_reference_overlap_rationale",
-            )
-        ).lower()
-        has_focused_coverage_rationale = "coverage" in rationale and (
-            "kept" in rationale or "focused" in rationale or "intentional" in rationale
-        )
 
         task_identifiers = domain_identifiers(task_text)
         shared_identifiers = sorted(task_identifiers & runtime_identifiers)
         task_words = normalized_words(task_text)
         task_grams = ngrams(task_words, 12)
         long_overlap_count = len(task_grams & runtime_grams)
+        shared_api_markers = sorted(api_markers(task_text) & runtime_api_markers)
+        has_distinctive_api_overlap = bool(shared_api_markers) and len(shared_identifiers) >= 2
 
-        if has_focused_coverage_rationale:
-            continue
-        if len(shared_identifiers) >= 4 or (len(shared_identifiers) >= 3 and long_overlap_count):
-            failures.append(
-                f"{scenario}: task.md overlaps runtime references too closely; shared identifiers: "
-                f"{', '.join(shared_identifiers[:12])}"
-            )
-    return failures
-
-
-def runtime_reference_overlap_warnings(dirs: list[Path]) -> list[str]:
-    warnings: list[str] = []
-    references_root = Path("skills/java-streams/references")
-    if not references_root.exists():
-        return warnings
-
-    runtime_text = "\n".join(
-        path.read_text(encoding="utf-8") for path in sorted(references_root.glob("*.md"))
-    )
-    runtime_identifiers = domain_identifiers(runtime_text)
-    runtime_api_markers = api_markers(runtime_text)
-    runtime_words = normalized_words(runtime_text)
-    runtime_grams = ngrams(runtime_words, 12)
-
-    for scenario in dirs:
-        if scenario.parent.name != "evals":
-            continue
-        task_file = scenario / "task.md"
-        criteria_file = scenario / "criteria.json"
-        if not task_file.exists() or not criteria_file.exists():
-            continue
-        task_text = task_file.read_text(encoding="utf-8")
-        criteria_text = criteria_file.read_text(encoding="utf-8")
-        combined_text = f"{task_text}\n{criteria_text}"
-        if is_skill_context_dependent_text(f"{scenario.name}\n{combined_text}"):
-            continue
-
-        shared_identifiers = sorted(domain_identifiers(combined_text) & runtime_identifiers)
-        shared_api_markers = sorted(api_markers(combined_text) & runtime_api_markers)
-        combined_grams = ngrams(normalized_words(combined_text), 12)
-        long_overlap_count = len(combined_grams & runtime_grams)
-        repeated_api_shape = (
-            "blocking" in combined_text.lower()
-            and "bounded" in combined_text.lower()
-            and "Gatherers.mapConcurrent" in shared_api_markers
-            and "Map.entry" in shared_api_markers
-        )
-        if (
+        has_overlap = (
             len(shared_identifiers) >= 4
             or (len(shared_identifiers) >= 3 and long_overlap_count)
-            or repeated_api_shape
-        ):
-            warnings.append(
-                f"{scenario}: task.md plus criteria.json are close to runtime references; "
-                f"document a focused-coverage rationale if intentional. Shared identifiers: "
-                f"{', '.join(shared_identifiers[:12]) or '(none)'}; shared API markers: "
-                f"{', '.join(shared_api_markers[:12]) or '(none)'}"
-            )
+            or has_distinctive_api_overlap
+        )
+        if not has_overlap:
+            continue
 
-    return warnings
+        evidence_type = metadata.get("evidence_type")
+        rationale = metadata.get("runtime_reference_overlap_rationale")
+        has_overlap_rationale = isinstance(rationale, str) and bool(rationale.strip())
+        overlap_details = (
+            f"shared identifiers: {', '.join(shared_identifiers[:12]) or '(none)'}; "
+            f"shared API markers: {', '.join(shared_api_markers[:12]) or '(none)'}"
+        )
+
+        if evidence_type == "ordinary_lift":
+            failures.append(
+                f"{scenario}: metadata.evidence_type=ordinary_lift is incompatible with "
+                f"runtime-reference overlap ({overlap_details}); de-domain the task/reference or "
+                "reclassify the evidence so it is not reported as ordinary broad lift"
+            )
+            continue
+
+        if suite == "evals":
+            if evidence_type != "focused_main":
+                failures.append(
+                    f"{scenario}: main eval task overlaps runtime references ({overlap_details}); "
+                    "de-domain the task/reference or set metadata.evidence_type=focused_main so "
+                    "it is not reported as ordinary broad natural lift"
+                )
+            elif not has_overlap_rationale:
+                failures.append(
+                    f"{criteria_file}: focused main eval with runtime-reference overlap must set "
+                    "metadata.runtime_reference_overlap_rationale"
+                )
+        elif suite == "evals-reference":
+            if evidence_type != "focused_reference":
+                failures.append(
+                    f"{scenario}: reference task overlaps runtime references ({overlap_details}); "
+                    "de-domain the task/reference or set metadata.evidence_type=focused_reference "
+                    "so it is not reported as ordinary broad lift"
+                )
+            elif not has_overlap_rationale:
+                failures.append(
+                    f"{criteria_file}: focused reference eval with runtime-reference overlap must set "
+                    "metadata.runtime_reference_overlap_rationale"
+                )
+        elif suite == "evals-regression" and evidence_type not in REGRESSION_EVIDENCE_TYPES:
+            failures.append(
+                f"{scenario}: regression task overlaps runtime references ({overlap_details}); "
+                "classify it as solved_regression or skill_context_dependent regression evidence"
+            )
+    return failures
 
 
 def validate_scenario_path_references() -> list[str]:
@@ -702,13 +705,9 @@ def main() -> int:
             failures.extend(validate_numbering(path))
     failures.extend(validate_cross_suite_duplicates(dirs))
     failures.extend(validate_runtime_reference_overlap(dirs))
-    warnings = runtime_reference_overlap_warnings(dirs)
     failures.extend(validate_scenario_path_references())
     failures.extend(validate_runtime_references())
     failures.extend(validate_agent_docs_self_contained())
-
-    for warning in warnings:
-        print(f"warning: {warning}", file=sys.stderr)
 
     if failures:
         for failure in failures:
