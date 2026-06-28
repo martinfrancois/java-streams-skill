@@ -12,7 +12,9 @@ Fix these before finalizing:
   to decide existence. Use `anyMatch`, `noneMatch`, `allMatch`, `findAny`, or `findFirst`.
 - A temporary filtered list followed by `get(0)`, `getFirst()`, or equivalent first-element access.
   Use `findFirst` to preserve encounter-order behavior unless the domain explicitly says all matches
-  are equivalent.
+  are equivalent and encounter order does not decide the result. In reviews that compare
+  `findFirst` and `findAny`, name that `findAny` exception explicitly before discussing parallelism
+  or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
@@ -33,17 +35,36 @@ Fix these before finalizing:
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
 - `toMap` without a merge function when duplicate keys are possible.
 - `groupingBy` where null classifier keys can reach the collector. Treat this as a required fix,
-  not a conditional caveat, unless the code already proves non-null before the collector. Also fix
-  `toMap` where null keys or values would change the existing null-handling contract. Default
-  `toMap` can preserve one null key in a `HashMap` result, but it rejects null values.
+  not a conditional caveat, unless the code already proves non-null before the collector. In scan
+  audits, use unambiguous wording such as "requires fix"; do not downgrade nullable `groupingBy` to
+  "requires review".
+- Also fix `toMap` where null keys or values would change the existing null-handling contract. Do
+  not say `toMap` throws `NullPointerException` just because a key is null: the default `HashMap`
+  result may keep one null key, duplicate null keys fail as duplicate keys, and null values are
+  rejected. If the original loop skipped null keys, filter them before `toMap` so the behavior is
+  deliberate rather than accidental.
   In scan audits, classify marker hits against the task's domain notes. If the task states an
   invariant that makes a marker acceptable, such as globally unique `toMap` keys or non-null
   `groupingBy` classifiers, list it as acceptable with that invariant. Do not turn a proven
   invariant into a required fix unless the task asks for defensive hardening.
 - `sorted()` or `Comparator.naturalOrder()` where null elements or keys can reach the comparator.
+- `sorted().distinct()` when the same result can be produced as `distinct().sorted()`. In scan
+  audits, classify this as a required ordering/efficiency fix rather than an acceptable minor note,
+  unless the code needs sort-before-de-duplication semantics.
 - `Stream.toList()` where a mutable result is required or later code mutates the list. Prefer a
   mutable collector; do not modernize this to `new ArrayList<>(stream.toList())` when the task or
   surrounding code says `Stream.toList()` is not valid.
+- Multi-line stream lambdas: block lambdas (`-> { ... }`), arrows whose body starts on the next
+  line, lambdas that rely on more than one helperless boolean check, or lambdas where the nested
+  stream body continues on later lines (for example `item -> item.children().stream()` followed by
+  `.filter(...)`). Keep lambdas as glue: prefer method references, concise one-expression lambdas
+  whose body stays on the same line as `->`, or extracted named helpers. For mapping, predicates,
+  severity/status selection, and record construction, extract helper methods when the lambda does
+  non-trivial work instead of fitting it into a wrapped lambda.
+
+In reviews, avoid examples that put substantial work behind one lambda body, including ad-hoc helper
+expressions like `-> input -> ...` or callbacks passed into custom parallel executors. If a non-trivial
+decision is needed, extract to a named method and keep the stream chain as glue.
 - `stream().forEach(...)` or `parallelStream().forEach(...)` that mutates an external
   `Collection`, `Map`, array, counter, holder object, or `StringBuilder`. Make the stream produce
   the result directly with `toList()`, `collect(...)`, `toMap(...)`, `joining`, `sum`, or another
@@ -60,12 +81,20 @@ Fix these before finalizing:
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
   For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
-  not add unrelated `groupingBy` null-key or collector-safety caveats.
+  not add unrelated modernization suggestions, import cleanup, `groupingBy` null-key, or
+  collector-safety caveats.
+  When giving below-baseline replacement code, do not emulate the missing API with multi-line or
+  stateful block lambdas. Prefer a named helper or a clear loop for Java 8 replacements such as
+  `takeWhile`/`dropWhile` prefixes, downstream flat-mapping, or paired min/max aggregation.
+  For downstream flat-mapping, do not show `flatMap(c -> c.items().stream()` with a nested
+  `.map(...)`/`.filter(...)` chain continuing on later lines; extract that nested stream to a named
+  helper and call it with a method reference.
+  Java 8 replacement snippets must not use Java 9+ helpers such as `Map.entry`.
   When one stream chain contains multiple unavailable APIs, list each unavailable API separately.
   Example: `flatMap(Optional::stream).toList()` on a Java 8 baseline has two version-drift hits:
   `Optional::stream` requires Java 9 and `Stream.toList()` requires Java 16.
 - Missing imports for stream APIs introduced by the rewrite, such as `Comparator`, `Map`,
-  `Collectors`, or `Gatherers`.
+  `Collectors`, `Function`, `BinaryOperator`, or `Gatherers`.
 
 ## Ordering Rules
 
@@ -73,10 +102,17 @@ Fix these before finalizing:
   or user-visible order matters.
 - For numeric priority sorted with `Comparator.comparing(...priority...)`, describe the contract
   precisely, for example "lowest priority number wins" when natural ascending order is used.
-- Use `findAny()` only when all matches are equivalent. It is often fine after filtering a set of
-  equivalent flags, IDs, or permissions.
-- `distinct().sorted()` is usually better than `sorted().distinct()` when duplicates can be removed
-  before sorting.
+- When reviewing a proposed replacement of ordered selection with `findAny()` or `parallelStream()`,
+  recommend keeping the existing ordered `sorted(...).filter(...).findFirst()` chain first. Mention
+  `min(...)`/`max(...)` only as an optional refactor when the task asks for optimization advice.
+- Use `findAny()` only when the domain explicitly says all matching domain values, such as
+  primary/default/preferred values, are equivalent and encounter order does not matter. Use
+  `findFirst()` for first configured, first listed, chronological, priority, fallback, or
+  user-visible results. In reviews, name the code's noun in the exception, e.g. "all matching
+  primary addresses are equivalent." Do not present `findAny()` as a performance shortcut unless
+  that semantic precondition is already satisfied.
+- `distinct().sorted()` is the required rewrite for `sorted().distinct()` when duplicates can be
+  removed before sorting and no sort-before-de-duplication semantics are required.
 - `limit(n)` must come after sorting when computing top-N by an ordering. It may come before an
   expensive map/filter only when that preserves semantics.
 - `takeWhile` and `dropWhile` are prefix operations. They are not replacements for `filter`.
@@ -89,10 +125,12 @@ Use parallel streams only after checking:
 2. Operations are stateless and non-interfering.
 3. Encounter order is not required, or the ordered stream terminal operation is still worth the cost.
 4. The stream chain does not perform blocking IO or remote calls. For Java 24+ blocking per-element
-   calls, consider `Gatherers.mapConcurrent` only when the baseline supports it and virtual-thread
-   concurrency is the intended design. Preserve element/result association explicitly with
-   a baseline-compatible holder rather than null sentinels or side maps. For remote calls, call out
-   the concurrency limit, timeout handling for slow calls, and error propagation/retry policy.
+   calls with a requested concurrency limit, use `Gatherers.mapConcurrent` with that bound when the
+   baseline supports it and virtual-thread concurrency is the intended design. Preserve
+   element/result association explicitly with a baseline-compatible holder rather than null sentinels
+   or side maps. Do not replace bounded stream concurrency with unbounded `CompletableFuture`
+   fan-out. For remote calls, call out the concurrency limit, timeout handling for slow calls, and
+   error propagation/retry policy.
 5. The stream terminal operation or collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked
@@ -100,14 +138,27 @@ because fork-join splitting, merging, and common-pool contention can outweigh th
 whose main problem is external mutation such as `stream().map(...).forEach(result::add)`, recommend
 the direct collector/toList form as the correctness/readability baseline. Do not claim that direct
 collection is guaranteed faster, and do not say `parallelStream()` will be faster merely because the
-input is large. In reviews, show the sequential direct-collection fix before any parallel version.
+input is large. Explain the rewrite in terms of ownership, correctness, and readability; treat
+low-level allocation details as secondary unless measurements make them relevant. Never describe
+ordinary `ArrayList` growth as `O(N^2)`; resizing is amortized O(N) total. In reviews, show the
+sequential direct-collection fix before any parallel version.
+When the workload is not clearly CPU-bound or the input is expected to be small/tiny, explicitly state
+that parallelization is not justified here.
 For large CPU-bound transformations, strongly recommend benchmarking a pure parallel version after
 the stream chain is side-effect-free; make the benchmark requirement visible next to that
-recommendation, and call out that small-list or mostly-small call paths can be slower.
+recommendation and before any parallel snippet, and call out that small-list or mostly-small call
+paths can be slower.
+For external-mutation performance reviews, keep the main snippet sequential and do not add unrelated
+style notes about logging, printing, imports, naming, or nearby code.
+Do not say the speedup is expected, significant, core-count-scaled, or otherwise likely until
+measurements support it.
 For simple cache/index construction, filtering, or map population, explicitly say when there is no
 CPU-heavy stateless work to justify `parallelStream()`. Do not suggest `toConcurrentMap` or another
 parallel collector as the main fix unless the task provides measured need or genuinely CPU-heavy
-per-element work. Prefer sequential collector-owned accumulation.
+per-element work. Prefer sequential collector-owned accumulation. In shared-map/list mutation
+reviews, keep the decision scoped to the race/corruption risk, lack of CPU-heavy work or
+measurement, and the collector-owned replacement; do not add encounter-order warnings unless the
+task's behavior depends on encounter order.
 
 ## Scan Command
 
@@ -122,7 +173,7 @@ multiline mode so it catches normally formatted fluent chains. Some markers are 
 classify legitimate uses instead of deleting them mechanically.
 
 ```bash
-rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(|\\.forEach\\(|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(" <touched Java files>
+rg -nUP "count\\(\\)\\s*>\\s*0|collect\\([^;]+\\)\\s*\\.\\s*(?:isEmpty|size|getFirst)\\(|collect\\([^;]+\\)\\s*\\.\\s*get\\(\\s*0\\s*\\)|sorted\\([^;]*\\)\\s*\\.\\s*findFirst\\(|sorted\\(\\)\\s*\\.\\s*findFirst\\(|limit\\([^;]+\\)\\s*\\.\\s*sorted\\(|sorted\\([^;]*\\)\\s*\\.\\s*distinct\\(|sorted\\(\\)\\s*\\.\\s*distinct\\(|String\\.join\\(|filter\\(Optional::isPresent\\)\\s*\\.\\s*map\\(Optional::get\\)|parallelStream\\(|\\.parallel\\(|\\.forEach\\(|Collectors\\.toMap\\(|Collectors\\.groupingBy\\(|Comparator\\.naturalOrder\\(\\)|(?<!Collectors)\\.toList\\(|mapMulti\\(|takeWhile\\(|dropWhile\\(|Collectors\\.teeing\\(|Optional::stream|Collectors\\.flatMapping|Stream\\.ofNullable|\\.gather\\(|->\\s*\\{|->\\s*$|->[^\\n]*\\.stream\\(\\)\\s*$" <touched Java files>
 ```
 
 For each hit, decide whether it is legitimate for the project Java baseline and behavior. Fix
@@ -132,8 +183,8 @@ numeric result rather than a `count() > 0` existence check, and state that plain
 hit for the bundled scan regex.
 
 In ordinary code reviews, do not expose internal workflow labels such as "hard stop", "marker",
-"scan", or "skill checklist" in the final user-facing recommendation. Use those terms only when the
-task explicitly asks for a scan/workflow audit or exact skill-provided command.
+"scan", or "skill checklist" in headings, rationale, or recommendations. Use those terms only when
+the task explicitly asks for a scan/workflow audit or exact skill-provided command.
 
 When the requested audit is specifically about Java-version drift, keep the report scoped to APIs
 that are unavailable for the stated baseline and to explicitly allowed markers. Do not add unrelated

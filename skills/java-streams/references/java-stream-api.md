@@ -33,7 +33,7 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | --- | ---: | --- |
 | `Collectors.toList`, `toSet` | 8 | `toList` mutability is unspecified; use explicit collection if required. |
 | `Collectors.joining` | 8 | Join mapped text in one stream terminal operation. |
-| `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Default map results may preserve a null key, but null values are rejected; preserve the existing null contract explicitly. |
+| `Collectors.toMap` | 8 | Provide a merge function when duplicate keys are possible. Default map results may preserve one null key in the resulting `HashMap`, duplicate null keys fail as duplicate keys, and null values are rejected; preserve the existing null contract explicitly. |
 | `Collectors.groupingBy` | 8 | Key maps to a list or downstream aggregate. Null classifier keys are not accepted. |
 | `Collectors.mapping` | 8 | Project values inside downstream collectors. |
 | `Collectors.counting` | 8 | Count elements, often downstream of `groupingBy`. |
@@ -59,5 +59,61 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 
 Natural sorting and collectors are null-sensitive. If a stream may contain null elements, null
 values, or null grouping keys, filter them out or use explicit null handling before sorting or
-collecting. For `toMap`, preserve existing null-key behavior deliberately instead of filtering or
-retaining null keys by accident.
+collecting. For `toMap`, do not claim null keys alone cause `NullPointerException`; preserve
+existing null-key behavior deliberately instead of filtering or retaining null keys by accident.
+
+## Java 8 Fallback Guidance
+
+Use this section only when the project baseline is Java 8 or the task asks for Java 8-compatible
+replacement code. Identify APIs that are unavailable and give replacements that preserve behavior
+without introducing multi-line lambdas:
+
+For Java-version drift reviews, keep the audit scoped to unavailable APIs and explicitly allowed
+Java 8 stream usage. Do not add unrelated modernization advice such as `Collections.emptyList()` or
+general cleanup notes unless the task asks for a broader review.
+
+- `takeWhile` / `dropWhile`: these are ordered prefix operations with no direct Java 8 stream
+  equivalent. Prefer a small loop helper that preserves prefix semantics. Do not show stateful
+  `filter(x -> { ... })` emulations.
+- `Collectors.flatMapping`: when empty downstream groups matter, use a loop or helper that creates
+  the group before adding nested values. Pre-flatten with `flatMap(Type::helper)` before
+  `groupingBy` only when the contract intentionally omits groups whose nested stream is empty. Do
+  not put a nested stream chain inside a collector lambda or `flatMap(c -> c.items().stream()`
+  snippet whose nested chain continues on later lines. If you show pre-flattening, use a named
+  helper and a Java 8-compatible holder such as `AbstractMap.SimpleImmutableEntry`, not `Map.entry`;
+  implement the helper as a loop or other concise method body, not as a multi-line nested stream.
+- `Collectors.teeing`: use two clear stream passes, a simple loop, or named helper aggregation. Do
+  not replace it with a complex `reducing` collector whose merge lambda spans multiple lines.
+- `mapMulti`: use `map`, `flatMap`, or a helper method for one-to-few emission on Java 8.
+- `Stream.toList()`: use `collect(Collectors.toList())`, and choose
+  `Collectors.toCollection(ArrayList::new)` when mutability is required.
+
+Example Java 8-compatible downstream flattening that preserves empty groups:
+
+```java
+Map<String, List<String>> namesByRegion = new HashMap<>();
+for (Customer customer : customers) {
+    List<String> aliases = namesByRegion.computeIfAbsent(customer.region(), key -> new ArrayList<>());
+    aliases.addAll(customer.aliases());
+}
+```
+
+Example Java 8-compatible pre-flattening when empty nested groups may be omitted:
+
+```java
+Map<String, List<String>> namesByRegion = customers.stream()
+        .flatMap(this::regionAliases)
+        .collect(Collectors.groupingBy(
+                AbstractMap.SimpleImmutableEntry::getKey,
+                Collectors.mapping(
+                        AbstractMap.SimpleImmutableEntry::getValue,
+                        Collectors.toList())));
+
+private Stream<AbstractMap.SimpleImmutableEntry<String, String>> regionAliases(Customer customer) {
+    List<AbstractMap.SimpleImmutableEntry<String, String>> aliases = new ArrayList<>();
+    for (String alias : customer.aliases()) {
+        aliases.add(new AbstractMap.SimpleImmutableEntry<>(customer.region(), alias));
+    }
+    return aliases.stream();
+}
+```
