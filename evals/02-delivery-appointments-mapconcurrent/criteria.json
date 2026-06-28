@@ -42,7 +42,9 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
+    "evidence_type": "focused_main",
     "main_eval_weight_multiplier": 4,
-    "main_eval_selection": "active replacement for a runtime-reference-overlapping bounded remote-check scenario; rerun hosted evals before updating benchmark claims"
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping bounded remote-check scenario; rerun hosted evals before updating benchmark claims",
+    "runtime_reference_overlap_rationale": "Focused main-suite coverage for bounded mapConcurrent service-stub usage; not ordinary broad natural lift."
   }
 }

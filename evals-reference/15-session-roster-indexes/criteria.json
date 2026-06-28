@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural implementation: Java 17 collector scenario for flattening nested data, grouping, duplicate-key handling, sorted unique downstream results, and short-circuit existence checks. Demoted from main because hosted history showed a high without-context score, so it is useful broad stream coverage but weak main-lift evidence.",
+  "context": "Reference natural implementation: focused Java 17 collector scenario for flattening nested data, grouping, duplicate-key handling, sorted unique downstream results, and short-circuit existence checks. Demoted from main because hosted history showed a high without-context score and runtime references contain same-domain session examples.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -54,7 +54,8 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
-    "evidence_type": "ordinary_lift",
-    "reference_selection": "demoted from active main eval coverage because release run 019ea20b-cf1b-73da-955f-d782db861b86 scored 92/100 without context and 100/100 with context; keep as reference coverage unless future hosted evidence shows stronger delta"
+    "evidence_type": "focused_reference",
+    "reference_selection": "Focused reference coverage for nested session-registration collector behavior and helper extraction.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
   }
 }

@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural implementation: overdue shipment notices require filtering and non-trivial mapping logic, which should stay out of multi-line stream lambdas.",
+  "context": "Reference natural implementation: focused issue #36 behavior-delta coverage for overdue shipment notices with filtering and non-trivial mapping logic that should stay out of multi-line stream lambdas.",
   "type": "weighted_checklist",
   "checklist": [
     {
@@ -42,7 +42,9 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
-    "evidence_type": "ordinary_lift",
-    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/36"
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/36",
+    "reference_selection": "Focused issue #36 behavior-delta coverage for extracting non-trivial stream lambda bodies into helpers.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence."
   }
 }
