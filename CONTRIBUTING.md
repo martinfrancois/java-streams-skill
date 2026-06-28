@@ -78,7 +78,7 @@ tessl plugin lint .
 If you change the skill text or reference files, also run:
 
 ```bash
-tessl skill review --threshold 100 skills/java-streams/SKILL.md
+tessl review run --threshold 100 skills/java-streams/SKILL.md
 ```
 
 If you have Tessl access, run the publish dry-run:
@@ -88,10 +88,12 @@ bash scripts/check_publish_dry_run.sh .
 tessl plugin publish --dry-run --bump patch .
 ```
 
-Hosted evals require Tessl authentication and a linked Tessl project. Use Sonnet 4.6 for this
-repository's main eval checks. Prefer `scripts/run_eval_suite.sh`; it runs from a temporary plugin
-copy so with-context variants can see the skill bundle. Start with targeted runs when possible to
-conserve Tessl daily rate-limit budget:
+Hosted evals require Tessl authentication and a linked Tessl project. Prefer
+`scripts/run_eval_suite.sh`; it runs from a temporary plugin copy so with-context variants can see
+the skill bundle. By default, it uses Tessl's default solver so contributors without model-selection
+entitlement can still run evals. If your Tessl plan allows explicit model selection, Sonnet 4.6 or a
+better frontier model is recommended for a more representative real-world check. Start with targeted
+runs when possible to conserve Tessl daily rate-limit budget:
 
 ```bash
 scripts/run_eval_suite.sh main
@@ -99,12 +101,12 @@ scripts/run_eval_suite.sh main
 
 Run hosted eval variants by suite purpose:
 
-- `evals/`: run both `without-context` and `with-context`; these runs support public lift
+- `evals/`: run both baseline control and `with-context`; these runs support public lift
   reporting. Use `scripts/run_eval_suite.sh main`.
-- `evals-reference/`: run both `without-context` and `with-context`; these runs decide whether a
+- `evals-reference/`: run both baseline control and `with-context`; these runs decide whether a
   scenario has meaningful lift or should move suites. Use `scripts/run_eval_suite.sh reference`.
 - `evals-regression/`: run `with-context` only by default; these runs are safety checks, not lift
-  discovery. Run regression `without-context` only when deliberately checking whether a scenario
+  discovery. Run regression baseline control only when deliberately checking whether a scenario
   should move back to `evals-reference/`. Use `scripts/run_eval_suite.sh regression`.
 
 ## Commit Messages

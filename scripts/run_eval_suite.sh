@@ -7,16 +7,32 @@ Usage:
   scripts/run_eval_suite.sh <main|reference|regression> [scenario ...] [-- tessl eval run args...]
 
 Runs hosted Tessl evals with the repository's variant policy:
-  main       -> without-context and with-context
-  reference  -> without-context and with-context
+  main       -> baseline control and with-context
+  reference  -> baseline control and with-context
   regression -> with-context only
 
 Examples:
   scripts/run_eval_suite.sh main -- --label "main check"
   scripts/run_eval_suite.sh reference 05-parallel-cpu-review -- --label "targeted reference"
   scripts/run_eval_suite.sh regression -- --label "regression safety"
+  scripts/run_eval_suite.sh main -- --agent claude:claude-sonnet-4-6 --label "representative model check"
 
-Do not pass --variant. This script chooses variants from the suite purpose.
+Model-selection note:
+  Do not pin Sonnet in default commands; the script runs with the current Tessl default solver.
+  On accounts without model-selection entitlements (including many free plans), passing
+  `--agent` for a specific model (for example, `claude:claude-sonnet-4-6`) can return
+  a "Missing required entitlement" error. Prefer default commands for routine checks and
+  save explicit model pins for accounts where modelSelection is enabled.
+  If model-selection is available, Sonnet 4.6 or a better model is a good representative check.
+  See Tessl model-selection and default-model discussions:
+  - https://docs.tessl.io/changelog
+  - https://tessl.io/blog/why-were-changing-our-default-eval-model/
+
+Do not pass --variant or --skip-baseline. This script chooses variants from the suite purpose.
+The default Tessl solver is used unless an explicit --agent is passed after --.
+The runner passes --skill java-streams so with-context runs exercise this skill instead of relying on
+solver auto-selection for final readiness evidence. It also passes --force so runs after a skill or
+runner fix cannot reuse stale hosted solutions.
 USAGE
 }
 
@@ -42,15 +58,15 @@ shift
 case "$suite" in
   main)
     source_dir="evals"
-    variants=(--variant without-context --variant with-context)
+    variant_label="baseline control + with-context"
     ;;
   reference)
     source_dir="evals-reference"
-    variants=(--variant without-context --variant with-context)
+    variant_label="baseline control + with-context"
     ;;
   regression)
     source_dir="evals-regression"
-    variants=(--variant with-context)
+    variant_label="with-context only"
     ;;
   -h|--help|help)
     usage
@@ -72,8 +88,8 @@ while [[ $# -gt 0 ]]; do
       extra_args=("$@")
       break
       ;;
-    --variant|--variant=*)
-      echo "Do not pass --variant; scripts/run_eval_suite.sh chooses variants by suite." >&2
+    --variant|--variant=*|--skip-baseline|--skip-baseline=*)
+      echo "Do not pass --variant or --skip-baseline; scripts/run_eval_suite.sh chooses variants by suite." >&2
       exit 2
       ;;
     *)
@@ -85,8 +101,8 @@ done
 
 for arg in "${extra_args[@]}"; do
   case "$arg" in
-    --variant|--variant=*)
-      echo "Do not pass --variant; scripts/run_eval_suite.sh chooses variants by suite." >&2
+    --variant|--variant=*|--skip-baseline|--skip-baseline=*)
+      echo "Do not pass --variant or --skip-baseline; scripts/run_eval_suite.sh chooses variants by suite." >&2
       exit 2
       ;;
   esac
@@ -97,36 +113,48 @@ if ! command -v tessl >/dev/null 2>&1; then
   exit 127
 fi
 
+eval_run_help="$(tessl eval run --help 2>&1 || true)"
+if grep -q -- "--variant" <<<"$eval_run_help"; then
+  case "$suite" in
+    main|reference)
+      variant_args=(--variant without-context --variant with-context)
+      ;;
+    regression)
+      variant_args=(--variant with-context)
+      ;;
+  esac
+elif grep -q -- "--skip-baseline" <<<"$eval_run_help"; then
+  case "$suite" in
+    main|reference)
+      variant_args=()
+      ;;
+    regression)
+      variant_args=(--skip-baseline)
+      ;;
+  esac
+else
+  echo "Unsupported tessl eval run CLI: expected --variant or --skip-baseline support." >&2
+  exit 2
+fi
+
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 source_path="$repo_root/$source_dir"
+skill_args=(--skill java-streams)
+freshness_args=(--force)
 if [[ ! -d "$source_path" ]]; then
   echo "Missing suite directory: $source_path" >&2
   exit 1
-fi
-
-has_agent=false
-for arg in "${extra_args[@]}"; do
-  case "$arg" in
-    --agent|--agent=*)
-      has_agent=true
-      ;;
-  esac
-done
-
-agent_args=()
-if [[ "$has_agent" == false ]]; then
-  agent_args=(--agent claude:claude-sonnet-4-6)
 fi
 
 if [[ "$suite" == "main" && "${#scenarios[@]}" -eq 0 ]]; then
   echo "Running main eval suite from the linked plugin path."
   echo "Scenarios:"
   print_suite_scenarios "$source_path"
-  echo "Variants: ${variants[*]}"
+  echo "Eval mode: $variant_label"
 
   (
     cd "$repo_root"
-    tessl eval run "${agent_args[@]}" "${variants[@]}" "${extra_args[@]}" .
+    tessl eval run "${variant_args[@]}" "${skill_args[@]}" "${freshness_args[@]}" "${extra_args[@]}" .
   )
   exit 0
 fi
@@ -194,9 +222,9 @@ fi
 echo "Running $suite eval suite from the linked plugin path with a temporary evals/ staging area."
 echo "Scenarios:"
 print_suite_scenarios "$staged_evals"
-echo "Variants: ${variants[*]}"
+echo "Eval mode: $variant_label"
 
 (
   cd "$repo_root"
-  tessl eval run "${agent_args[@]}" "${variants[@]}" "${extra_args[@]}" .
+  tessl eval run "${variant_args[@]}" "${skill_args[@]}" "${freshness_args[@]}" "${extra_args[@]}" .
 )
