@@ -17,14 +17,20 @@
     {
       "name": "Flattens nested conference data directly",
       "category": "stream_quality",
-      "max_score": 25,
+      "max_score": 20,
       "description": "Traverses conferences to sessions to registrations with direct flatMap-style composition or an equivalently clear stream chain, without building nested temporary collections or mutating shared result maps inside forEach."
     },
     {
       "name": "Uses collector semantics for track email lists",
       "category": "stream_quality",
-      "max_score": 25,
+      "max_score": 20,
       "description": "Builds opted-in emails by track with collector semantics such as groupingBy plus downstream mapping/filtering/collection, producing sorted unique email lists without a post-hoc shared mutable accumulation pass."
+    },
+    {
+      "name": "Avoids multi-line lambdas",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Keeps stream and collector lambdas as short same-line glue. Extracts nested registration streams, duplicate-room comparison logic, or other multi-step callback bodies into named helpers or method references instead of using block lambdas, arrows whose body starts on the next line, or lambda bodies that continue their stream chain on later lines."
     },
     {
       "name": "Handles duplicate rooms explicitly",

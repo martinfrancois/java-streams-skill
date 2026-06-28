@@ -17,14 +17,20 @@
     {
       "name": "Mentions overhead and measurement",
       "category": "stream_quality",
-      "max_score": 20,
+      "max_score": 15,
       "description": "Says the performance should be measured because parallel stream overhead can outweigh benefits."
     },
     {
       "name": "Mentions common pool",
       "category": "stream_quality",
-      "max_score": 15,
+      "max_score": 10,
       "description": "Notes that parallel streams use the common fork-join pool by default and may contend with other work."
+    },
+    {
+      "name": "Avoids multi-line lambda examples",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "If the review includes replacement or optional example code, keeps lambda bodies on the same line as `->` or uses named helpers/method references instead of showing block lambdas, arrows whose body starts on the next line, or callback bodies that continue on later lines."
     }
   ],
   "metadata": {
