@@ -44,4 +44,4 @@ jobs:
 
       - name: Review skill
         if: ${{ env.TESSL_TOKEN_AVAILABLE == 'true' }}
-        run: tessl skill review --threshold 100 skills/java-streams/SKILL.md
+        run: tessl review run --workspace martinfrancois --threshold 100 skills/java-streams/SKILL.md

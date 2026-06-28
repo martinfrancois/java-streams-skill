@@ -55,7 +55,7 @@ Tessl-authenticated checks:
 
 - [ ] `bash scripts/check_publish_dry_run.sh .`
 - [ ] `tessl plugin publish --dry-run --bump patch .`
-- [ ] `tessl skill review --threshold 100 skills/java-streams/SKILL.md`, if skill text or references changed
+- [ ] `tessl review run --workspace martinfrancois --threshold 100 skills/java-streams/SKILL.md`, if skill text or references changed
 - [ ] Targeted main/reference `scripts/run_eval_suite.sh <main|reference> <scenario-name>`, if skill behavior or those evals changed
 - [ ] Targeted regression `scripts/run_eval_suite.sh regression <scenario-name>`, if regression evals changed
 - [ ] Every substantively changed eval scenario was rerun targeted and reached 100% with context, or the PR explains the Tessl blocker and remaining work
@@ -65,7 +65,7 @@ Tessl-authenticated checks:
 - [ ] `scripts/classify_eval_result.py <run-json> --scenario-dir <scenario-dir>`, if a scenario was added or moved between suites
 - [ ] Full/main `scripts/run_eval_suite.sh main`, if benchmark claims changed or targeted with-context results are clean
 
-`bash scripts/check_publish_dry_run.sh .`, `tessl skill review`, and hosted Tessl evals require
+`bash scripts/check_publish_dry_run.sh .`, `tessl review run`, and hosted Tessl evals require
 Tessl authentication. Hosted evals also require a linked Tessl project. If you can't run one of
 them, leave it unchecked and explain why in the details.
 
