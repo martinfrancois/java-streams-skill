@@ -1,0 +1,48 @@
+{
+  "context": "Reference natural implementation: overdue shipment notices require filtering and non-trivial mapping logic, which should stay out of multi-line stream lambdas.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Creates OverdueShipmentNotices.java with the requested overdueNotices(List<Shipment> shipments, Clock clock) method, minimal Shipment and ShipmentNotice records, necessary imports, and Java 17-compatible code."
+    },
+    {
+      "name": "Preserves filtering behavior",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Includes only shipments with no deliveredAt value and a dueDate before LocalDate.now(clock), and preserves the encounter order of the input list."
+    },
+    {
+      "name": "Computes notice fields correctly",
+      "category": "safety",
+      "max_score": 5,
+      "description": "Each notice contains the shipment id, customer email, ChronoUnit.DAYS days-late value from dueDate to today, and severity critical for at least 14 days late or late otherwise."
+    },
+    {
+      "name": "Uses direct stream result production",
+      "category": "stream_quality",
+      "max_score": 3,
+      "description": "Uses a direct stream chain that filters overdue shipments and collects or returns the mapped notices without external mutable accumulation, manual indexing, background workers, or unrelated caching."
+    },
+    {
+      "name": "Avoids multi-line stream lambdas",
+      "category": "stream_quality",
+      "max_score": 80,
+      "description": "Keeps lambdas passed to stream operations as concise one-expression glue or method references, with no block lambdas using braces inside the stream chain. Non-trivial overdue checks, days-late calculation, severity selection, or notice construction are extracted to named helper methods or equivalent reusable methods."
+    },
+    {
+      "name": "Keeps API focused",
+      "category": "maintainability",
+      "max_score": 2,
+      "description": "Keeps the solution limited to the requested class, method, records, and private helpers without broad public API redesign or unnecessary abstractions."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/36"
+  }
+}

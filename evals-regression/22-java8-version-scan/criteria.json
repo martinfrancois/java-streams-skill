@@ -17,8 +17,14 @@
     {
       "name": "Classifies Java 8 version drift",
       "category": "stream_quality",
-      "max_score": 60,
+      "max_score": 50,
       "description": "Flags Optional::stream, Stream.toList, Stream.ofNullable, takeWhile, dropWhile, Collectors.flatMapping, Collectors.teeing, and mapMulti as unavailable on Java 8 and gives Java 8-compatible directions."
+    },
+    {
+      "name": "Avoids multi-line lambda replacements",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Keeps Java 8 replacement snippets free of multi-line lambdas. Uses helper methods, method references, or same-line one-expression lambdas instead of block lambdas, arrows whose body starts on the next line, or lambda bodies that continue a nested stream chain on later lines."
     },
     {
       "name": "Classifies allowed count usage",

@@ -24,6 +24,11 @@ Number `27` covers high-volume uppercase implementation from
 context. Keep it in `evals-reference/` unless future hosted history shows it should move to main or
 regression.
 
+Number `28` covers implementation readability for stream chains that need non-trivial mapping logic:
+the stream should use short glue lambdas or method references while extracted helpers own
+multi-step derivation. Keep it in `evals-reference/` until targeted hosted evidence shows whether it
+belongs in main or regression.
+
 Number `25` contains the explicit hard-stop scan workflow audit that was demoted from the main eval
 set and later moved to `evals-regression/`. It requires exact skill-provided text, so report it as
 with-context regression coverage rather than as main or reference Java stream reasoning lift.

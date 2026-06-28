@@ -1,6 +1,6 @@
 # Review uppercase stream performance advice
 
-Create `review.md`. Assume Java 17.
+Use `$java-streams` to create `review.md`. Assume Java 17.
 
 A company has code like this in its codebase. The real `names` list has about 10 million items; the
 snippet uses a smaller list only for brevity. The team noticed this operation is slow and wants

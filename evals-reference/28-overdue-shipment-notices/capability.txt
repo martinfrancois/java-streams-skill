@@ -1,0 +1,2 @@
+Implement a Java 17 stream transformation that filters overdue shipments and maps them to notices
+while keeping stream lambdas concise and extracting non-trivial derivation logic.
