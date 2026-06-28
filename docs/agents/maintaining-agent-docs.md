@@ -34,6 +34,16 @@ Use this when changing `AGENTS.md` or files under `docs/agents/`.
 If a requested change conflicts with existing instructions, stop and ask the user which version to
 keep. Don't auto-resolve.
 
+## CLI Deprecation Response
+
+- When a CLI command mentioned in this repo starts warning as deprecated, switch runtime workflows to the
+  replacement command path in `scripts/` and keep the deprecated usage only behind a compatibility shim or
+  deprecation-triggered fallback.
+- Update agent-facing docs (`CONTRIBUTING.md`, `docs/agents/workflow.md`, `docs/agents/pre-submit-gate.md`) at the
+  same time so future contributors run the current command.
+- If uncertain whether a fallback is needed, preserve current behavior first, and add `--help`-based detection or
+  one-time test coverage instead of deleting the previous behavior immediately.
+
 ## Remove Vague Rules
 
 When editing these docs, delete or rewrite anything redundant, vague, or too obvious to be
