@@ -8,6 +8,20 @@ benchmark claims, or scoring rules.
 ## Rules
 
 - Don't cheat. Don't leak the diagnosis or desired fix in eval prompts.
+- Run quality review first, and if it is below 100%, stop and fix all quality issues before any new
+  hosted eval rerun. Then execute targeted evals for every changed scenario, and only progressively
+  broaden suites after targeted runs are clean. Preserve the daily budget by stopping at each stage
+  unless failures require another targeted rerun; only then proceed to broader hosted checks. If a
+  broad run shows any with-context below 100%, stop that run and return to targeted reruns for failed
+  scenarios only.
+- Use the pre-submit gate before your first hosted command:
+
+  ```bash
+  scripts/pre_submit_gate.sh --plan-only
+  ```
+
+  Then execute only the printed targeted stages. The gate now enforces that each stage reaches
+  100% with-context before allowing expansion to the next stage.
 - Keep natural activation prompts neutral. Explicit invocation prompts may name `$java-streams`, but
   should not leak the desired fix beyond invoking the skill.
 - The main eval should focus on realistic failure modes where this skill should change the answer:
@@ -114,9 +128,12 @@ benchmark claims, or scoring rules.
   legitimate coverage just to improve lift.
 - Track raw score, percentage-point lift, raw score ratio, missed-point reduction, and the
   `stream_quality` subtotal when updating benchmark claims.
-- Use `scripts/run_eval_suite.sh` for hosted evals. It runs from a temporary plugin copy so
-  with-context variants can see the skill bundle, and it enforces the suite variant policy. Use
-  Sonnet 4.6 unless intentionally comparing another model.
+- Use `scripts/run_eval_suite.sh` for hosted evals. It runs from a temporary plugin copy, passes
+  `--skill java-streams` so with-context runs actually exercise this skill, passes `--force` so
+  post-fix checks cannot reuse stale hosted solutions, and enforces the suite variant policy. Use the
+  Tessl default solver unless intentionally comparing another model. If the account has
+  model-selection entitlement, Sonnet 4.6 or a better frontier model is recommended for a more
+  representative real-world check.
 
   ```bash
   scripts/run_eval_suite.sh main
@@ -127,20 +144,30 @@ benchmark claims, or scoring rules.
 - Direct equivalent for this repository's main eval runs:
 
   ```bash
-  tessl eval run --agent claude:claude-sonnet-4-6 --variant without-context --variant with-context .
+  tessl eval run --skill java-streams --force .
   ```
-  The workflow-pinned Tessl CLI version accepts this plugin eval workflow from the repository root.
-  Public docs may still show tile-oriented examples; for this repository, use the pinned CLI and
-  `scripts/run_eval_suite.sh` as the source of truth.
+  The Tessl CLI runs the baseline control by default when plugin context is present. Use
+  `--skip-baseline` only for context-only regression runs. Public docs may still show tile-oriented
+  examples; for this repository, use the pinned CLI and `scripts/run_eval_suite.sh` as the source of
+  truth.
+  Tessl's public changelog notes that model and agent selection are plan-entitlement-gated:
+  <https://docs.tessl.io/changelog>. Tessl also documents why the default eval solver is not pinned
+  to Sonnet 4.6 for ordinary skill-development checks:
+  <https://tessl.io/blog/why-were-changing-our-default-eval-model/>. Check
+  `tessl eval run --list-agents` for the current default because Tessl can change it over time.
 - Run variants by suite purpose:
-  - `evals/` main: always run both `without-context` and `with-context`, because it supports public
+  - `evals/` main: always run both baseline control and `with-context`, because it supports public
     lift reporting.
-  - `evals-reference/`: always run both `without-context` and `with-context`, because it is used to
+  - `evals-reference/`: always run both baseline control and `with-context`, because it is used to
     find meaningful lift and promotion candidates.
   - `evals-regression/`: run `with-context` only by default, because it is safety coverage rather
     than lift discovery. Run `without-context` for regression only when intentionally checking
     whether a scenario should move back to reference.
 - Keep hosted eval usage minimal while preserving confidence and Tessl daily rate-limit budget:
+  - Freeze runtime skill text before hosted spending whenever possible. The expensive failure mode is
+    not the final all-suite requirement itself; it is rerunning required evidence after later edits to
+    `skills/java-streams/SKILL.md` or bundled runtime references change the skill fingerprint. Do the
+    local scenario/criteria crosswalk and obvious skill wording fixes before starting hosted runs.
   - A pure suite move does not require a hosted rerun when `task.md`, `criteria.json`, and
     `capability.txt` content are unchanged except for suite-placement metadata or numbering notes.
     Run local validators and update suite totals/numbering instead. If the move also changes task
@@ -155,19 +182,43 @@ benchmark claims, or scoring rules.
     the blocker and exact remaining targeted runs in the PR; benchmark and release-readiness claims
     remain blocked until those runs pass.
   - For runtime skill text or runtime reference changes, start with the affected scenario
-    directories most likely to move, using the suite variant rule above.
+    directories most likely to move, using the suite variant rule above. Use the pre-submit gate's
+    impact-analysis suggestions for runtime-only changes when no maintainer-specified focus is
+    obvious, and keep historical risk probes in the early targeted pass.
+  - After quality is 100 and targeted probes are clean, switch to balanced broad chunks for the
+    remaining required evidence. Do not keep broadening one scenario at a time unless a fresh broad
+    failure is likely and conserving eval-solutions is more important than elapsed time.
   - If any affected with-context result is below 100%, keep rerunning only those targeted scenarios
     after fixes until they are clean.
-  - Then run `evals/` for the main score.
+  - Then run the remaining `evals/` scenarios for the main score, excluding scenarios already proven
+    clean after the last skill bundle change.
   - Run relevant `evals-reference/` scenarios with both variants when deciding promotion or checking
     nearby behavior.
   - Before final release/open-source-ready claims after a runtime skill change, run every reference
-    scenario with both variants and every regression scenario with context only. Do this after the
-    targeted failures are clean and the main suite has run.
+    scenario with both variants and every regression scenario with context only. This evidence may be
+    split across targeted and broad runs, and already-proven scenarios should be excluded from later
+    broadening as long as they passed after the last change to the skill bundle.
   - Run `evals-regression/` with context only as a final safety check before release or after broad
     changes, not on every tuning loop.
   - If a broad run exposes isolated failures, fix those exact scenarios and rerun them targeted
-    before spending rate-limit budget on another broad suite run.
+    before spending rate-limit budget on another broad suite run. Preserve successful scenario-level
+    evidence from the same final skill state instead of rerunning it only because another scenario in
+    the suite failed.
+  - Never rerun a hosted eval merely because it looks stuck, slow, pending, or temporarily missing
+    scoring. Tessl scoring can lag after scenario execution. Keep polling the existing run with
+    `tessl eval view <run-id> --json` and wait for completion or a hard service failure; only rerun
+    after a completed scored failure and a relevant fix, or after Tessl reports a non-recoverable run
+    failure.
+  - Never poll hosted evals with an unbounded loop or a bare `tessl eval run`. Poll the specific
+    existing run ID with bounded attempts, visible output, and a stop condition; if unexpected
+    background eval work appears, inspect process ancestry and Codex session logs before explaining
+    where it came from.
+  - For budgeting sanity, run the full suite stages incrementally and confirm each stage with
+    100% with-context before the next one:
+    budget-aware remaining suites from `scripts/pre_submit_gate.sh`, or a maintainer-approved
+    explicit order via `--broad-order`.
+  - If the change is runtime-wide and no scenario edit exists, prefer a scoped focus run first (via
+    `--focus <scope>:<scenario>`) before any broad suite rerun.
 
 ## Current Suite Composition
 
@@ -193,7 +244,7 @@ Update this section whenever active eval membership or scoring changes.
   evidence showed the without-context result was already high while with-context was clean. It
   remains useful natural Java 17 collector coverage, but it is weak main-lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 5 scenarios, 460 total checklist points. Deleted reference number 12 and
+- Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
@@ -212,3 +263,4 @@ the criteria JSON check listed there.
 
 - [Workflow](workflow.md)
 - [Skill Behavior](skill-behavior.md)
+- [Pre-Submit Gate](pre-submit-gate.md)

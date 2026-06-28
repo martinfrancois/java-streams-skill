@@ -1,0 +1,26 @@
+# suite:scenario entries that historically exposed scored with-context failures, ordered by
+# observed failure count per hosted solution cost from the paginated Tessl/local run-history
+# corpus. Missing-score/incomplete runs are excluded from this ranking. These are scheduling
+# probes only. They do not change final evidence requirements.
+reference:26-uppercase-side-effect-review
+reference:08-primary-contact-review
+main:02-delivery-appointments-mapconcurrent
+regression:04-primary-address-review
+regression:22-java8-version-scan
+main:01-offer-availability-mapconcurrent
+main:03-payment-screening-gatherer-review
+regression:16-java11-report-review
+regression:19-null-collector-review
+reference:15-session-roster-indexes
+reference:28-overdue-shipment-notices
+reference:05-parallel-cpu-review
+regression:09-order-collector-report
+regression:23-collector-order-scan
+regression:01-permission-and-orders
+regression:13-training-and-packets
+regression:14-parallel-mutation-review
+regression:17-java8-optional-prefix-review
+regression:24-mutable-batch-modernization
+regression:25-hard-stop-scan-audit
+main:04-invoice-bounds-and-temperature-windows
+reference:27-uppercase-names-implementation
