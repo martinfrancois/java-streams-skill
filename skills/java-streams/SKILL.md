@@ -1,14 +1,17 @@
 ---
 name: java-streams
 license: MIT
-description: Write, review, and refactor Java Stream and Collector code using best practices, improving readability and performance while avoiding common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, and careless findFirst/findAny or parallelStream changes. Use whenever writing, reviewing, or refactoring Java code that uses streams, collectors, primitive streams, Optional-producing stream terminal operations, map/flatMap/mapMulti, grouping, joining, distinct, sorted, limit, takeWhile/dropWhile, teeing, partitioningBy, summarizing, or parallel stream behavior.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams, collectors, stream pipelines, grouping, joining strings, first/any element lookup, sorting, limiting, distinct values, primitive totals, Optional values in streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
 ---
 
 # Java Streams Skill
 
-Preserve behavior, requested public API, artifact structure, nested vs top-level type placement,
-encounter order, exceptions, null handling, side effects, mutability, and Java-version
-compatibility.
+Preserve requested behavior, public API/artifact shape, encounter order, exceptions, null handling,
+side effects, mutability, and Java-version compatibility. For implementation prompts, write the
+requested Java source file before explaining. Keep provided helper/record/service types in that file,
+and keep them nested when requested; do not create sibling source files, package-private top-level
+replacements, hooks, test seams, delegate fields, overloads, caches, retries, or adapters unless
+asked.
 
 ## Reference Bundle
 
@@ -18,18 +21,14 @@ compatibility.
 | [stream-examples.md](references/stream-examples.md) | Worked before/after examples from the reference set |
 | [java-stream-api.md](references/java-stream-api.md) | Java-version compatibility for stream and collector APIs |
 
-## Hard Stops
-
-Before finalizing touched stream flow, run the scan and apply the replacement rules in
-[hard-stops.md](references/hard-stops.md).
-Filtered-list first-element access has first-match semantics; use `findFirst()` unless all matches
-are equivalent.
-
 ## Core Workflow
 
-0. Check the Java baseline before choosing APIs. Read build/toolchain docs; if unclear, use Java
-   8-compatible code or state the assumption. Use [java-stream-api.md](references/java-stream-api.md)
-   for minimum Java versions.
+When the prompt asks for a named artifact such as `review.md` or a Java source file, create that
+exact file. Do not answer only in chat when a file artifact is requested.
+
+0. Check the Java baseline first. Use [java-stream-api.md](references/java-stream-api.md) for
+   minimum versions and fallbacks; do not emulate unavailable APIs with stateful or multi-line
+   lambdas.
 1. Identify the requested result and pick the matching terminal or collector:
 
    | Goal | Preferred API |
@@ -43,51 +42,71 @@ are equivalent.
    | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
 
-2. Prefer terminal operations that encode intent directly: `anyMatch` for existence, `count`
-   for numeric counts, `joining` for text, `min`/`max` for a single extreme, `teeing` for a Java
-   12+ min/max pair over the same input, and primitive stream terminal operations for primitive
-   totals.
+   Find-first rule: keep `findFirst()` when code takes element `0`, sorted order, or encounter order
+   chooses the winner. In these reviews, include the exception before performance claims: `findAny`
+   fits only if all matching values are equivalent and order does not choose the winner. Keep
+   `sorted(...).filter(...).findFirst()` when it defines the selected value; suggest `min`/`max` only
+   when it preserves that winner.
+
+2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
+   `teeing`, and primitive terminals. Do not mutate external containers, arrays, counters, or
+   builders from `forEach`; let the stream produce the result directly.
+
+   - Implementation prompts: for one-to-one transformations, write the direct stream result unless
+     mutable output or the Java baseline says otherwise; on Java 16+, prefer
+     `names.stream().map(String::toUpperCase).toList()` over a manual `ArrayList` loop.
+   - External mutation/performance reviews: show a sequential result-producing snippet first. For
+     million-item CPU maps, mention benchmarking a pure parallel variant and include:
+     "`parallelStream()` can be slower for small lists or call paths that are usually small."
+   - Parallel reviews: apply [hard-stops.md](references/hard-stops.md); no custom pool snippets
+     unless asked.
+   - Java 24 bounded blocking calls: use `Gatherers.mapConcurrent(limit, item -> carrier(item,
+     stub(item)))`, then filter/map/sort; no test hooks, overloads, `CompletableFuture` fan-out, or
+     null sentinels.
 
    ```java
-   // Before: counts all matches just to test existence
-   boolean hasLateOrders = orders.stream().filter(Order::late).count() > 0;
-   // After: short-circuits when the first match is found
-   boolean hasLateOrders = orders.stream().anyMatch(Order::late);
+   import java.util.List;
+
+   final class OrderChecks {
+       boolean hasOverdue(List<Order> orders) {
+           return orders.stream().anyMatch(Order::isOverdue);
+       }
+
+       record Order(boolean overdue) {
+           boolean isOverdue() {
+               return overdue;
+           }
+       }
+   }
    ```
+3. Flatten nested sources deliberately. Use `flatMap`, `flatMap(Optional::stream)` on Java 9+,
+   and `mapMulti` on Java 16+ when clearer. Use helpers when nested lambdas would wrap. For subtype
+   primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble` directly. For
+   nested collector callbacks, extract a named `Stream<T>` helper.
 
-   External mutation: do not create an `ArrayList`, `HashMap`, array, counter, holder object, or
-   `StringBuilder` and mutate it from `forEach`; let the stream produce the result directly.
-   Performance review: say direct collection is the safe baseline, not a guaranteed throughput win;
-   for large CPU-bound mapping, prominently recommend benchmarking a pure parallel version and warn
-   that mostly-small inputs can be slower.
+   ```java
+   // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
+   optionals.stream().flatMap(Optional::stream).collect(Collectors.toList());
+   ```
+4. Choose accumulation/collectors by result semantics: use `reduce(identity, op)` for immutable
+   non-primitives, `toMap` with merge behavior and deliberate null-key/value handling, non-null keys
+   for `groupingBy`, `partitioningBy` for boolean splits, and flattened nested indexes when clearer.
+   Extract duplicate-key merge rules into named helpers when ties, nulls, or ordering need more than
+   a same-line expression. Carry `element + result`, never null sentinels.
+5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
+   as short glue or method references; use named helpers for branching, merge logic, or nested stream
+   work.
+6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
+   mutation-heavy logic, or complex early exits.
+7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
+   parallel-safety, and baseline compatibility. Run the marker scan from
+   [hard-stops.md](references/hard-stops.md), fix hits, and re-scan. In scan audits, keep
+   hard-stop severities: required hits stay required unless explicitly acceptable.
 
-3. Flatten nested sources deliberately. Use `flatMap` for nested collections and
-   `flatMap(Optional::stream)` on Java 9+. On Java 16+, prefer `mapMulti` for small conditional
-   reference-value emission. For primitive values from a subtype, filter/cast first then
-   `mapToInt`/`mapToLong`/`mapToDouble` directly; do not box and immediately unbox.
+Review output:
 
-4. Use primitive streams for primitive aggregation. Use `reduce(identity, op)` for immutable
-   non-primitive accumulation such as `BigDecimal`.
-5. Choose collectors by result semantics. For `toMap`, specify duplicate-key merge behavior; for
-   `groupingBy`, prove classifier keys are non-null or handle nulls first; for boolean splits, use
-   `partitioningBy`; when a later step needs an expensive result, carry `element + result`, never
-   null sentinels.
-
-6. Preserve ordering, mutability, and short-circuit behavior:
-   - **Top-N**: sort before `limit`.
-   - **Nullable sort keys**: filter nulls or use `Comparator.nullsFirst`/`nullsLast`.
-   - **Mutable results**: use `Collectors.toList()` or `Collectors.toCollection(ArrayList::new)`, not `Stream.toList()`.
-   - **Short-circuit**: omit stateful intermediate ops (e.g., `sorted`) before `findFirst`/`anyMatch` when order is irrelevant.
-   - **Lambda purity**: mapping/filtering lambdas should not mutate state visible outside the
-     lambda and should not depend on outside state that can change during the stream operation.
-7. Keep imperative code when it is the clearer boundary. Prefer a loop for stateful sequence
-   output, checked IO, mutation-heavy logic, or complex early exits. Where a loop remains, use
-   stream helpers for real lookups or aggregates when that improves clarity.
-8. Verify each changed branch: empty inputs, one element, duplicates, nulls, ordering,
-   parallel-safety, and Java-baseline compatibility. Run the marker scan from
-   [hard-stops.md](references/hard-stops.md); fix relevant hits and re-scan.
-
-Short reviews: decision first, direct stream issues only, one safer stream chain if useful. Avoid
-internal workflow labels such as "hard stop", "marker", "scan", "checklist", or skill names in
-user-facing output unless the task explicitly asks for that workflow. Omit scan details and
-unchanged-code critiques unless asked.
+- Give a direct behavior-preserving decision plus one safe snippet.
+- Create `review.md` when requested, even for rejection-only reviews.
+- Explain code behavior, not internal workflow.
+- Avoid internal workflow labels such as "per the skill", "hard stop", "marker", "scan",
+  "checklist", "rubric", or "criteria" unless the user asks about the workflow itself.

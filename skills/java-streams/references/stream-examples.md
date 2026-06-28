@@ -6,14 +6,23 @@ using APIs from [java-stream-api.md](java-stream-api.md).
 
 ## Direct Terminals
 
-- Primary address when order does not matter:
+- Arbitrary match only when the domain explicitly says all matching domain values, such as
+  primary/default/preferred values, are equivalent and encounter order does not matter:
 
   ```java
-  Address primaryAddress = account.getAddresses().stream()
-          .filter(Address::isPrimary)
+  Address selectedAddress = account.getAddresses().stream()
+          .filter(Address::isEligible)
           .findAny()
           .orElse(null);
   ```
+
+When a review asks whether to use `findFirst` or `findAny`, answer the semantic question first:
+`findAny` is valid only if the domain explicitly says all matching domain values, such as
+`primary`, `default`, or `preferred` values, are equivalent and encounter order does not select the
+winner. For those names, write the exception with the code's noun, such as "all matching primary
+addresses are equivalent." Do not infer equivalence from the name; if existing code takes element
+`0`, preserve encounter order with `findFirst()`. Do not lead with performance or parallel-stream
+wording for `findAny`.
 
 - First fallback when order matters:
 
@@ -105,12 +114,131 @@ List<String> discountCodes = orders.stream()
 Pitfall: natural sorting throws if null reaches the comparator. Filter nulls first or use
 `Comparator.nullsFirst(...)` / `Comparator.nullsLast(...)`.
 
+Pitfall: when de-duplication and sorting are both required, run `distinct()` before `sorted()`
+unless the code depends on sorting before removing duplicates. In scan audits, treat
+`sorted().distinct()` as a fix when `distinct().sorted()` preserves the result.
+
 Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList()` or use
 `Collectors.toCollection(ArrayList::new)` when the result is sorted, appended to, or otherwise
 mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
 in `new ArrayList<>(...)`; use the mutable collector directly.
 
 ## External Mutation And Lambda Purity
+
+Keep lambdas as short glue. If a stream operation needs branching, loops, temporary variables,
+formatting, a merge rule, or a nested stream chain that would continue after the lambda line,
+extract that work into a named method and pass a method reference or a concise one-expression
+lambda whose body stays on the same line as `->`.
+
+For predicate lambdas, any multi-check filter condition should be extracted to a named helper before
+the stream boundary if readability is at stake:
+
+```java
+List<ShipmentNotice> overdueNotices(List<Shipment> shipments, Clock clock) {
+    LocalDate today = LocalDate.now(clock);
+    return shipments.stream()
+            .filter(shipment -> isOverdue(shipment, today))
+            .map(shipment -> toNotice(shipment, today))
+            .toList();
+}
+
+private static boolean isOverdue(Shipment shipment, LocalDate today) {
+    return shipment.deliveredAt().isEmpty() && shipment.dueDate().isBefore(today);
+}
+
+private static ShipmentNotice toNotice(Shipment shipment, LocalDate today) {
+    long daysLate = ChronoUnit.DAYS.between(shipment.dueDate(), today);
+    return new ShipmentNotice(
+            shipment.id(),
+            shipment.customerEmail(),
+            daysLate,
+            daysLate >= 14 ? "critical" : "late");
+}
+```
+
+Avoid burying derivation logic in a block lambda:
+
+```java
+List<TicketEscalation> escalations = tickets.stream()
+        .filter(Ticket::isOpen)
+        .map(ticket -> {
+            Duration age = Duration.between(ticket.openedAt(), now);
+            EscalationLevel level = levelFor(ticket.priority(), age);
+            return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
+        })
+        .toList();
+```
+
+Extract the logic so the stream chain stays readable and the helper can be tested directly:
+
+```java
+List<TicketEscalation> escalations = tickets.stream()
+        .filter(Ticket::isOpen)
+        .map(ticket -> escalationFor(ticket, now))
+        .toList();
+
+private static TicketEscalation escalationFor(Ticket ticket, Instant now) {
+    Duration age = Duration.between(ticket.openedAt(), now);
+    EscalationLevel level = levelFor(ticket.priority(), age);
+    return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
+}
+```
+
+This is required even when the helper only builds one output record: temporary values and branching
+inside `map(x -> { ... })` are not glue.
+
+Avoid wrapping a nested stream body inside a collector callback:
+
+```java
+Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
+        .collect(Collectors.groupingBy(
+                Account::ownerTeam,
+                Collectors.flatMapping(
+                        account -> account.supportCases().stream()
+                                .filter(SupportCase::isOpen)
+                                .map(SupportCase::caseId),
+                        Collectors.toList())));
+```
+
+Extract the nested stream so the collector reads as composition:
+
+```java
+Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
+        .collect(Collectors.groupingBy(
+                Account::ownerTeam,
+                Collectors.flatMapping(
+                        AccountCaseReports::openCaseIds,
+                        Collectors.toList())));
+
+private static Stream<String> openCaseIds(Account account) {
+    return account.supportCases().stream()
+            .filter(SupportCase::isOpen)
+            .map(SupportCase::caseId);
+}
+```
+
+The same rule applies to downstream `flatMapping` for sorted or de-duplicated nested data. Keep the
+collector callback as a method reference:
+
+```java
+Map<String, List<String>> emailsByTrack = conferences.stream()
+        .flatMap(conference -> conference.sessions().stream())
+        .filter(session -> session.track() != null)
+        .collect(Collectors.groupingBy(
+                Session::track,
+                Collectors.flatMapping(
+                        SessionReports::optedInEmails,
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(TreeSet::new),
+                                ArrayList::new))));
+
+private static Stream<String> optedInEmails(Session session) {
+    return session.registrations().stream()
+            .filter(Registration::optedIn)
+            .map(Registration::email)
+            .filter(Objects::nonNull);
+}
+```
 
 Do not build ordinary stream results by mutating external state from `forEach`:
 
@@ -132,7 +260,9 @@ List<String> labels = orders.stream()
 Use `collect(Collectors.toList())` instead when the Java baseline is below 16 or the result must be
 mutable. The direct collector/toList form is the default correctness and readability fix, not a
 guaranteed throughput win. It may only marginally affect throughput by itself, but it removes shared
-mutation and gives a safe baseline for benchmarking.
+mutation and gives a safe baseline for benchmarking. Explain the rewrite in terms of ownership and
+correctness first; discuss low-level allocation details only when measurements make them relevant.
+Do not claim the original `ArrayList` resizing is `O(N^2)`; ordinary growth is amortized O(N) total.
 
 This parallel version is broken because it mutates a shared `ArrayList` from multiple workers:
 
@@ -143,18 +273,30 @@ orders.parallelStream()
         .forEach(labels::add);
 ```
 
-In reviews, show the sequential direct-collection form first as the safe baseline. Keep the
-performance decision separate: for large CPU-bound transformations, strongly recommend benchmarking
-a side-effect-free parallel stream as the performance experiment before relying on it for speed.
-Put that benchmark requirement next to the parallel recommendation, and warn that small lists or
+In reviews, make the snippet the sequential direct-collection form unless the user explicitly asks
+for parallel code. This removes shared mutation and creates a safe baseline; it is not proof that
+the pipeline is faster. Keep the performance decision separate: for large CPU-bound transformations,
+recommend benchmarking a side-effect-free parallel stream in prose before relying on it for speed.
+Put that benchmark requirement next to the parallel mention, and warn that small lists or
 mostly-small call paths can be slower because splitting, merging, ordering, and common-pool
-contention can outweigh the benefit:
+contention can outweigh the benefit. Do not call the speedup expected, significant, proportional to
+available cores, or likely before measurements show it. Do not invent benchmark tables, ratios,
+timing numbers, or a parallel code block; tell the reader to benchmark the real workload instead.
+For "10 million item" examples, still use this same structure: correctness snippet first,
+benchmark-only parallel prose second, and no scaling claims without measured results.
 
-```java
-List<String> labels = orders.parallelStream()
-        .map(Order::label)
-        .toList();
+Useful review wording for this pattern:
+
+```text
+The first fix is to remove the external mutation; let the stream produce the list directly.
+For throughput, benchmark the sequential version against a pure side-effect-free parallel stream on
+the real workload before relying on parallelStream. `parallelStream()` can be slower for small lists
+or mostly-small call paths.
 ```
+
+Do not include optional parallelism snippets for this pattern unless the user explicitly requests
+parallel code. If requested, avoid multiline lambda bodies and prefer method references or
+single-line helpers.
 
 Only keep terminal `forEach` when the side effect is the operation's purpose, such as logging or
 calling an API, and the side effect is safe for the chosen stream mode.
@@ -199,6 +341,36 @@ Map<Boolean, List<Product>> partitionedProducts = products.stream()
 
 If a `groupingBy` classifier can return null, filter nulls or map them to an explicit non-null key
 before collecting. Do not treat possible null classifier keys as acceptable without proof.
+If a loop skipped null keys before building a map, filter those null keys before `toMap`; the issue
+is the behavior change, not a guaranteed null-key `NullPointerException`.
+When a review includes a collector replacement snippet, include the supporting imports for helper
+APIs such as `Function.identity()` or `BinaryOperator.minBy(...)`, and avoid tangential import
+commentary unless missing imports are part of the stream issue.
+
+For nested data indexes with duplicate-key rules, prefer flattening first and expressing the merge
+in the collector:
+
+```java
+Map<String, Session> longestSessionByRoom = conferences.stream()
+        .flatMap(conference -> conference.sessions().stream())
+        .filter(session -> session.room() != null)
+        .collect(Collectors.toMap(
+                Session::room,
+                Function.identity(),
+                SessionIndexes::longerSession));
+```
+
+Extract the merge helper when tie-breaking takes more than a same-line expression, especially when
+encounter order must decide equal values.
+
+```java
+private static Session longerSession(Session first, Session second) {
+    return first.minutes() >= second.minutes() ? first : second;
+}
+```
+
+When a task says to use nested records or helper types in the requested file, keep those types in
+that file instead of splitting them into separate top-level files.
 
 Java 12+ `teeing` can combine two independent reductions over the same input. Prefer this for a
 min/max pair or price range instead of running two separate stream passes:
@@ -218,13 +390,15 @@ Java 16+ `mapMulti` can be clearer for small conditional emission:
 ```java
 Set<String> emailsWithoutTraining = companies.stream()
         .flatMap(company -> company.getEmployees().stream())
-        .<String>mapMulti((employee, consumer) -> {
-            if (employee instanceof Developer developer
-                    && !developer.getSecureCodingTraining().isCompleted()) {
-                consumer.accept(developer.getEmail());
-            }
-        })
+        .<String>mapMulti(TrainingReports::emitDeveloperEmailWithoutTraining)
         .collect(Collectors.toSet());
+
+private static void emitDeveloperEmailWithoutTraining(Employee employee, Consumer<String> emails) {
+    if (employee instanceof Developer developer
+            && !developer.getSecureCodingTraining().isCompleted()) {
+        emails.accept(developer.getEmail());
+    }
+}
 ```
 
 For primitive subtype extraction, avoid emitting boxed primitives only to unbox them later:
@@ -256,15 +430,15 @@ long result = LongStream.rangeClosed(1, 100_000)
         .sum();
 ```
 
-For Java 24+ projects, `Gatherers.mapConcurrent` can be more appropriate than `parallelStream` for
-blocking per-element calls when the project intentionally uses virtual-thread concurrency. Keep
-concurrency bounded and call out timeout/error handling for remote API failures:
+For Java 24+ projects, use bounded `Gatherers.mapConcurrent` for blocking per-element calls when the
+task gives a concurrency limit and the project intentionally uses virtual-thread concurrency. Keep
+existing helper methods that encode behavior:
 
 ```java
 List<Product> favoriteProducts = user.getFavoriteProducts().stream()
         .gather(Gatherers.mapConcurrent(
                 100,
-                product -> Map.entry(product, product.isInStock())))
+                product -> Map.entry(product, isInStock(product))))
         .filter(Map.Entry::getValue)
         .map(Map.Entry::getKey)
         .sorted(Comparator.comparing(Product::getName))
@@ -275,3 +449,8 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
 entry is null. Do not return `null` from a `mapConcurrent` mapper to mean "skip"; carry the element
 with an explicit boolean result, then filter and map afterward. If nulls can reach the carrier or
 the baseline is Java 8, use a null-tolerant project type or `AbstractMap.SimpleImmutableEntry`.
+When the task provides a production service stub such as `AvailabilityApi.lookup(...)` or
+`CalendarService.canSchedule(...)`, call that stub directly. Do not add delegate fields, alternate
+overloads, package-private switches, or other test hooks unless the task explicitly asks for them.
+Do not replace a bounded `mapConcurrent` stream with `CompletableFuture` fan-out when the task asks
+for stream APIs.
