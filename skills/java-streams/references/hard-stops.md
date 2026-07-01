@@ -14,7 +14,8 @@ Fix these before finalizing:
   Use `findFirst` to preserve encounter-order behavior unless the domain explicitly says all matches
   are equivalent and encounter order does not decide the result. In reviews that compare
   `findFirst` and `findAny`, name that `findAny` exception explicitly before discussing parallelism
-  or performance.
+  or performance. Do not say `findAny` is appropriate merely because the stream is parallel or
+  unordered.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
@@ -39,6 +40,8 @@ Fix these before finalizing:
   helper would explain the rule, such as "undelivered and past due".
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
 - `toMap` without a merge function when duplicate keys are possible.
+- `toMap` over keys that the original loop skipped when null. Preserve the skip-null behavior with
+  a filter before collecting; do not describe a single null key as a guaranteed exception.
 - `groupingBy` where null classifier keys can reach the collector. Treat this as a required fix,
   not a conditional caveat, unless the code already proves non-null before the collector. In scan
   audits, use unambiguous wording such as "requires fix"; do not downgrade nullable `groupingBy` to
@@ -69,9 +72,10 @@ Fix these before finalizing:
 - `parallelStream()` or `.parallel()` added without checking CPU-bound work, data size, ordering,
   shared state, blocking calls, and collector safety.
 - Blocking predicate-like checks that return the original element or `null` as a false sentinel.
-  Carry the element with an explicit boolean result, then filter and map back to the element. Use
-  `Map.entry` only on Java 9+ when both values are non-null; otherwise use a null-tolerant holder
-  such as `AbstractMap.SimpleImmutableEntry` or a project type.
+  Carry the element with the explicit service result, then filter and map back to the element. Use a
+  boolean result for boolean-returning services; keep the full decision record when the service
+  returns one. Use `Map.entry` only on Java 9+ when both values are non-null; otherwise use a
+  null-tolerant holder such as `AbstractMap.SimpleImmutableEntry` or a project type.
 - Java-version drift: `toList`, `mapMulti`, `teeing`, `takeWhile`, `dropWhile`, `Optional.stream`,
   `Collectors.flatMapping`, `Stream.ofNullable`, or gatherers used below their minimum Java version.
   For a version-drift audit, report these unavailable APIs and explicitly allowed markers only; do
@@ -80,6 +84,13 @@ Fix these before finalizing:
   For below-baseline replacement code, preserve stream semantics with a small loop or helper when
   no equivalent stream API exists, such as `takeWhile`/`dropWhile` prefixes, downstream
   flat-mapping, or paired min/max aggregation.
+  Do not sketch below-baseline replacements that keep a nested stream chain lambda across lines; use
+  a named helper or plain loop instead.
+  For Java 8 `Collectors.flatMapping` drift, give the loop/helper replacement as the primary
+  replacement; do not include a nested `flatMap(... -> ...stream().map(...))` alternative.
+  For Java 8 `mapMulti` drift, use `map(...)` when the callback emits exactly one value per input,
+  or `flatMap(...)`/a helper only for real one-to-many emission. Do not invent replacements using
+  post-Java-8 helpers such as `describeConstable`, `Optional.stream`, or `Map.entry`.
   Java 8 replacement snippets must not use Java 9+ helpers such as `Map.entry`.
   When one stream chain contains multiple unavailable APIs, list each unavailable API separately.
   Example: `flatMap(Optional::stream).toList()` on a Java 8 baseline has two version-drift hits:
@@ -103,11 +114,13 @@ markers belong to `java-functional-style`, not this stream hard-stop scan.
   selection less predictable or more expensive here, and that no CPU-bound work or measurement
   justifies that overhead.
 - Use `findAny()` only when the domain explicitly says all matching domain values, such as
-  primary/default/preferred values, are equivalent and encounter order does not matter. Use
+  replicated endpoints with identical results, are equivalent and encounter order does not define
+  which one wins. Use
   `findFirst()` for first configured, first listed, chronological, priority, fallback, or
-  user-visible results. In reviews, name the code's noun in the exception, e.g. "all matching
-  primary addresses are equivalent." Do not present `findAny()` as a performance shortcut unless
-  that semantic precondition is already satisfied.
+  user-visible results. In reviews, state the positive exception with the code's noun, e.g.
+  "`findAny()` would be appropriate only if the domain declares all matching primary addresses
+  equivalent and encounter order does not define which one wins." Do not present `findAny()` as a
+  performance shortcut unless that semantic precondition is already satisfied.
 - `distinct().sorted()` is the required rewrite for `sorted().distinct()` when duplicates can be
   removed before sorting and no sort-before-de-duplication semantics are required.
 - `limit(n)` must come after sorting when computing top-N by an ordering. It may come before an
@@ -125,9 +138,10 @@ Use parallel streams only after checking:
    calls with a requested concurrency limit, use `Gatherers.mapConcurrent` with that bound when the
    baseline supports it and virtual-thread concurrency is the intended design. Preserve
    element/result association explicitly with a baseline-compatible holder rather than null sentinels
-   or side maps. Do not replace bounded stream concurrency with unbounded `CompletableFuture`
-   fan-out. For remote calls, call out the concurrency limit, timeout handling for slow calls, and
-   error propagation/retry policy.
+   or side maps. Do not add wrapper hooks, overloads, delegates, futures, sentinels, caches, or
+   retries unless requested. Do not replace bounded stream concurrency with unbounded
+   `CompletableFuture` fan-out. For remote calls, call out the concurrency limit, timeout handling
+   for slow calls, and error propagation/retry policy.
 5. The stream terminal operation or collector is safe under parallel execution.
 
 For acceptable CPU-heavy parallel streams, state that the benefit should be measured or benchmarked

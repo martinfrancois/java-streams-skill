@@ -7,7 +7,8 @@ using APIs from [java-stream-api.md](java-stream-api.md).
 ## Direct Terminals
 
 - Arbitrary match only when the domain explicitly says all matching domain values, such as
-  primary/default/preferred values, are equivalent and encounter order does not matter:
+  replicated endpoints with identical results, are equivalent and encounter order does not define
+  which one wins:
 
   ```java
   Address selectedAddress = account.getAddresses().stream()
@@ -18,11 +19,13 @@ using APIs from [java-stream-api.md](java-stream-api.md).
 
 When a review asks whether to use `findFirst` or `findAny`, answer the semantic question first:
 `findAny` is valid only if the domain explicitly says all matching domain values, such as
-`primary`, `default`, or `preferred` values, are equivalent and encounter order does not select the
-winner. For those names, write the exception with the code's noun, such as "all matching primary
-addresses are equivalent." Do not infer equivalence from the name; if existing code takes element
-`0`, preserve encounter order with `findFirst()`. Do not lead with performance or parallel-stream
-wording for `findAny`.
+replicated endpoints with identical results, are equivalent and encounter order does not define
+which one wins. Do not infer equivalence or uniqueness from names like `primary`, `default`, or
+`preferred`; for those names, write the positive exception with the code's noun, such as
+"`findAny()` would be appropriate only if the domain declares all matching primary addresses
+equivalent and encounter order does not define which one wins." If existing code takes element `0`,
+preserve encounter order with `findFirst()`. Do not lead with performance or parallel-stream wording
+for `findAny`.
 
 - First fallback when order matters:
 
@@ -122,6 +125,8 @@ Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList
 `Collectors.toCollection(ArrayList::new)` when the result is sorted, appended to, or otherwise
 mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
 in `new ArrayList<>(...)`; use the mutable collector directly.
+On Java 11 or lower, reject `Stream.toList()` as a separate Java-version problem before discussing
+mutability: `Stream.toList()` was added in Java 16, so it is unavailable on Java 11.
 
 ## External Mutation
 
@@ -232,6 +237,10 @@ If a `groupingBy` classifier can return null, filter nulls or map them to an exp
 before collecting. Do not treat possible null classifier keys as acceptable without proof.
 If a loop skipped null keys before building a map, filter those null keys before `toMap`; the issue
 is the behavior change, not a guaranteed null-key `NullPointerException`.
+When the loop keeps the cheapest or lowest-valued element per key with a comparator, use
+`BinaryOperator.minBy(Comparator.comparing(...))`; it keeps the existing value on comparator ties in
+a `toMap` merge because the existing value is the first merge argument. Do not replace this simple
+merge with an inline ternary.
 When a review includes a collector replacement snippet, include the supporting imports for helper
 APIs such as `Function.identity()` or `BinaryOperator.minBy(...)`, and avoid tangential import
 commentary unless missing imports are part of the stream issue.
@@ -241,7 +250,7 @@ in the collector:
 
 ```java
 Map<String, Session> longestSessionByRoom = conferences.stream()
-        .flatMap(conference -> conference.sessions().stream())
+        .flatMap(SessionIndexes::sessions)
         .filter(session -> session.room() != null)
         .collect(Collectors.toMap(
                 Session::room,
@@ -255,6 +264,10 @@ encounter order must decide equal values.
 ```java
 private static Session longerSession(Session first, Session second) {
     return first.minutes() >= second.minutes() ? first : second;
+}
+
+private static Stream<Session> sessions(Conference conference) {
+    return conference.sessions().stream();
 }
 ```
 
@@ -275,7 +288,7 @@ values. The collector should read as stream glue:
 
 ```java
 Map<String, List<String>> emailsByTrack = conferences.stream()
-        .flatMap(conference -> conference.sessions().stream())
+        .flatMap(SessionIndexes::sessions)
         .filter(session -> session.track() != null)
         .collect(Collectors.groupingBy(
                 Session::track,
@@ -299,7 +312,7 @@ but do not stack multi-line callbacks:
 ```java
 boolean hasWaitlistedRegistration(List<Conference> conferences) {
     return conferences.stream()
-            .flatMap(conference -> conference.sessions().stream())
+            .flatMap(SessionIndexes::sessions)
             .anyMatch(SessionIndexes::hasWaitlistedRegistration);
 }
 
@@ -413,8 +426,10 @@ record ScheduleCheck(Job job, boolean accepted) {}
 
 `Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
 entry is null. Do not return `null` from a `mapConcurrent` mapper to mean "skip"; carry the element
-with an explicit boolean result, then filter and map afterward. If nulls can reach the carrier or
-the baseline is Java 8, use a null-tolerant project type or `AbstractMap.SimpleImmutableEntry`.
+with the service result, then filter and map afterward. If the service returns a decision record,
+keep that full record in the carrier instead of reducing it to a boolean too early. If nulls can
+reach the carrier or the baseline is Java 8, use a null-tolerant project type or
+`AbstractMap.SimpleImmutableEntry`.
 When the task provides a production service stub such as `AvailabilityApi.lookup(...)` or
 `CalendarService.canSchedule(...)`, call that stub directly. Do not add delegate fields, alternate
 overloads, package-private switches, or other test hooks unless the task explicitly asks for them.
