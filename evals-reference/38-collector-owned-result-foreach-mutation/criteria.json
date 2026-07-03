@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: stream pipelines that build returned values should use result-producing terminals instead of external mutation.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible WritableRoots code with necessary imports and methods intact."
+    },
+    {
+      "name": "Uses Stream.concat for ordered sources",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Builds configured and environment root streams and combines them before distinct().toList(), rather than mutating an external ArrayList from forEach."
+    },
+    {
+      "name": "Preserves ordered duplicate handling",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Keeps configured roots before environment roots and preserves first-occurrence distinct behavior."
+    },
+    {
+      "name": "Uses collector-owned map accumulation",
+      "category": "stream_quality",
+      "max_score": 22,
+      "description": "Replaces counts.merge inside stream().forEach with Collectors.toMap or an equivalent collector-owned counting result."
+    },
+    {
+      "name": "Preserves duplicate count merge",
+      "category": "safety",
+      "max_score": 14,
+      "description": "Keeps duplicate normalized states counted with Integer::sum or equivalent addition, and keeps a mutable HashMap-style result when that behavior is preserved."
+    },
+    {
+      "name": "Rejects cosmetic mutation",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Does not replace forEach mutation with intermediate lists or maps that are immediately copied into another mutable result without improving the boundary."
+    },
+    {
+      "name": "Keeps helpers focused",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Avoids parallel streams, global caches, or broad helper abstractions unrelated to result-producing accumulation."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/42",
+    "reference_selection": "Focused issue #42 coverage for collector-owned results instead of stream forEach mutation.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same side-effect boundary."
+  }
+}

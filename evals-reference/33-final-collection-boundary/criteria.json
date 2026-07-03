@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: choose between stream-owned final collections and honest mutable accumulator boundaries.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible ReservationDiscovery code with imports, methods, record, and interface intact."
+    },
+    {
+      "name": "Collects final set directly",
+      "category": "stream_quality",
+      "max_score": 26,
+      "description": "Refactors localWorkflowFilePortReservations so the Files.list stream directly returns the final Set result instead of collecting to a temporary list and copying it with addAll."
+    },
+    {
+      "name": "Uses explicit immutable or set collector intent",
+      "category": "stream_quality",
+      "max_score": 14,
+      "description": "Chooses a set-producing terminal or collector whose mutability/order semantics are audited, rather than using toList only to copy into a HashSet."
+    },
+    {
+      "name": "Preserves IO behavior",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Still returns an empty set for null config dirs, non-directories, or IOException while listing files, and keeps the same file filters and Optional flattening."
+    },
+    {
+      "name": "Keeps accumulator boundary honest",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Does not keep or introduce toList plus addAll in extendCleanupList when the temporary list only feeds the existing mutable cleanup accumulator; uses a direct append boundary or a clear loop."
+    },
+    {
+      "name": "Avoids forEach misuse",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Does not replace a result-producing helper with stream().forEach(set::add) when returning a final collection would be clearer."
+    },
+    {
+      "name": "No unrelated behavior changes",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Keeps best-effort cleanup exception handling, duplicate collapsing for set results, and existing method signatures."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/48",
+    "reference_selection": "Focused issue #48 coverage for final collection boundaries versus addAll copies.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: duplicate-aware lookup helpers should use bounded stream collection without accepting ambiguous matches.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 21 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns a complete revised ChecklistLookup.java snippet with necessary imports and Java 21-compatible code."
+    },
+    {
+      "name": "Uses bounded duplicate detection",
+      "category": "stream_quality",
+      "max_score": 28,
+      "description": "Filters matching values, limits the stream to at most two matches, materializes only those bounded matches, and branches on zero, one, or ambiguous matches."
+    },
+    {
+      "name": "Rejects findFirst shortcut",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Does not replace the loop with findFirst, findAny, or an equivalent first-match shortcut that would silently accept duplicate matches."
+    },
+    {
+      "name": "Shares the repeated branch carefully",
+      "category": "maintainability",
+      "max_score": 16,
+      "description": "Extracts a small generic helper for the shared zero/one/ambiguous branch, or otherwise removes meaningful duplication without hiding the domain-specific predicate, error code, or message."
+    },
+    {
+      "name": "Preserves matching behavior",
+      "category": "safety",
+      "max_score": 12,
+      "description": "Keeps Objects.equals-style null-safe matching for checklist names and item text, preserves input encounter order for the single returned match, and still returns null when no match exists."
+    },
+    {
+      "name": "Preserves exceptions",
+      "category": "safety",
+      "max_score": 10,
+      "description": "Keeps the stable TrelloException type, duplicate error codes, and duplicate messages for both helper methods."
+    },
+    {
+      "name": "Avoids over-engineering",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Does not introduce broad lookup frameworks, caches, parallel streams, or unrelated API changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/53",
+    "reference_selection": "Focused issue #53 coverage for bounded duplicate-detection stream lookups.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

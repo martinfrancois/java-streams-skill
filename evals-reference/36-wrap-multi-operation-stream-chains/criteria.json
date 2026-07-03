@@ -1,0 +1,50 @@
+{
+  "context": "Reference focused cleanup: multi-operation stream chains should be wrapped for readability without semantic changes.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible StreamFormattingSample code with imports, methods, and records intact."
+    },
+    {
+      "name": "Wraps multi-operation chains",
+      "category": "maintainability",
+      "max_score": 34,
+      "description": "Moves each operation after stream() to its own continuation line for chains with more than one operation after the source stream call."
+    },
+    {
+      "name": "Keeps stream on source line",
+      "category": "maintainability",
+      "max_score": 18,
+      "description": "Keeps .stream() attached to the source expression rather than moving it to a separate line."
+    },
+    {
+      "name": "Handles single-operation chain proportionately",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Leaves the one-operation labels.stream().findFirst() chain on one line or wraps it coherently; does not apply unrelated API churn or move .stream() onto a standalone line just to satisfy the multi-operation wrapping rule."
+    },
+    {
+      "name": "Preserves stream behavior",
+      "category": "safety",
+      "max_score": 18,
+      "description": "Does not change terminal operations, collectors, mapping behavior, encounter order, fallback value, or map keys while formatting."
+    },
+    {
+      "name": "Avoids style-only API churn",
+      "category": "safety",
+      "max_score": 12,
+      "description": "Does not introduce different collectors, helper methods, parallel streams, or unrelated imports while making a formatting-only change."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/45",
+    "reference_selection": "Focused issue #45 coverage for readable multi-operation stream-chain wrapping.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same style rule."
+  }
+}

@@ -29,6 +29,12 @@ the stream should use short glue lambdas or method references while extracted he
 multi-step derivation. Keep it in `evals-reference/` until targeted hosted evidence shows whether it
 belongs in main or regression.
 
+Numbers `29` through `42` were added during the July 2026 open-issue sweep. They cover focused
+reference scenarios for bounded duplicate lookup, findAny audits, immutable/result collection
+boundaries, predicate loops, parser-preserving streams, collector rationale, formatting, identity
+mappers, batched lookup phases, mapMulti extraction, tail allMatch checks, and forEach side-effect
+classification. Keep them in `evals-reference/` until isolated hosted runs classify each scenario.
+
 Number `25` contains the explicit hard-stop scan workflow audit that was demoted from the main eval
 set and later moved to `evals-regression/`. It requires exact skill-provided text, so report it as
 with-context regression coverage rather than as main or reference Java stream reasoning lift.

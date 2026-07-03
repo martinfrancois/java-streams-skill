@@ -1,0 +1,2 @@
+Separate pure stream extraction, one batched lookup boundary, rendering, and explicit write phases
+when refactoring stream-heavy Java code.
