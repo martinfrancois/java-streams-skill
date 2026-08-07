@@ -28,7 +28,7 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
 
@@ -47,7 +47,7 @@ jobs:
           RELEASE_PR: ${{ steps.release.outputs.pr }}
         run: scripts/read_release_pr_output.sh
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         with:
           fetch-depth: 0
@@ -65,13 +65,13 @@ jobs:
         if: ${{ steps.release-pr.outputs.found == 'true' && steps.release-pr-tessl-token.outputs.available != 'true' }}
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
-          version: "0.85.0"
+          version: "0.93.0"
 
       - name: Setup authenticated Tessl CLI
         if: ${{ steps.release-pr.outputs.found == 'true' && steps.release-pr-tessl-token.outputs.available == 'true' }}
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
-          version: "0.85.0"
+          version: "0.93.0"
           token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Mark release PR validation pending
@@ -113,7 +113,7 @@ jobs:
           "Release PR validation failed"
           "$TARGET_URL"
 
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         with:
           node-version: "24"

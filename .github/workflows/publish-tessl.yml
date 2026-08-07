@@ -30,13 +30,13 @@ jobs:
     steps:
       - name: Checkout manual ref
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ inputs.ref }}
 
       - name: Checkout release tag
         if: ${{ github.event_name == 'release' }}
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -64,7 +64,7 @@ jobs:
       - name: Setup Tessl CLI
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
-          version: "0.85.0"
+          version: "0.93.0"
           token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Validate plugin before publish
