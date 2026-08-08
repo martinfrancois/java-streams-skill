@@ -28,7 +28,7 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -47,7 +47,7 @@ jobs:
           RELEASE_PR: ${{ steps.release.outputs.pr }}
         run: scripts/read_release_pr_output.sh
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         with:
           fetch-depth: 0
@@ -113,7 +113,7 @@ jobs:
           "Release PR validation failed"
           "$TARGET_URL"
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         with:
           node-version: "24"
