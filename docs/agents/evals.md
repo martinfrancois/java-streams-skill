@@ -265,7 +265,11 @@ Update this section whenever active eval membership or scoring changes.
   bodies into helpers. Its high multi-line-lambda criterion weight is intentional focused
   behavior-delta coverage, not ordinary broad lift evidence.
 - Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
+- Reference suite: 20 scenarios, 1960 total checklist points. Reference numbers `29` through `42`
+  cover the open issue sweep for bounded duplicate lookup, findAny audits, immutable/result
+  collection boundaries, predicate loops, parser-preserving streams, collector rationale, formatting,
+  identity mappers, batched lookup phases, mapMulti extraction, tail allMatch checks, and forEach
+  side-effect classification. Deleted reference number 12 and
   regression-moved scenarios are not counted.
 - Regression suite: 19 scenarios, 1820 total checklist points.
 - Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact

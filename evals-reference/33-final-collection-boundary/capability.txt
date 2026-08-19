@@ -1,0 +1,2 @@
+Choose direct final collection results when streams own the output, and keep explicit accumulator
+boundaries when mutation is the real operation.

@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused review: stream forEach is a trigger for classification, not a blanket ban.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates concrete review artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Creates review.md or equivalent concrete review output that addresses each marked method."
+    },
+    {
+      "name": "Recommends result-producing displayNames",
+      "category": "stream_quality",
+      "max_score": 22,
+      "description": "Recommends replacing stream().forEach(names::add) with a direct map/filter/toList result, preserving active filtering and immutable copy behavior."
+    },
+    {
+      "name": "Accepts builder side effect with caveats",
+      "category": "stream_quality",
+      "max_score": 16,
+      "description": "Recognizes applyHeaders as a defensible side-effect boundary because mutating the builder is the operation, while still checking ordering, exception behavior, and whether a loop would be clearer."
+    },
+    {
+      "name": "Accepts logging as side-effect purpose",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Does not force logging into a fake collector; explains that terminal side effects such as logging can be acceptable under the debug guard."
+    },
+    {
+      "name": "Rejects unsafe parallel mutation",
+      "category": "safety",
+      "max_score": 20,
+      "description": "Flags the parallelStream().forEach mutation of an int array as unsafe shared mutation and recommends count(), a primitive stream count, or another collector-owned result."
+    },
+    {
+      "name": "Distinguishes loop from collector fixes",
+      "category": "maintainability",
+      "max_score": 12,
+      "description": "Explains, either as a general principle or through concrete method-by-method rationale, that external API side effects may be clearer as a plain loop while collection-building should normally use a value-producing terminal."
+    },
+    {
+      "name": "Avoids blanket rule",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Does not claim every forEach is wrong or every forEach should become a collector, and does not recommend parallelism without measurement."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/5",
+    "reference_selection": "Focused issue #5 coverage for classifying stream forEach side effects.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; the runtime skill already teaches the general forEach classification policy."
+  }
+}

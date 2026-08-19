@@ -1,0 +1,2 @@
+Audit Collectors.toCollection calls and keep concrete collection types only when mutability,
+membership, or order semantics require them.

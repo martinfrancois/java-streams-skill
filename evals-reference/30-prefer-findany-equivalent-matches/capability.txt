@@ -1,0 +1,2 @@
+Audit Optional-returning stream terminals and choose findAny only when encounter order is not part
+of the result contract.

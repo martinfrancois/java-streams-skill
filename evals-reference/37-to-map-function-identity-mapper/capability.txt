@@ -1,0 +1,2 @@
+Use Function.identity for true identity mappers in toMap while preserving merge functions, map
+suppliers, and non-identity mappings.
