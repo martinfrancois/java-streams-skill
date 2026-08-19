@@ -18,6 +18,10 @@ as a design choice rather than a default optimization.
 It also tells the agent to check the project Java version first. The right stream code for Java 8
 may be different from the right code for Java 17, Java 21, or Java 24.
 
+For general lambda, method-reference, identity-function, no-op functional stage, supplier-laziness,
+and callback readability guidance, install the companion package
+`martinfrancois/java-functional-style` together with this stream package.
+
 ## Contents
 
 - [Getting Started](#getting-started)
@@ -233,6 +237,21 @@ Good fit:
 - deciding whether `parallelStream()` is actually appropriate;
 - choosing Java-version-compatible APIs such as `takeWhile`, `mapMulti`, `Stream.toList()`, and
   gatherers.
+
+## Ownership Boundaries
+
+`java-streams` owns stream and collector semantics: terminal operation choice, collector choice,
+duplicate key and null behavior, encounter order, primitive streams, stream Java-version
+compatibility, parallel stream behavior, gatherers, and stream-specific behavior preservation.
+
+`java-functional-style` owns general Java lambda and functional-interface style: identity
+functions, no-op functional stages, method references, callback readability, supplier laziness, and
+callback side-effect boundaries.
+
+`java-optionals` owns Optional semantics.
+
+Install `java-streams` and `java-functional-style` together for stream cleanup involving non-trivial
+callbacks.
 
 Poor fit:
 

@@ -7,7 +7,8 @@ using APIs from [java-stream-api.md](java-stream-api.md).
 ## Direct Terminals
 
 - Arbitrary match only when the domain explicitly says all matching domain values, such as
-  primary/default/preferred values, are equivalent and encounter order does not matter:
+  replicated endpoints with identical results, are equivalent and encounter order does not define
+  which one wins:
 
   ```java
   Address selectedAddress = account.getAddresses().stream()
@@ -18,11 +19,13 @@ using APIs from [java-stream-api.md](java-stream-api.md).
 
 When a review asks whether to use `findFirst` or `findAny`, answer the semantic question first:
 `findAny` is valid only if the domain explicitly says all matching domain values, such as
-`primary`, `default`, or `preferred` values, are equivalent and encounter order does not select the
-winner. For those names, write the exception with the code's noun, such as "all matching primary
-addresses are equivalent." Do not infer equivalence from the name; if existing code takes element
-`0`, preserve encounter order with `findFirst()`. Do not lead with performance or parallel-stream
-wording for `findAny`.
+replicated endpoints with identical results, are equivalent and encounter order does not define
+which one wins. Do not infer equivalence or uniqueness from names like `primary`, `default`, or
+`preferred`; for those names, write the positive exception with the code's noun, such as
+"`findAny()` would be appropriate only if the domain declares all matching primary addresses
+equivalent and encounter order does not define which one wins." If existing code takes element `0`,
+preserve encounter order with `findFirst()`. Do not lead with performance or parallel-stream wording
+for `findAny`.
 
 - First fallback when order matters:
 
@@ -122,123 +125,14 @@ Pitfall: `Stream.toList()` returns an unmodifiable list. Keep `Collectors.toList
 `Collectors.toCollection(ArrayList::new)` when the result is sorted, appended to, or otherwise
 mutated later. If a task says `Stream.toList()` is not valid for that mutable result, do not wrap it
 in `new ArrayList<>(...)`; use the mutable collector directly.
+On Java 11 or lower, reject `Stream.toList()` as a separate Java-version problem before discussing
+mutability: `Stream.toList()` was added in Java 16, so it is unavailable on Java 11.
 
-## External Mutation And Lambda Purity
+## External Mutation
 
-Keep lambdas as short glue. If a stream operation needs branching, loops, temporary variables,
-formatting, a merge rule, or a nested stream chain that would continue after the lambda line,
-extract that work into a named method and pass a method reference or a concise one-expression
-lambda whose body stays on the same line as `->`.
-
-For predicate lambdas, any multi-check filter condition should be extracted to a named helper before
-the stream boundary if readability is at stake:
-
-```java
-List<ShipmentNotice> overdueNotices(List<Shipment> shipments, Clock clock) {
-    LocalDate today = LocalDate.now(clock);
-    return shipments.stream()
-            .filter(shipment -> isOverdue(shipment, today))
-            .map(shipment -> toNotice(shipment, today))
-            .toList();
-}
-
-private static boolean isOverdue(Shipment shipment, LocalDate today) {
-    return shipment.deliveredAt().isEmpty() && shipment.dueDate().isBefore(today);
-}
-
-private static ShipmentNotice toNotice(Shipment shipment, LocalDate today) {
-    long daysLate = ChronoUnit.DAYS.between(shipment.dueDate(), today);
-    return new ShipmentNotice(
-            shipment.id(),
-            shipment.customerEmail(),
-            daysLate,
-            daysLate >= 14 ? "critical" : "late");
-}
-```
-
-Avoid burying derivation logic in a block lambda:
-
-```java
-List<TicketEscalation> escalations = tickets.stream()
-        .filter(Ticket::isOpen)
-        .map(ticket -> {
-            Duration age = Duration.between(ticket.openedAt(), now);
-            EscalationLevel level = levelFor(ticket.priority(), age);
-            return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
-        })
-        .toList();
-```
-
-Extract the logic so the stream chain stays readable and the helper can be tested directly:
-
-```java
-List<TicketEscalation> escalations = tickets.stream()
-        .filter(Ticket::isOpen)
-        .map(ticket -> escalationFor(ticket, now))
-        .toList();
-
-private static TicketEscalation escalationFor(Ticket ticket, Instant now) {
-    Duration age = Duration.between(ticket.openedAt(), now);
-    EscalationLevel level = levelFor(ticket.priority(), age);
-    return new TicketEscalation(ticket.id(), ticket.assignee(), level, age);
-}
-```
-
-This is required even when the helper only builds one output record: temporary values and branching
-inside `map(x -> { ... })` are not glue.
-
-Avoid wrapping a nested stream body inside a collector callback:
-
-```java
-Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
-        .collect(Collectors.groupingBy(
-                Account::ownerTeam,
-                Collectors.flatMapping(
-                        account -> account.supportCases().stream()
-                                .filter(SupportCase::isOpen)
-                                .map(SupportCase::caseId),
-                        Collectors.toList())));
-```
-
-Extract the nested stream so the collector reads as composition:
-
-```java
-Map<String, List<String>> openCaseIdsByOwner = accounts.stream()
-        .collect(Collectors.groupingBy(
-                Account::ownerTeam,
-                Collectors.flatMapping(
-                        AccountCaseReports::openCaseIds,
-                        Collectors.toList())));
-
-private static Stream<String> openCaseIds(Account account) {
-    return account.supportCases().stream()
-            .filter(SupportCase::isOpen)
-            .map(SupportCase::caseId);
-}
-```
-
-The same rule applies to downstream `flatMapping` for sorted or de-duplicated nested data. Keep the
-collector callback as a method reference:
-
-```java
-Map<String, List<String>> emailsByTrack = conferences.stream()
-        .flatMap(conference -> conference.sessions().stream())
-        .filter(session -> session.track() != null)
-        .collect(Collectors.groupingBy(
-                Session::track,
-                Collectors.flatMapping(
-                        SessionReports::optedInEmails,
-                        Collectors.collectingAndThen(
-                                Collectors.toCollection(TreeSet::new),
-                                ArrayList::new))));
-
-private static Stream<String> optedInEmails(Session session) {
-    return session.registrations().stream()
-            .filter(Registration::optedIn)
-            .map(Registration::email)
-            .filter(Objects::nonNull);
-}
-```
+Generic lambda and callback readability belongs to `java-functional-style`. This package still owns
+the stream-semantic rule that ordinary stream results should be produced by terminals and collectors
+rather than external mutation.
 
 Do not build ordinary stream results by mutating external state from `forEach`:
 
@@ -289,14 +183,14 @@ Useful review wording for this pattern:
 
 ```text
 The first fix is to remove the external mutation; let the stream produce the list directly.
+That is a correctness/readability fix, not a guarantee that the sequential stream is faster.
 For throughput, benchmark the sequential version against a pure side-effect-free parallel stream on
 the real workload before relying on parallelStream. `parallelStream()` can be slower for small lists
 or mostly-small call paths.
 ```
 
 Do not include optional parallelism snippets for this pattern unless the user explicitly requests
-parallel code. If requested, avoid multiline lambda bodies and prefer method references or
-single-line helpers.
+parallel code.
 
 Only keep terminal `forEach` when the side effect is the operation's purpose, such as logging or
 calling an API, and the side effect is safe for the chosen stream mode.
@@ -343,6 +237,10 @@ If a `groupingBy` classifier can return null, filter nulls or map them to an exp
 before collecting. Do not treat possible null classifier keys as acceptable without proof.
 If a loop skipped null keys before building a map, filter those null keys before `toMap`; the issue
 is the behavior change, not a guaranteed null-key `NullPointerException`.
+When the loop keeps the cheapest or lowest-valued element per key with a comparator, use
+`BinaryOperator.minBy(Comparator.comparing(...))`; it keeps the existing value on comparator ties in
+a `toMap` merge because the existing value is the first merge argument. Do not replace this simple
+merge with an inline ternary.
 When a review includes a collector replacement snippet, include the supporting imports for helper
 APIs such as `Function.identity()` or `BinaryOperator.minBy(...)`, and avoid tangential import
 commentary unless missing imports are part of the stream issue.
@@ -352,7 +250,7 @@ in the collector:
 
 ```java
 Map<String, Session> longestSessionByRoom = conferences.stream()
-        .flatMap(conference -> conference.sessions().stream())
+        .flatMap(SessionIndexes::sessions)
         .filter(session -> session.room() != null)
         .collect(Collectors.toMap(
                 Session::room,
@@ -367,6 +265,70 @@ encounter order must decide equal values.
 private static Session longerSession(Session first, Session second) {
     return first.minutes() >= second.minutes() ? first : second;
 }
+
+private static Stream<Session> sessions(Conference conference) {
+    return conference.sessions().stream();
+}
+```
+
+For nested `flatMap` callbacks, extract the full flattened element shape. Do not leave a callback
+that calls a helper and then continues the helper stream on later lines. If the collector needs keyed
+values, make the helper return entries directly:
+
+```java
+Map<String, List<String>> emailsByTrack = conferences.stream()
+        .flatMap(ConferenceIndexes::optedInEmailEntries)
+        .collect(Collectors.groupingBy(
+                Map.Entry::getKey,
+                Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+```
+
+For downstream `Collectors.flatMapping`, prefer a named helper when the nested stream filters or maps
+values. The collector should read as stream glue:
+
+```java
+Map<String, List<String>> emailsByTrack = conferences.stream()
+        .flatMap(SessionIndexes::sessions)
+        .filter(session -> session.track() != null)
+        .collect(Collectors.groupingBy(
+                Session::track,
+                Collectors.flatMapping(
+                        SessionIndexes::optedInEmails,
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(TreeSet::new),
+                                ArrayList::new))));
+
+private static Stream<String> optedInEmails(Session session) {
+    return session.registrations().stream()
+            .filter(Registration::optedIn)
+            .map(Registration::email)
+            .filter(Objects::nonNull);
+}
+```
+
+For nested existence checks, extract the inner stream checks too. Keep `anyMatch` short-circuiting,
+but do not stack multi-line callbacks:
+
+```java
+boolean hasWaitlistedRegistration(List<Conference> conferences) {
+    return conferences.stream()
+            .flatMap(SessionIndexes::sessions)
+            .anyMatch(SessionIndexes::hasWaitlistedRegistration);
+}
+
+private static boolean hasWaitlistedRegistration(Session session) {
+    return session.registrations().stream().anyMatch(Registration::waitlisted);
+}
+```
+
+For filters with more than one domain condition, extract a named predicate helper instead of leaving
+the combined condition inline:
+
+```java
+List<ShipmentNotice> notices = shipments.stream()
+        .filter(shipment -> isOverdue(shipment, today))
+        .map(shipment -> toNotice(shipment, today))
+        .toList();
 ```
 
 When a task says to use nested records or helper types in the requested file, keep those types in
@@ -445,10 +407,29 @@ List<Product> favoriteProducts = user.getFavoriteProducts().stream()
         .toList();
 ```
 
+For a blocking yes/no service check, the same shape is a typed non-null carrier. Keep the
+concurrency bound inside `Gatherers.mapConcurrent`; do not create a separate executor, future fan-out
+pipeline, or service indirection:
+
+```java
+List<Job> acceptedJobs = jobs.stream()
+        .gather(Gatherers.mapConcurrent(
+                8,
+                job -> new ScheduleCheck(job, SchedulerApi.canAccept(job.token()))))
+        .filter(ScheduleCheck::accepted)
+        .map(ScheduleCheck::job)
+        .sorted(Comparator.comparing(Job::startsAt).thenComparing(Job::token))
+        .toList();
+
+record ScheduleCheck(Job job, boolean accepted) {}
+```
+
 `Map.entry` is appropriate in this example because the baseline is Java 24 and neither side of the
 entry is null. Do not return `null` from a `mapConcurrent` mapper to mean "skip"; carry the element
-with an explicit boolean result, then filter and map afterward. If nulls can reach the carrier or
-the baseline is Java 8, use a null-tolerant project type or `AbstractMap.SimpleImmutableEntry`.
+with the service result, then filter and map afterward. If the service returns a decision record,
+keep that full record in the carrier instead of reducing it to a boolean too early. If nulls can
+reach the carrier or the baseline is Java 8, use a null-tolerant project type or
+`AbstractMap.SimpleImmutableEntry`.
 When the task provides a production service stub such as `AvailabilityApi.lookup(...)` or
 `CalendarService.canSchedule(...)`, call that stub directly. Do not add delegate fields, alternate
 overloads, package-private switches, or other test hooks unless the task explicitly asks for them.

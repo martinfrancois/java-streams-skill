@@ -65,8 +65,8 @@ existing null-key behavior deliberately instead of filtering or retaining null k
 ## Java 8 Fallback Guidance
 
 Use this section only when the project baseline is Java 8 or the task asks for Java 8-compatible
-replacement code. Identify APIs that are unavailable and give replacements that preserve behavior
-without introducing multi-line lambdas:
+replacement code. Identify APIs that are unavailable and give replacements that preserve stream
+behavior:
 
 For Java-version drift reviews, keep the audit scoped to unavailable APIs and explicitly allowed
 Java 8 stream usage. Do not add unrelated modernization advice such as `Collections.emptyList()` or
@@ -78,12 +78,10 @@ general cleanup notes unless the task asks for a broader review.
 - `Collectors.flatMapping`: when empty downstream groups matter, use a loop or helper that creates
   the group before adding nested values. Pre-flatten with `flatMap(Type::helper)` before
   `groupingBy` only when the contract intentionally omits groups whose nested stream is empty. Do
-  not put a nested stream chain inside a collector lambda or `flatMap(c -> c.items().stream()`
-  snippet whose nested chain continues on later lines. If you show pre-flattening, use a named
-  helper and a Java 8-compatible holder such as `AbstractMap.SimpleImmutableEntry`, not `Map.entry`;
-  implement the helper as a loop or other concise method body, not as a multi-line nested stream.
+  not use `Map.entry` on Java 8; use a Java 8-compatible holder such as
+  `AbstractMap.SimpleImmutableEntry` when a holder is needed.
 - `Collectors.teeing`: use two clear stream passes, a simple loop, or named helper aggregation. Do
-  not replace it with a complex `reducing` collector whose merge lambda spans multiple lines.
+  not replace it with a collector that obscures the two aggregate semantics.
 - `mapMulti`: use `map`, `flatMap`, or a helper method for one-to-few emission on Java 8.
 - `Stream.toList()`: use `collect(Collectors.toList())`, and choose
   `Collectors.toCollection(ArrayList::new)` when mutability is required.
