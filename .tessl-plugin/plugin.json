@@ -1,6 +1,6 @@
 {
   "name": "martinfrancois/java-streams",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Help AI coding agents use Java Streams and Collectors well in new code, review, and cleanup without replacing one antipattern with another.",
   "summary": "Help AI coding agents use Java Streams and Collectors well in new code, review, and cleanup without replacing one antipattern with another.",
   "repository": "https://github.com/martinfrancois/java-streams-skill",

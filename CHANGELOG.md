@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.0...v1.2.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* **renovate:** separate majors and automerge non-major updates ([a9be000](https://github.com/martinfrancois/java-streams-skill/commit/a9be00021fd703676e122f51a9568612bb44c75d))
+
 ## [1.2.0](https://github.com/martinfrancois/java-streams-skill/compare/v1.1.4...v1.2.0) (2026-06-28)
 
 
