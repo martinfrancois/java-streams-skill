@@ -64,7 +64,7 @@ jobs:
       - name: Setup Tessl CLI
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
         with:
-          version: "0.97.0"
+          version: "0.98.0"
           token: ${{ secrets.TESSL_TOKEN }}
 
       - name: Validate plugin before publish
