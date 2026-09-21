@@ -19,6 +19,7 @@ that correction durable in the relevant file under `docs/agents/`.
 - [Project Identity](docs/agents/project-identity.md)
 - [README Guidance](docs/agents/readme.md)
 - [Skill Behavior](docs/agents/skill-behavior.md)
+- [Ownership Boundaries](docs/agents/ownership-boundaries.md)
 - [Eval Guidance](docs/agents/evals.md)
 - [Public Metadata And OSS Readiness](docs/agents/public-metadata.md)
 - [Maintaining Agent Docs](docs/agents/maintaining-agent-docs.md)

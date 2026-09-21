@@ -126,6 +126,9 @@ release-readiness.
 
   Follow the recommendation unless the pull request documents a maintainer-approved override.
 
+- When runtime skill text changes, also run the composition check in
+  [Ownership Boundaries](ownership-boundaries.md) so the companion package still composes cleanly.
+
 - Run the Tessl skill quality review at threshold 100 when changing runtime skill content:
 
   ```bash

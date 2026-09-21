@@ -42,6 +42,8 @@ guidance, or auto-selection wording.
 - Keep stream lambdas as short glue. Prefer method references or one-expression lambdas whose body
   stays on the same line as `->`, and extract named helpers for branching, loops, temporary
   variables, formatting, merge rules, or nested stream chains that would continue on later lines.
+  This rule stays here because the published stream evals measure it; deeper callback-style
+  guidance belongs to the companion package, see [Ownership Boundaries](ownership-boundaries.md).
 - Runtime guidance should keep internal workflow language out of ordinary user-facing reviews. Avoid
   terms such as "hard stop", "marker", "scan", "checklist", and skill names unless the user asked
   for an explicit skill workflow, audit, or scan command.
@@ -52,3 +54,4 @@ guidance, or auto-selection wording.
 
 - [README Guidance](readme.md)
 - [Eval Guidance](evals.md)
+- [Ownership Boundaries](ownership-boundaries.md)
