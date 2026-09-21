@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves feed behavior and fixes stated edge cases": "safety",
+    "Flattens Stream of Optionals directly": "stream_quality",
+    "Uses distinct before sorted with null filtering": "stream_quality",
+    "Uses toMap with merge for duplicate categories": "stream_quality",
+    "Avoids unnecessary temporary collections": "stream_quality",
+    "Keeps cleanup focused": "maintainability"
+  }
+}

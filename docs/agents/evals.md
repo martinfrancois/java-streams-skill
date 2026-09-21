@@ -51,8 +51,12 @@ benchmark claims, or scoring rules.
     with-context and without-context, plus skill-context-dependent checks that are only fair as
     with-context regression coverage. These protect against regressions but should not be part of
     normal lift discovery runs.
-- Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`.
-- Every `criteria.json` must classify `metadata.invocation` and `metadata.task_type`.
+- Every scenario directory must contain `task.md`, `criteria.json`, `criteria-meta.json`, and
+  `capability.txt`. `criteria.json` holds only what Tessl's schema knows (`context`, `type`, and
+  checklist items with `name`, `description`, `max_score`), so `tessl eval lint` stays clean;
+  `criteria-meta.json` holds this repository's `metadata` object and a `categories` map from
+  checklist name to category. The validators read the merged view.
+- Every `criteria-meta.json` must classify `metadata.invocation` and `metadata.task_type`.
 - Use `metadata.evidence_type` when scenario placement needs to be explicit:
   - `ordinary_lift`: an ordinary main or reference scenario where both variants are fair to compare.
     This value is invalid in `evals-regression/`, and it must not be used when the task overlaps
@@ -138,7 +142,7 @@ benchmark claims, or scoring rules.
   - Normalize ordinary 100-point main scenarios around 15 safety, 80 stream-quality, and 5
     maintainability points unless the scenario has a documented reason to differ.
   - Use `main_eval_weight_multiplier` only when a scenario family has stronger hosted delta or higher
-    benchmark importance; document why in `criteria.json` metadata and this file.
+    benchmark importance; document why in `criteria-meta.json` and this file.
   - Do not add or inflate weak-delta scenarios only to make coverage look balanced.
 - A 2x raw score ratio is useful only when earned by honest, realistic eval design. Don't suppress
   legitimate coverage just to improve lift.
@@ -184,7 +188,8 @@ benchmark claims, or scoring rules.
     not the final all-suite requirement itself; it is rerunning required evidence after later edits to
     `skills/java-streams/SKILL.md` or bundled runtime references change the skill fingerprint. Do the
     local scenario/criteria crosswalk and obvious skill wording fixes before starting hosted runs.
-  - A pure suite move does not require a hosted rerun when `task.md`, `criteria.json`, and
+  - A pure suite move does not require a hosted rerun when `task.md`, `criteria.json`,
+    `criteria-meta.json`, and
     `capability.txt` content are unchanged except for suite-placement metadata or numbering notes.
     Run local validators and update suite totals/numbering instead. If the move also changes task
     wording, scoring criteria, capability text, runtime skill behavior, or benchmark claims, follow

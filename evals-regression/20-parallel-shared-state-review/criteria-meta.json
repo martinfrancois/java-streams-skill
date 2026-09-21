@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Rejects proposed change": "stream_quality",
+    "Catches shared HashMap race": "stream_quality",
+    "Rejects unjustified parallelism": "stream_quality",
+    "Suggests collector-owned accumulation": "stream_quality",
+    "Keeps review concise": "maintainability"
+  }
+}

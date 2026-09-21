@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Rejects proposed change": "stream_quality",
+    "Catches Optional.stream incompatibility": "stream_quality",
+    "Catches takeWhile incompatibility": "stream_quality",
+    "Catches Stream.toList incompatibility": "stream_quality",
+    "Preserves prefix semantics in alternative": "stream_quality",
+    "Keeps review concise": "maintainability"
+  }
+}

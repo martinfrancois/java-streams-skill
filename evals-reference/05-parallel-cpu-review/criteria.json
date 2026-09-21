@@ -4,40 +4,28 @@
   "checklist": [
     {
       "name": "Creates review artifact",
-      "category": "safety",
       "max_score": 5,
       "description": "Creates review.md with a clear review decision."
     },
     {
       "name": "Allows parallelism for this stream chain",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Recognizes the work is CPU-heavy, stateless, and has a primitive sum reduction, so parallelism can be reasonable."
     },
     {
       "name": "Mentions overhead and measurement",
-      "category": "stream_quality",
       "max_score": 15,
       "description": "Says the performance should be measured because parallel stream overhead can outweigh benefits."
     },
     {
       "name": "Mentions common pool",
-      "category": "stream_quality",
       "max_score": 10,
       "description": "Notes that parallel streams use the common fork-join pool by default and may contend with other work."
     },
     {
       "name": "Avoids multi-line lambda examples",
-      "category": "maintainability",
       "max_score": 10,
       "description": "If the review includes replacement or optional example code, keeps lambda bodies on the same line as `->` or uses named helpers/method references instead of showing block lambdas, arrows whose body starts on the next line, or callback bodies that continue on later lines."
     }
-  ],
-  "metadata": {
-    "invocation": "explicit",
-    "task_type": "review",
-    "evidence_type": "focused_reference",
-    "reference_selection": "Focused reference coverage for CPU-heavy stateless parallel stream advice.",
-    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
-  }
+  ]
 }

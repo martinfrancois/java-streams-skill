@@ -4,58 +4,43 @@
   "checklist": [
     {
       "name": "Creates coherent Java 17 artifact",
-      "category": "safety",
       "max_score": 5,
       "description": "Creates SessionRosterIndexes.java with the requested methods, nested records, imports, and Java 17-compatible code."
     },
     {
       "name": "Preserves requested roster and index behavior",
-      "category": "safety",
       "max_score": 10,
       "description": "Correctly handles null tracks, null rooms, null emails, opted-in filtering, duplicate emails, sorted email lists, room duplicate handling, encounter-order ties, and waitlisted existence."
     },
     {
       "name": "Flattens nested conference data directly",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Traverses conferences to sessions to registrations with direct flatMap-style composition or an equivalently clear stream chain, without building nested temporary collections or mutating shared result maps inside forEach."
     },
     {
       "name": "Uses collector semantics for track email lists",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Builds opted-in emails by track with collector semantics such as groupingBy plus downstream mapping/filtering/collection, producing sorted unique email lists without a post-hoc shared mutable accumulation pass."
     },
     {
       "name": "Avoids multi-line lambdas",
-      "category": "maintainability",
       "max_score": 10,
       "description": "Keeps stream and collector lambdas as short same-line glue. Extracts nested registration streams, duplicate-room comparison logic, or other multi-step callback bodies into named helpers or method references instead of using block lambdas, arrows whose body starts on the next line, or lambda bodies that continue their stream chain on later lines."
     },
     {
       "name": "Handles duplicate rooms explicitly",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Builds longestSessionByRoom with an explicit duplicate-room merge or grouping reduction that keeps the longer session and preserves the earlier encounter-order session on ties."
     },
     {
       "name": "Short-circuits waitlisted existence",
-      "category": "stream_quality",
       "max_score": 10,
       "description": "Uses anyMatch or an equivalent early-exit check for hasWaitlistedRegistration rather than collecting or counting all waitlisted registrations first."
     },
     {
       "name": "Keeps implementation focused",
-      "category": "maintainability",
       "max_score": 5,
       "description": "Keeps the implementation limited to the requested helpers without unrelated caching, concurrency, dependencies, API redesign, or broad style rewrites."
     }
-  ],
-  "metadata": {
-    "invocation": "natural",
-    "task_type": "implementation",
-    "evidence_type": "focused_reference",
-    "reference_selection": "Focused reference coverage for nested session-registration collector behavior and helper extraction.",
-    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
-  }
+  ]
 }

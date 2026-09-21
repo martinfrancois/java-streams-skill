@@ -167,6 +167,60 @@ def load_json(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     return data, []
 
 
+SIDECAR_NAME = "criteria-meta.json"
+
+
+def load_criteria(criteria_file: Path) -> tuple[dict[str, Any] | None, list[str]]:
+    """Load criteria.json and merge the repository metadata kept in criteria-meta.json.
+
+    Tessl's schema for criteria.json is context, type, and checklist items with name,
+    description, and max_score. Everything this repository adds (invocation, task type,
+    evidence type, selection notes, per-item categories) lives in criteria-meta.json next to
+    it, so `tessl eval lint` stays clean. The merged view is what every validator reads.
+    """
+    data, failures = load_json(criteria_file)
+    if data is None:
+        return None, failures
+    if "metadata" in data:
+        failures.append(f"{criteria_file}: move the metadata object to {SIDECAR_NAME}")
+    checklist = data.get("checklist")
+    items = [item for item in checklist if isinstance(item, dict)] if isinstance(checklist, list) else []
+    if any("category" in item for item in items):
+        failures.append(f"{criteria_file}: move checklist categories to {SIDECAR_NAME}")
+    sidecar_file = criteria_file.with_name(SIDECAR_NAME)
+    if not sidecar_file.is_file():
+        failures.append(f"{sidecar_file}: missing; it must carry metadata and categories")
+        data.setdefault("metadata", {})
+        return data, failures
+    sidecar, sidecar_failures = load_json(sidecar_file)
+    failures.extend(sidecar_failures)
+    if sidecar is None:
+        data.setdefault("metadata", {})
+        return data, failures
+    unknown = sorted(set(sidecar) - {"metadata", "categories"})
+    if unknown:
+        failures.append(f"{sidecar_file}: unknown keys {unknown}; use metadata and categories")
+    metadata = sidecar.get("metadata")
+    if not isinstance(metadata, dict):
+        failures.append(f"{sidecar_file}: metadata must be an object")
+        metadata = {}
+    categories = sidecar.get("categories")
+    if not isinstance(categories, dict):
+        failures.append(f"{sidecar_file}: categories must map checklist names to categories")
+        categories = {}
+    names = {str(item.get("name")) for item in items}
+    for name in sorted(set(categories) - names):
+        failures.append(f"{sidecar_file}: category for unknown checklist item {name!r}")
+    for item in items:
+        category = categories.get(str(item.get("name")))
+        if category is None:
+            failures.append(f"{sidecar_file}: no category for checklist item {item.get('name')!r}")
+        else:
+            item["category"] = category
+    data["metadata"] = metadata
+    return data, failures
+
+
 def invocation_from_task(task_text: str) -> bool:
     return any(re.search(pattern, task_text, re.IGNORECASE) for pattern in EXPLICIT_INVOCATION_PATTERNS)
 
@@ -290,7 +344,7 @@ def validate_scenario(scenario: Path, main_eval_root: Path | None) -> list[str]:
     if not criteria_file.is_file():
         return failures
 
-    data, json_failures = load_json(criteria_file)
+    data, json_failures = load_criteria(criteria_file)
     failures.extend(json_failures)
     if data is None:
         return failures
@@ -485,7 +539,7 @@ def validate_runtime_reference_overlap(dirs: list[Path]) -> list[str]:
         task_text = task_file.read_text(encoding="utf-8")
         metadata: dict[str, Any] = {}
         if criteria_file.exists():
-            data, _ = load_json(criteria_file)
+            data, _ = load_criteria(criteria_file)
             if isinstance(data, dict) and isinstance(data.get("metadata"), dict):
                 metadata = data["metadata"]
 
@@ -646,7 +700,7 @@ def main() -> int:
         failures.extend(validate_scenario(scenario, main_eval_root))
         criteria = scenario / "criteria.json"
         if criteria.exists():
-            data, _ = load_json(criteria)
+            data, _ = load_criteria(criteria)
             if data and isinstance(data.get("metadata"), dict):
                 invocation = data["metadata"].get("invocation")
                 if invocation in invocations:
@@ -657,7 +711,7 @@ def main() -> int:
         main_eval_invocations = {"natural": 0, "explicit": 0}
         main_eval_category_scores = {category: 0 for category in CRITERION_CATEGORIES}
         for scenario in main_eval_dirs:
-            data, _ = load_json(scenario / "criteria.json")
+            data, _ = load_criteria(scenario / "criteria.json")
             if data and isinstance(data.get("metadata"), dict):
                 invocation = data["metadata"].get("invocation")
                 if invocation in main_eval_invocations:

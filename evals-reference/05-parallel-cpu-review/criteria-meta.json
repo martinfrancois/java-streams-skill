@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "focused_reference",
+    "reference_selection": "Focused reference coverage for CPU-heavy stateless parallel stream advice.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Allows parallelism for this stream chain": "stream_quality",
+    "Mentions overhead and measurement": "stream_quality",
+    "Mentions common pool": "stream_quality",
+    "Avoids multi-line lambda examples": "maintainability"
+  }
+}

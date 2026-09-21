@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Rejects collect-then-first": "stream_quality",
+    "Chooses findFirst to preserve first-match behavior": "stream_quality",
+    "Names the findAny exception": "stream_quality"
+  }
+}

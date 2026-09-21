@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves requested report behavior": "safety",
+    "Uses toMap with merge for cheapest products": "stream_quality",
+    "Uses groupingBy with mapping for product names": "stream_quality",
+    "Uses flatMap and counting for item sales": "stream_quality",
+    "Uses summarizingInt for quantity stats": "stream_quality",
+    "Keeps implementation readable": "maintainability"
+  }
+}

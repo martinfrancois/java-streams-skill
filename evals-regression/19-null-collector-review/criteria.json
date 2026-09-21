@@ -4,44 +4,33 @@
   "checklist": [
     {
       "name": "Creates review artifact",
-      "category": "safety",
       "max_score": 5,
       "description": "Creates review.md with a clear decision."
     },
     {
       "name": "Rejects proposed change",
-      "category": "stream_quality",
       "max_score": 15,
       "description": "Clearly says the proposed toMap refactor should not be accepted as written."
     },
     {
       "name": "Catches null-key behavior change",
-      "category": "stream_quality",
       "max_score": 25,
       "description": "Explains that null categories were skipped and must be filtered or handled before collecting."
     },
     {
       "name": "Catches duplicate-key failure",
-      "category": "stream_quality",
       "max_score": 25,
       "description": "Explains that duplicate categories are expected and two-argument toMap throws without a merge function."
     },
     {
       "name": "Preserves cheapest merge semantics",
-      "category": "stream_quality",
       "max_score": 25,
       "description": "Recommends filtering category != null and using a merge function such as BinaryOperator.minBy(Comparator.comparing(Product::price))."
     },
     {
       "name": "Keeps review concise",
-      "category": "maintainability",
       "max_score": 5,
       "description": "Avoids unrelated collector commentary. Award full credit when the review stays focused on the accept/reject decision, null-key behavior, duplicate-key behavior, merge semantics, and directly related code clarity such as Function.identity() versus a lambda. Do not deduct merely because the review includes a short corrected collector snippet or a brief explanation of why it preserves the loop behavior."
     }
-  ],
-  "metadata": {
-    "invocation": "explicit",
-    "task_type": "review",
-    "evidence_type": "solved_regression"
-  }
+  ]
 }

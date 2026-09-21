@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 8 artifact": "safety",
+    "Preserves summary behavior": "safety",
+    "Uses anyMatch for existence": "stream_quality",
+    "Uses count without unread materialization": "stream_quality",
+    "Uses max instead of sorted temporary list": "stream_quality",
+    "Uses Collectors.joining": "stream_quality",
+    "Keeps cleanup focused": "maintainability"
+  }
+}

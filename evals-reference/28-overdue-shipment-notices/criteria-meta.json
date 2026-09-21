@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/36",
+    "reference_selection": "Focused issue #36 behavior-delta coverage for extracting non-trivial stream lambda bodies into helpers.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence."
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves filtering behavior": "safety",
+    "Computes notice fields correctly": "safety",
+    "Uses direct stream result production": "stream_quality",
+    "Avoids multi-line stream lambdas": "stream_quality",
+    "Keeps API focused": "maintainability"
+  }
+}

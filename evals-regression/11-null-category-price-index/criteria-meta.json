@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves null and duplicate behavior": "safety",
+    "Filters null categories before collectors": "stream_quality",
+    "Uses explicit merge for cheapest product": "stream_quality",
+    "Uses groupingBy with mapping for names": "stream_quality",
+    "Keeps implementation readable": "maintainability"
+  }
+}

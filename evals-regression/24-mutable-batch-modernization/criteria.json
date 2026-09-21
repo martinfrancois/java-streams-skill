@@ -4,32 +4,23 @@
   "checklist": [
     {
       "name": "Creates requested artifact",
-      "category": "safety",
       "max_score": 10,
       "description": "Creates ExportBatch.java with coherent Java 17-compatible content."
     },
     {
       "name": "Preserves mutable batch behavior",
-      "category": "stream_quality",
       "max_score": 55,
       "description": "ExportBatch.java keeps only enabled rows, sorts by position before optional footer append, appends the footer only when requested, then sorts the final mutable result by id."
     },
     {
       "name": "Avoids Stream.toList mutability break",
-      "category": "stream_quality",
       "max_score": 30,
       "description": "Does not use Stream.toList() for exportRows because the list is later mutated with add and sort; uses Collectors.toCollection(ArrayList::new), Collectors.toList(), or an equivalent mutable result."
     },
     {
       "name": "Keeps cleanup focused",
-      "category": "maintainability",
       "max_score": 5,
       "description": "Avoids unrelated API redesign, dependencies, or broad rewrites."
     }
-  ],
-  "metadata": {
-    "invocation": "natural",
-    "task_type": "cleanup",
-    "evidence_type": "solved_regression"
-  }
+  ]
 }
