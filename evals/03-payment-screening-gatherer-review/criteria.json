@@ -4,45 +4,33 @@
   "checklist": [
     {
       "name": "Creates review artifact",
-      "category": "safety",
       "max_score": 15,
       "description": "Creates review.md with a clear decision and recommendation."
     },
     {
       "name": "Preserves required output behavior",
-      "category": "safety",
       "max_score": 30,
       "description": "Recognizes that the final payment list must still contain only payments approved by FraudApi.approve and sorted by Payment::submittedAt."
     },
     {
       "name": "Rejects parallelStream for blocking IO",
-      "category": "stream_quality",
       "max_score": 75,
       "description": "Rejects the proposed parallelStream change and explains that it uses the common fork-join pool, remains blocking, and is not the right default for remote API calls."
     },
     {
       "name": "Recommends bounded Gatherers.mapConcurrent",
-      "category": "stream_quality",
       "max_score": 120,
       "description": "Recommends a Java 24 Gatherers.mapConcurrent stream chain with an explicit concurrency bound for the blocking fraud-screening calls."
     },
     {
       "name": "Shows a safe stream chain",
-      "category": "stream_quality",
       "max_score": 45,
       "description": "Describes or sketches carrying each Payment with the fraud-screening result using a non-null holder, filtering by that result, mapping back to Payment, sorting by submittedAt, and collecting with toList."
     },
     {
       "name": "Review is concise and actionable",
-      "category": "maintainability",
       "max_score": 15,
       "description": "Keeps the review focused on the stream/concurrency decision and gives a concrete path forward."
     }
-  ],
-  "metadata": {
-    "invocation": "explicit",
-    "task_type": "review",
-    "main_eval_weight_multiplier": 3,
-    "main_eval_selection": "active replacement for a runtime-reference-overlapping remote stock review; rerun hosted evals before updating benchmark claims"
-  }
+  ]
 }

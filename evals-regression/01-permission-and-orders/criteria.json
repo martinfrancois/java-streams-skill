@@ -4,38 +4,28 @@
   "checklist": [
     {
       "name": "Creates coherent Java 17 artifact",
-      "category": "safety",
       "max_score": 5,
       "description": "Creates StreamHelpers.java with requested methods and nested types."
     },
     {
       "name": "Uses short-circuit permission lookup",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Checks permissions with a stream chain that short-circuits, such as flatMap(...).anyMatch(...), nested anyMatch/contains, or flatMap(...).filter(...).findAny().orElseThrow(...) when it preserves the same behavior clearly."
     },
     {
       "name": "Uses IntStream range mapping",
-      "category": "stream_quality",
       "max_score": 15,
       "description": "Creates orders with IntStream.range(0, 50).mapToObj(...) or equivalent range stream."
     },
     {
       "name": "Uses reduce for BigDecimal",
-      "category": "stream_quality",
       "max_score": 15,
       "description": "Sums order totals with map(Order::totalAmount).reduce(BigDecimal.ZERO, BigDecimal::add) or equivalent immutable reduction."
     },
     {
       "name": "Uses primitive sum for radii",
-      "category": "stream_quality",
       "max_score": 20,
       "description": "Filters/casts Circle values safely and uses mapToDouble(Circle::radius).sum(), not boxed reduce."
     }
-  ],
-  "metadata": {
-    "invocation": "explicit",
-    "task_type": "implementation",
-    "evidence_type": "solved_regression"
-  }
+  ]
 }

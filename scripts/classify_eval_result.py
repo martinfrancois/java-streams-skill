@@ -50,11 +50,11 @@ def scenario_text_from_dir(path: Path | None) -> str:
 def scenario_metadata_from_dir(path: Path | None) -> dict[str, Any]:
     if path is None:
         return {}
-    criteria_path = path / "criteria.json"
-    if not criteria_path.is_file():
+    sidecar_path = path / "criteria-meta.json"
+    if not sidecar_path.is_file():
         return {}
     try:
-        data = json.loads(criteria_path.read_text(encoding="utf-8"))
+        data = json.loads(sidecar_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
     metadata = data.get("metadata")

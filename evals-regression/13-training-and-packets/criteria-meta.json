@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves helper behavior": "safety",
+    "Flattens company employees directly": "stream_quality",
+    "Uses clean conditional developer emission": "stream_quality",
+    "Uses takeWhile for prefix semantics": "stream_quality",
+    "Uses appropriate collectors": "stream_quality",
+    "Keeps implementation compact": "maintainability"
+  }
+}

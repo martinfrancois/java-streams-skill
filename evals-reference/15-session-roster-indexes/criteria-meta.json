@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "focused_reference",
+    "reference_selection": "Focused reference coverage for nested session-registration collector behavior and helper extraction.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves requested roster and index behavior": "safety",
+    "Flattens nested conference data directly": "stream_quality",
+    "Uses collector semantics for track email lists": "stream_quality",
+    "Avoids multi-line lambdas": "maintainability",
+    "Handles duplicate rooms explicitly": "stream_quality",
+    "Short-circuits waitlisted existence": "stream_quality",
+    "Keeps implementation focused": "maintainability"
+  }
+}

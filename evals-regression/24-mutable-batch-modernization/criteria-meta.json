@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates requested artifact": "safety",
+    "Preserves mutable batch behavior": "stream_quality",
+    "Avoids Stream.toList mutability break": "stream_quality",
+    "Keeps cleanup focused": "maintainability"
+  }
+}

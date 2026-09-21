@@ -1,0 +1,14 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "skill_context_dependent"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Includes skill-provided scan command": "stream_quality",
+    "Classifies required collector and ordering fixes": "stream_quality",
+    "Classifies acceptable markers": "stream_quality",
+    "Keeps audit concise": "maintainability"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/4"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves requested behavior": "safety",
+    "Uses direct stream result production": "stream_quality",
+    "Avoids unsafe parallel shortcut": "stream_quality",
+    "Keeps performance scope focused": "stream_quality",
+    "Keeps API focused": "maintainability"
+  }
+}

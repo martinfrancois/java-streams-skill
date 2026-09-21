@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Rejects unsafe proposal": "safety",
+    "Identifies shared mutable state bug": "stream_quality",
+    "Explains parallelism is unjustified": "stream_quality",
+    "Suggests collector-owned accumulation": "stream_quality",
+    "Review is concise and focused": "maintainability"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "review",
+    "evidence_type": "focused_reference",
+    "reference_selection": "Focused reference coverage for preserving priority ordering when reviewing findFirst versus findAny changes.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Rejects behavior-changing proposal": "safety",
+    "Identifies priority ordering contract": "stream_quality",
+    "Flags unjustified parallelStream": "stream_quality",
+    "Suggests safe stream chain": "stream_quality",
+    "Review is concise and focused": "maintainability"
+  }
+}

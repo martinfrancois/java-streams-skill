@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "evidence_type": "skill_context_dependent"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Includes skill-provided scan command": "stream_quality",
+    "Classifies Java 8 version drift": "stream_quality",
+    "Avoids multi-line lambda replacements": "maintainability",
+    "Classifies allowed count usage": "stream_quality",
+    "Keeps audit concise": "maintainability"
+  }
+}

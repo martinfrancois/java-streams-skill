@@ -157,7 +157,7 @@ def changed_text(repo_root: Path, base_ref: str, head_ref: str, paths: list[Path
 
 def scenario_text(path: Path) -> str:
     parts: list[str] = [path.name]
-    for filename in ("task.md", "capability.txt", "criteria.json"):
+    for filename in ("task.md", "capability.txt", "criteria.json", "criteria-meta.json"):
         file_path = path / filename
         if not file_path.is_file():
             continue

@@ -171,9 +171,11 @@ claim.
 The main eval set should stay focused on realistic tasks where context should improve stream
 quality. It must include natural activation prompts and explicit invocation prompts. Natural
 scenarios must not mention `$java-streams` or ask to use the skill. Explicit scenarios may name the
-skill and must be labeled as explicit in `criteria.json`.
+skill and must be labeled as explicit in `criteria-meta.json`.
 
-Every scenario directory must contain `task.md`, `criteria.json`, and `capability.txt`. Main eval
+Every scenario directory must contain `task.md`, `criteria.json`, `criteria-meta.json`, and
+`capability.txt` (`criteria.json` keeps Tessl's schema; `criteria-meta.json` carries this
+repository's metadata and per-item categories). Main eval
 implementation criteria must include compile/artifact checks and behavior correctness checks as
 safety checks, but the main score should mainly measure stream-specific quality. Each main eval
 criterion must set `category` to `safety`, `stream_quality`, or `maintainability`.
@@ -221,7 +223,7 @@ current benchmark claims until they are rerun against the current active suite m
 denominator, commit/ref, natural/explicit split, and pinned CLI behavior. Main eval weights should
 stay evidence-weighted: put more points on scenario families with larger observed missed-point
 reduction, keep ordinary 100-point main scenarios around 15 safety / 80 stream-quality / 5
-maintainability points, and document any `main_eval_weight_multiplier` in `criteria.json` metadata.
+maintainability points, and document any `main_eval_weight_multiplier` in `criteria-meta.json`.
 
 When with-context is below 100%, keep the scenario wherever it already lives. Fix the skill or eval
 there, then rerun only that targeted scenario until it is clean before running broader suites. After

@@ -1,0 +1,14 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Uses short-circuit permission lookup": "stream_quality",
+    "Uses IntStream range mapping": "stream_quality",
+    "Uses reduce for BigDecimal": "stream_quality",
+    "Uses primitive sum for radii": "stream_quality"
+  }
+}

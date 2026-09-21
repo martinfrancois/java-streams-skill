@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "implementation",
+    "main_eval_weight_multiplier": 2,
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping teeing/prefix scenario; rerun hosted evals before updating benchmark claims"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Uses teeing for invoice bounds": "stream_quality",
+    "Handles empty invoice bounds": "safety",
+    "Uses takeWhile for before-overheat prefix": "stream_quality",
+    "Uses dropWhile for after-safe-run remainder": "stream_quality",
+    "Keeps implementation focused": "maintainability"
+  }
+}

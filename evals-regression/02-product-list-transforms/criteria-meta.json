@@ -1,0 +1,14 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Uses filter and sorted for favorites": "stream_quality",
+    "Uses sorted then limit for top products": "stream_quality",
+    "Uses toSet for unique codes": "stream_quality",
+    "Uses partitioningBy for availability": "stream_quality"
+  }
+}

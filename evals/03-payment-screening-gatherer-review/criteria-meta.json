@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "review",
+    "main_eval_weight_multiplier": 3,
+    "main_eval_selection": "active replacement for a runtime-reference-overlapping remote stock review; rerun hosted evals before updating benchmark claims"
+  },
+  "categories": {
+    "Creates review artifact": "safety",
+    "Preserves required output behavior": "safety",
+    "Rejects parallelStream for blocking IO": "stream_quality",
+    "Recommends bounded Gatherers.mapConcurrent": "stream_quality",
+    "Shows a safe stream chain": "stream_quality",
+    "Review is concise and actionable": "maintainability"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup",
+    "evidence_type": "solved_regression"
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves before-prefix behavior": "safety",
+    "Preserves after-prefix behavior": "safety",
+    "Uses takeWhile or equivalent prefix-preserving loop": "stream_quality",
+    "Uses dropWhile or equivalent prefix-skipping loop": "stream_quality",
+    "Keeps refactor focused": "maintainability"
+  }
+}
