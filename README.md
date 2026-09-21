@@ -18,12 +18,16 @@ as a design choice rather than a default optimization.
 It also tells the agent to check the project Java version first. The right stream code for Java 8
 may be different from the right code for Java 17, Java 21, or Java 24.
 
+General lambda and callback style lives in the companion package
+`martinfrancois/java-functional-style`; see [Ownership Boundaries](#ownership-boundaries).
+
 ## Contents
 
 - [Getting Started](#getting-started)
 - [Why This Exists](#why-this-exists)
 - [Common Stream Mistakes](#common-stream-mistakes)
 - [What It Helps With](#what-it-helps-with)
+- [Ownership Boundaries](#ownership-boundaries)
 - [How It's Evaluated](#how-its-evaluated)
 - [Origin](#origin)
 - [Contributing](#contributing)
@@ -240,6 +244,23 @@ Poor fit:
 - replacing straightforward stateful loops with hard-to-read stream tricks;
 - large API redesigns or new dependencies without maintainer agreement;
 - changing business behavior just to make code look more functional.
+
+## Ownership Boundaries
+
+`martinfrancois/java-streams` owns stream and collector semantics. General lambda and callback
+style (identity functions, no-op stages, helper extraction, comparator composition,
+method-reference pitfalls, supplier laziness, checked boundaries in callbacks) is owned by the
+companion package `martinfrancois/java-functional-style`
+([repository](https://github.com/martinfrancois/java-functional-style-skill)), and Optional
+semantics by `martinfrancois/java-optionals`
+([repository](https://github.com/martinfrancois/java-optionals-skill)).
+
+Each package works on its own. Install the companion next to this one when stream cleanup also
+involves non-trivial callbacks:
+
+```bash
+npx tessl i martinfrancois/java-functional-style
+```
 
 ## How It's Evaluated
 
