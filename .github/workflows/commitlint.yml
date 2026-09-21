@@ -39,6 +39,13 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Enable pnpm
+        run: |
+          # Node 24 ships corepack; later Node majors do not, so a node-version bump
+          # must install pnpm another way.
+          corepack enable
+          corepack prepare pnpm@12.4.1 --activate
+
       - name: Prepare commitlint
         run: scripts/install_commitlint.sh
 

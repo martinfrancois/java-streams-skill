@@ -55,6 +55,18 @@
       "datasourceTemplate": "npm",
       "packageNameTemplate": "tessl",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/(?:commitlint|release-please)\\.yml$/"
+      ],
+      "matchStrings": [
+        "corepack prepare pnpm@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "pnpm",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
     }
   ],
   "packageRules": [
