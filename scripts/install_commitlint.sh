@@ -5,7 +5,7 @@ commitlint_home="${RUNNER_TEMP:-$(mktemp -d)}/commitlint"
 mkdir -p "$commitlint_home"
 printf '{"private":true}\n' > "$commitlint_home/package.json"
 cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
-npm --prefix "$commitlint_home" install --silent --ignore-scripts \
+pnpm --dir "$commitlint_home" add --silent --ignore-scripts \
   @commitlint/cli@21.2.2 \
   @commitlint/config-conventional@21.2.2
 

@@ -39,6 +39,11 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@12.4.1 --activate
+
       - name: Prepare commitlint
         run: scripts/install_commitlint.sh
 

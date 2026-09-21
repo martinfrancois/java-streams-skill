@@ -118,6 +118,12 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Enable pnpm
+        if: ${{ steps.release-pr.outputs.found == 'true' }}
+        run: |
+          corepack enable
+          corepack prepare pnpm@12.4.1 --activate
+
       - name: Mark release PR commitlint pending
         if: ${{ steps.release-pr.outputs.found == 'true' }}
         env:
