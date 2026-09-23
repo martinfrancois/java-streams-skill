@@ -1,0 +1,50 @@
+{
+  "context": "Reference focused cleanup: a temporary mutable append list can become a direct immutable result when mutability is not part of the method contract.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible ManifestUpdate code with imports, records, methods, and constructor behavior intact."
+    },
+    {
+      "name": "Replaces simple append buffer",
+      "category": "stream_quality",
+      "max_score": 28,
+      "description": "Refactors withBoard to produce filtered existing boards plus the new board directly, for example with Stream.concat and Stream.of, instead of creating a mutable append buffer."
+    },
+    {
+      "name": "Preserves encounter order",
+      "category": "safety",
+      "max_score": 18,
+      "description": "Keeps all retained existing boards in original order and appends the new board after them."
+    },
+    {
+      "name": "Audits result mutability",
+      "category": "stream_quality",
+      "max_score": 14,
+      "description": "Recognizes that the manifest constructor copies input, so the temporary list mutability is not part of the public result contract."
+    },
+    {
+      "name": "Keeps complex builder when clearer",
+      "category": "maintainability",
+      "max_score": 16,
+      "description": "Does not force withOptionalSections into a dense stream when the conditional append and optional summary row are clearer as a small builder or loop."
+    },
+    {
+      "name": "Avoids unrelated changes",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Does not change sameBoardOrWorkflow semantics, archive filtering, record fields, constructor copying, or method signatures."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/50",
+    "reference_selection": "Focused issue #50 coverage for immutable result production over temporary append lists.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

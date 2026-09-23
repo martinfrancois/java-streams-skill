@@ -1,0 +1,2 @@
+Refactor duplicate-aware Java stream lookups so they inspect at most two matches while preserving
+zero, one, and ambiguous-match behavior.

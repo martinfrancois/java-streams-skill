@@ -1,0 +1,2 @@
+Replace pure predicate loops with anyMatch while keeping side effects, diagnostics, and indexes out
+of stream pipelines.

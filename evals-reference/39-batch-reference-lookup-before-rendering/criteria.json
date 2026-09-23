@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: gather lookup IDs across a batch before rendering so helpers do not hide repeated network I/O.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 snippets",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns coherent Java 17-compatible revised snippets that preserve the represented class, records, helper methods, and public method shape."
+    },
+    {
+      "name": "Analyzes cards before lookup",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Creates an analysis or equivalent phase so each card's plan and prompt reference texts are known before card-state lookup happens."
+    },
+    {
+      "name": "Batches lookup IDs once",
+      "category": "stream_quality",
+      "max_score": 24,
+      "description": "Collects all prerequisite and prompt-reference lookup IDs across the full card batch, applies distinct at the batch boundary, and calls fetchCardStatesByIds once."
+    },
+    {
+      "name": "Keeps rendering pure",
+      "category": "maintainability",
+      "max_score": 14,
+      "description": "Makes prompt rendering use already available lookup results and avoids helper methods named like renderers that perform hidden network I/O."
+    },
+    {
+      "name": "Keeps writes explicit",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Keeps checklist synchronization or other externally visible writes outside stream pipelines and visible in an explicit per-card step."
+    },
+    {
+      "name": "Preserves reference behavior",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Does not drop prompt references, plan references, card order, rendered-reference creation, or checklist sync behavior while separating phases."
+    },
+    {
+      "name": "Avoids stream-heavy overreach",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Does not hide Trello or network side effects in map, peek, collectors, or broad custom frameworks."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/41",
+    "reference_selection": "Focused issue #41 coverage for batch lookup before rendering.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same phase-separation shape."
+  }
+}

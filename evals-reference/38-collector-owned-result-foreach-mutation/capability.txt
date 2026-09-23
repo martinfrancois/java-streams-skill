@@ -1,0 +1,2 @@
+Replace external stream mutation with result-producing stream terminals and collectors when the
+method is building a returned value.

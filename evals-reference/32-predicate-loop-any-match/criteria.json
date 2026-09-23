@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: pure predicate loops can become anyMatch while side-effecting or index-sensitive loops should remain imperative.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible ManifestChecks code with necessary imports and all methods present."
+    },
+    {
+      "name": "Uses anyMatch for boolean predicate",
+      "category": "stream_quality",
+      "max_score": 24,
+      "description": "Refactors hasNonObjectBoardRow to use StreamSupport.stream(..., false).anyMatch(...) or an equivalent short-circuiting stream over the JsonNode iterable."
+    },
+    {
+      "name": "Keeps terminal warning side effect outside stream",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Computes whether an invalid root exists with anyMatch, then adds exactly one warning outside the stream instead of mutating warnings inside the stream pipeline."
+    },
+    {
+      "name": "Preserves JsonNode behavior",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Keeps null roots as no-op, non-array roots as the array warning, and non-textual or blank values as the non-blank-strings warning."
+    },
+    {
+      "name": "Rejects collector and forEach workarounds",
+      "category": "stream_quality",
+      "max_score": 14,
+      "description": "Does not collect invalid roots just to check emptiness and does not use forEach with an external boolean holder or warning mutation."
+    },
+    {
+      "name": "Preserves index-sensitive loop",
+      "category": "maintainability",
+      "max_score": 12,
+      "description": "Keeps writeRows as a clear loop or otherwise preserves the index-specific output without forcing a noisy stream rewrite."
+    },
+    {
+      "name": "Explains terminal choice through code",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Uses anyMatch for existence questions rather than findAny or findFirst when the required result is a boolean."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/49",
+    "reference_selection": "Focused issue #49 coverage for predicate-only loops as anyMatch.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

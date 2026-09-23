@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: stream refactors must preserve regex-based line splitting semantics.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible SourceDeclarations code with imports, records, methods, and Pattern usage intact."
+    },
+    {
+      "name": "Preserves regex line-break contract",
+      "category": "safety",
+      "max_score": 24,
+      "description": "Does not replace split(\"\\\\R\", -1) with String.lines() unless it explicitly preserves the original regex line-break semantics; uses Pattern.splitAsStream or an equivalent regex-preserving source."
+    },
+    {
+      "name": "Produces declarations through stream result",
+      "category": "stream_quality",
+      "max_score": 22,
+      "description": "Refactors the top-level extraction so streams produce the returned declarations directly rather than using forEach to mutate an external list."
+    },
+    {
+      "name": "Preserves inputs searched",
+      "category": "safety",
+      "max_score": 14,
+      "description": "Still searches title, description, and every comment text, and still ignores null or blank text blocks."
+    },
+    {
+      "name": "Preserves matching rule",
+      "category": "safety",
+      "max_score": 12,
+      "description": "Keeps LABELED_SOURCE.matcher(line).matches() semantics and Declaration construction from the captured source value."
+    },
+    {
+      "name": "Avoids side-effecting stream terminal",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Does not keep text stream processing as text.lines().forEach(...) or another stream terminal that mutates a caller-owned list."
+    },
+    {
+      "name": "Keeps refactor focused",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Does not add broad parser features, change source labels, change public records, or introduce unrelated abstractions."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/47",
+    "reference_selection": "Focused issue #47 coverage for regex line-splitting preservation during stream refactors.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

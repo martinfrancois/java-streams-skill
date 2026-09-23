@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: concrete toCollection collectors should be justified or simplified based on collection semantics.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible CollectorChoices code with imports, records, and methods intact."
+    },
+    {
+      "name": "Keeps mutable collector with rationale",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Keeps the ArrayList collection for terminalCards only because the result is appended to before the immutable copy, and makes that mutability reason clear with a concise comment or equivalent code structure. Award full credit when the rationale is visible near the collector or later mutation; do not penalize harmless comment placement."
+    },
+    {
+      "name": "Simplifies unnecessary HashSet collector",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Simplifies archivedListIds when the concrete HashSet implementation is not required, while avoiding ambiguous or policy-violating collector choices if the surrounding codebase requires explicit mutability."
+    },
+    {
+      "name": "Preserves order-preserving de-duplication",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Keeps LinkedHashSet or an equivalent encounter-order-preserving set for unconnectedWorkflowPaths, because diagnostics should de-duplicate while preserving encounter order."
+    },
+    {
+      "name": "Documents concrete type reasons",
+      "category": "maintainability",
+      "max_score": 16,
+      "description": "Adds concise comments or code structure that explains mutability, membership, or encounter-order reasons instead of restating the collector syntax. Award full credit when the reason is clear even if the comment is placed just after the collector expression."
+    },
+    {
+      "name": "Avoids mechanical replacement",
+      "category": "safety",
+      "max_score": 12,
+      "description": "Does not replace every toCollection mechanically with toSet, toList, or stream().forEach(...) without checking mutability and order behavior."
+    },
+    {
+      "name": "Keeps behavior unchanged",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Preserves archive-summary append behavior, closed-list filtering, selected-path filtering, and method signatures."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/46",
+    "reference_selection": "Focused issue #46 coverage for explaining or simplifying Collectors.toCollection choices.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same shape."
+  }
+}

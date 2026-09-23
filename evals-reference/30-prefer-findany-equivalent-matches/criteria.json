@@ -1,0 +1,50 @@
+{
+  "context": "Reference focused cleanup: findAny should express equivalent-match lookups while findFirst remains for ordered contracts.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns revised Java 17-compatible LookupTerminals code with imports, methods, helper, and record intact."
+    },
+    {
+      "name": "Uses findAny for equivalent matches",
+      "category": "stream_quality",
+      "max_score": 30,
+      "description": "Changes exact or normalized configured-name lookups to findAny because all valid matches are equivalent or expected to be unique by contract."
+    },
+    {
+      "name": "Preserves ordered first-match contracts",
+      "category": "stream_quality",
+      "max_score": 24,
+      "description": "Keeps findFirst for PATH-style search order and first output line selection where encounter order selects the result."
+    },
+    {
+      "name": "Explains retained findFirst calls",
+      "category": "maintainability",
+      "max_score": 12,
+      "description": "Adds concise comments or equivalent explanation for each retained findFirst call that identify the order contract rather than relying on current sequential behavior."
+    },
+    {
+      "name": "Avoids mechanical replacement",
+      "category": "safety",
+      "max_score": 14,
+      "description": "Does not replace every findFirst mechanically, does not use findAny for fallback or first-line behavior, and does not claim tests alone prove order irrelevance."
+    },
+    {
+      "name": "Keeps filters and normalization",
+      "category": "safety",
+      "max_score": 12,
+      "description": "Preserves case-insensitive list matching, closed-list filtering, normalization, path resolution, and output-line filtering."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/51",
+    "reference_selection": "Focused issue #51 coverage for findAny versus findFirst semantic audits.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same audit shape."
+  }
+}

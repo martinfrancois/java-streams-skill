@@ -1,0 +1,2 @@
+Replace simple temporary append buffers with direct stream-owned immutable results while keeping
+mutable builders where they remain clearer.

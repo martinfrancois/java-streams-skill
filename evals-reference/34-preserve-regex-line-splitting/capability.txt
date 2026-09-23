@@ -1,0 +1,2 @@
+Refactor stream line parsing while preserving regex line-break semantics and avoiding external
+mutable accumulation.
