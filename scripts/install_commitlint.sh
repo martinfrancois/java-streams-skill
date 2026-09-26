@@ -6,8 +6,8 @@ mkdir -p "$commitlint_home"
 printf '{"private":true}\n' > "$commitlint_home/package.json"
 cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
 pnpm --dir "$commitlint_home" add --silent --ignore-scripts \
-  @commitlint/cli@21.2.2 \
-  @commitlint/config-conventional@21.2.2
+  @commitlint/cli@21.2.3 \
+  @commitlint/config-conventional@21.2.3
 
 {
   echo "COMMITLINT_BIN=$commitlint_home/node_modules/.bin/commitlint"
