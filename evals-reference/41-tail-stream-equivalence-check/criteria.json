@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: allMatch only short-circuits expensive work when that work stays inside the lazy stream pipeline.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible DeclarationConflict code with methods, enum, and records intact."
+    },
+    {
+      "name": "Keeps explicit zero one many branching",
+      "category": "maintainability",
+      "max_score": 14,
+      "description": "Keeps the zero, one, and multiple declaration cases readable, for example with a switch or clear branch structure."
+    },
+    {
+      "name": "Parses first declaration once",
+      "category": "stream_quality",
+      "max_score": 16,
+      "description": "Parses the first declaration once and uses it as the comparison target for later declarations."
+    },
+    {
+      "name": "Moves tail parsing into lazy stream",
+      "category": "stream_quality",
+      "max_score": 24,
+      "description": "Streams declarations after the first with skip(1), maps each remaining declaration through parse inside the pipeline, and allMatch short-circuits on the first invalid or conflicting result."
+    },
+    {
+      "name": "Avoids eager parsed list",
+      "category": "stream_quality",
+      "max_score": 14,
+      "description": "Does not eagerly parse every declaration into a temporary list before calling allMatch."
+    },
+    {
+      "name": "Preserves fail-closed behavior",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Accepts multiple declarations only when the first is selected and every remaining parsed selection is equivalent; blank, invalid, or conflicting declarations still return the conflict result."
+    },
+    {
+      "name": "Avoids noisy manual loop",
+      "category": "maintainability",
+      "max_score": 8,
+      "description": "Does not replace the tail-stream check with a more verbose manual loop unless the loop is clearly simpler and still keeps lazy parsing."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/39",
+    "reference_selection": "Focused issue #39 coverage for tail-stream equivalence checks and allMatch laziness.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same allMatch shape."
+  }
+}

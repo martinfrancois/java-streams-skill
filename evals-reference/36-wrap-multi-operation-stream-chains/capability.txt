@@ -1,0 +1,2 @@
+Format multi-operation Java stream chains so each operation after stream() is scannable without
+changing stream semantics.
