@@ -114,7 +114,8 @@ if ! command -v tessl >/dev/null 2>&1; then
 fi
 
 eval_run_help="$(tessl eval run --help 2>&1 || true)"
-if grep -q -- "--variant" <<<"$eval_run_help"; then
+# Match the whole flag: newer CLIs list --variant-json but reject --variant.
+if grep -qE -- '--variant([^-[:alnum:]]|$)' <<<"$eval_run_help"; then
   case "$suite" in
     main|reference)
       variant_args=(--variant without-context --variant with-context)
