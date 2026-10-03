@@ -1,13 +1,13 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams, collectors, stream pipelines, grouping, joining strings, first/any element lookup, sorting, limiting, distinct values, primitive totals, Optional values in streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
 ---
 
 # Java Streams Skill
 
-Preserve behavior, artifact shape, encounter order, exceptions, nulls, side effects, mutability,
-and the Java baseline. Write the requested Java file before explaining; keep provided helper,
+Keep behavior identical, including encounter order, exceptions, nulls, side effects, and mutability,
+and stay within the project's Java baseline. Write the requested Java file before explaining; keep provided helper,
 record, and service types in it (nested when requested); add no sibling files, hooks, test seams,
 overloads, caches, retries, or adapters unless asked.
 
@@ -57,31 +57,20 @@ exact file. Do not answer only in chat when a file artifact is requested.
    - External-mutation or performance review: show a sequential result-producing snippet first; for
      million-item CPU maps, mention benchmarking a pure parallel variant and include:
      "`parallelStream()` can be slower for small lists or call paths that are usually small."
-   - Parallel review: apply [hard-stops.md](references/hard-stops.md); no custom pool snippets
-     unless asked.
-   - Java 24 bounded blocking calls: `Gatherers.mapConcurrent(limit, item -> carrier(item,
-     stub(item)))`, then filter/map/sort; no test hooks, overloads, `CompletableFuture` fan-out, or
-     null sentinels.
+   - Java 24 bounded blocking calls: carry each element with its result, call the provided service
+     directly, then filter/map/sort; no test hooks, overloads, `CompletableFuture` fan-out, or null
+     sentinels.
 
-   ```java
-   import java.util.List;
-
-   final class OrderChecks {
-       boolean hasOverdue(List<Order> orders) {
-           return orders.stream().anyMatch(Order::isOverdue);
-       }
-
-       record Order(boolean overdue) {
-           boolean isOverdue() {
-               return overdue;
-           }
-       }
-   }
-   ```
+     ```java
+     List<Parcel> cleared = parcels.stream()
+             .gather(Gatherers.mapConcurrent(limit, parcel -> Map.entry(parcel, customsApi.clears(parcel))))
+             .filter(Map.Entry::getValue)
+             .map(Map.Entry::getKey)
+             .toList();
+     ```
 3. Flatten nested sources deliberately. Use `flatMap`, `flatMap(Optional::stream)` on Java 9+,
-   and `mapMulti` on Java 16+ when clearer. Use helpers when nested lambdas would wrap. For subtype
-   primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble` directly. For
-   nested collector callbacks, extract a named `Stream<T>` helper.
+   and `mapMulti` on Java 16+ when clearer. For subtype primitives, filter/cast first, then call
+   `mapToInt`/`mapToLong`/`mapToDouble` directly.
 
    ```java
    // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
@@ -95,27 +84,32 @@ exact file. Do not answer only in chat when a file artifact is requested.
    Map<Boolean, List<Order>> byOverdue = orders.stream().collect(Collectors.partitioningBy(Order::isOverdue));
    BigDecimal total = amounts.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
    ```
-   Extract duplicate-key merge rules into named helpers when ties, nulls, or ordering need more than
-   a same-line expression. Carry `element + result`, never null sentinels.
+   Carry `element + result`, never null sentinels.
 
    ```java
-   // Latest booking per seat wins; seats without a code are skipped, as the loop did.
-   Map<String, Booking> latestBySeat = bookings.stream()
-           .filter(booking -> booking.seatCode() != null)
-           .collect(Collectors.toMap(Booking::seatCode, Function.identity(), SeatIndex::later, LinkedHashMap::new));
+   final class SeatIndex {
+       // Latest booking per seat wins; seats without a code are skipped, as the loop did.
+       static Map<String, Booking> latestBySeat(List<Booking> bookings) {
+           return bookings.stream()
+                   .filter(booking -> booking.seatCode() != null)
+                   .collect(Collectors.toMap(Booking::seatCode, Function.identity(), SeatIndex::later, LinkedHashMap::new));
+       }
 
-   private static Booking later(Booking left, Booking right) {
-       return right.bookedAt().isAfter(left.bookedAt()) ? right : left;
+       private static Booking later(Booking left, Booking right) {
+           return right.bookedAt().isAfter(left.bookedAt()) ? right : left;
+       }
    }
    ```
 5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
-   as short glue or method references; use named helpers for branching, merge logic, or nested stream
-   work.
+   as short glue or method references. Extract a named helper when a lambda would branch or wrap,
+   when a duplicate-key merge rule needs more than a same-line expression for ties, nulls, or
+   ordering, and for nested collector callbacks (a named `Stream<T>` helper).
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
-   parallel-safety, and baseline compatibility. Run the marker scan from
-   [hard-stops.md](references/hard-stops.md), fix hits, and re-scan. In scan audits, keep
+   parallel-safety, and baseline compatibility. Run the marker scan and the parallel-safety
+   conditions from [hard-stops.md](references/hard-stops.md) (no custom pool snippets unless asked),
+   fix hits, and re-scan. In scan audits, keep
    hard-stop severities: required hits stay required unless explicitly acceptable.
 
 Review output: state the behavior-preserving decision, add one safe snippet, create `review.md`
