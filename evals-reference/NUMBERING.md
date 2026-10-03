@@ -49,3 +49,7 @@ After targeted run `019e9fa8-ccf2-77c7-885f-2cba4939e16f`, reference number `16`
 
 When hosted history shows both with-context and without-context are consistently 100%, move the
 scenario to `evals-regression/` instead of keeping it in normal reference-candidate runs.
+
+With-context run against the PR #94 runtime text (commit `a81acce`) on 2026-10-03, default solver
+`deepseek-v4.1-flash`: all six reference scenarios scored 100 in
+`01a103b0-1209-7449-b98b-7c573a67ece7`. No baseline was run this time to save credits.
