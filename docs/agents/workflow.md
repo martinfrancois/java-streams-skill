@@ -157,7 +157,7 @@ release-readiness.
   `.tessl-plugin/plugin.json` as `v<version>`.
   Release Please PRs created or updated with `GITHUB_TOKEN` may not trigger ordinary `pull_request`
   workflows, so `.github/workflows/release-please.yml` also posts the required release-PR
-  `Commitlint` and `Validate skill and plugin` statuses. Prefer the Release Please `pr` output for
+  `Commitlint`, `Validate skill and plugin`, and `Tessl skill review` statuses. Prefer the Release Please `pr` output for
   those statuses, and fall back to the existing pending release PR only when Release Please emits no
   PR output because the PR was unchanged.
 - When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit
