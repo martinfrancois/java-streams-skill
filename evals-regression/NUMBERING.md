@@ -12,3 +12,7 @@ checks, not as fair without-context lift evidence, regardless of their without-c
 
 Reference number `16` moved here after targeted run `019e9fa8-ccf2-77c7-885f-2cba4939e16f`,
 where both without-context and with-context scored 100 / 100.
+
+With-context runs against the PR #94 runtime text (commit `a81acce`) on 2026-10-03, default solver
+`deepseek-v4.1-flash`: `04`, `22`, and `25` in `01a1039a-d4e9-76d2-9e7a-56945dfa7352`, the other
+sixteen in `01a103a9-22fe-713b-bec2-f1bf09957918`. All nineteen scored 100.

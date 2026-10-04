@@ -14,3 +14,10 @@ Number `07` was demoted back to `evals-reference/26-uppercase-side-effect-review
 evidence showed useful ordinary lift, but the main suite should stay focused on the strongest
 evidence-weighted coverage. Keep the scenario in reference coverage unless future current-suite
 evidence shows it meets the 30 pp promotion floor and improves main coverage.
+
+Proof for the PR #94 runtime text (commit `a81acce`) on 2026-10-03. Before this window the Tessl
+default solver changed from `deepseek-v4-flash` to `deepseek-v4.1-flash`. Runs
+`01a10394-27cb-711f-8632-12d5b0c0b1e9` (`01`, `02`) and `01a103a1-b700-720e-abaa-84f17fbb23c2`
+(`03`, `04`): all four scored 100 with context and 100 without, so the main suite shows no lift
+under the new solver (1.0x against 2.22x for v1.2.0). The skill text is not the cause; the
+baselines rose. Choosing new main scenarios is a maintainer decision.
