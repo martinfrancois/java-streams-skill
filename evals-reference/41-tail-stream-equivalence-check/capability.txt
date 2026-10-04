@@ -1,0 +1,2 @@
+Move expensive tail work into lazy stream pipelines so allMatch can short-circuit meaningful work
+while preserving conflict behavior.

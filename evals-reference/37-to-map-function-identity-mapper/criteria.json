@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: identity key and value mappers in Collectors.toMap should use Function.identity without changing collector semantics.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 17-compatible StateIndexes code and adds any required java.util.function.Function import."
+    },
+    {
+      "name": "Uses Function.identity for identity key mapper",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Replaces state -> state with Function.identity() in the normalized state counting collector."
+    },
+    {
+      "name": "Uses Function.identity for identity value mapper",
+      "category": "stream_quality",
+      "max_score": 20,
+      "description": "Replaces card -> card with Function.identity() in the Card::id indexing collector."
+    },
+    {
+      "name": "Preserves merge functions",
+      "category": "safety",
+      "max_score": 16,
+      "description": "Keeps Integer::sum for duplicate state counts and keeps the left-wins merge function for duplicate card ids."
+    },
+    {
+      "name": "Preserves map suppliers",
+      "category": "safety",
+      "max_score": 14,
+      "description": "Keeps HashMap::new and LinkedHashMap::new where they were part of the original collector behavior."
+    },
+    {
+      "name": "Does not over-apply identity",
+      "category": "stream_quality",
+      "max_score": 14,
+      "description": "Does not replace the non-identity card -> card.displayName() mapper with Function.identity() or a custom identity helper."
+    },
+    {
+      "name": "Keeps downstream result behavior",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Preserves values().stream().toList() behavior, method signatures, record fields, and imports without unrelated collector changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/44",
+    "reference_selection": "Focused issue #44 coverage for Function.identity in toMap identity mappers.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same collector shape."
+  }
+}

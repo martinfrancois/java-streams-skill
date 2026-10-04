@@ -1,0 +1,56 @@
+{
+  "context": "Reference focused cleanup: Java 25 line-to-zero-or-one stream transformations should prefer mapMulti over side-effecting forEach or line-level flatMap when appropriate.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates coherent Java 25 artifact",
+      "category": "safety",
+      "max_score": 8,
+      "description": "Returns complete Java 25-compatible DeclarationExtractor code with necessary imports, records, methods, and Pattern usage intact."
+    },
+    {
+      "name": "Produces the result through the pipeline",
+      "category": "stream_quality",
+      "max_score": 18,
+      "description": "Refactors declarations(Card) so the stream pipeline returns the final declarations via toList rather than mutating an external List from forEach."
+    },
+    {
+      "name": "Uses mapMulti for zero-or-one emission",
+      "category": "stream_quality",
+      "max_score": 24,
+      "description": "Uses mapMulti or an equivalent Consumer-based emitter for the line-to-zero-or-one Declaration transformation, avoiding tiny Stream.of/Stream.empty allocations as the preferred final shape."
+    },
+    {
+      "name": "Keeps text-block flatMap acceptable",
+      "category": "stream_quality",
+      "max_score": 10,
+      "description": "Uses flatMap only where each text block naturally expands to a stream of declarations, and does not confuse that with the line-level zero-or-one transformation."
+    },
+    {
+      "name": "Preserves filters and matching",
+      "category": "safety",
+      "max_score": 18,
+      "description": "Filters null and blank text blocks, keeps LABELED_SOURCE.matcher(line).matches(), preserves the captured value, and searches title, description, and comments."
+    },
+    {
+      "name": "Avoids side-effecting stream terminals",
+      "category": "stream_quality",
+      "max_score": 12,
+      "description": "Does not keep text.lines().forEach(...) or helper methods whose purpose is mutating a caller-owned declarations list."
+    },
+    {
+      "name": "Keeps implementation readable",
+      "category": "maintainability",
+      "max_score": 10,
+      "description": "Extracts a small emitter helper when useful and avoids custom collectors, large abstractions, or unrelated parser changes."
+    }
+  ],
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_reference",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/40",
+    "reference_selection": "Focused issue #40 coverage for mapMulti declaration extraction instead of side-effecting forEach.",
+    "runtime_reference_overlap_rationale": "Allowed only as reference-suite focused coverage; do not report as ordinary broad lift if runtime references later teach this same mapMulti shape."
+  }
+}

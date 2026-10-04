@@ -1,0 +1,2 @@
+Refactor Java 25 declaration extraction so streams produce the result directly and use mapMulti for
+zero-or-one line emissions.
