@@ -159,3 +159,42 @@ jobs:
           "Release PR commitlint passed"
           "Release PR commitlint failed"
           "$TARGET_URL"
+
+      - name: Mark release PR skill review pending
+        if: ${{ steps.release-pr.outputs.found == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: >
+          scripts/post_commit_status.sh "$(git rev-parse HEAD)"
+          "Tessl skill review"
+          pending
+          "Release PR skill review is running"
+          "$TARGET_URL"
+
+      - name: Review release PR skill
+        if: ${{ steps.release-pr.outputs.found == 'true' }}
+        id: skill-review-release-pr
+        continue-on-error: true
+        env:
+          TESSL_TOKEN_AVAILABLE: ${{ steps.release-pr-tessl-token.outputs.available }}
+        run: |
+          if [[ "$TESSL_TOKEN_AVAILABLE" == "true" ]]; then
+            tessl review run --workspace martinfrancois --threshold 100 skills/java-streams/SKILL.md
+          else
+            echo "TESSL_TOKEN isn't configured; skipping Tessl skill review."
+          fi
+
+      - name: Mark release PR skill review result
+        if: ${{ steps.release-pr.outputs.found == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SKILL_REVIEW_OUTCOME: ${{ steps.skill-review-release-pr.outcome }}
+        run: >
+          scripts/post_commit_status_for_outcome.sh "$(git rev-parse HEAD)"
+          "Tessl skill review"
+          "$SKILL_REVIEW_OUTCOME"
+          "Release PR skill review passed"
+          "Release PR skill review failed"
+          "$TARGET_URL"
