@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.1...v1.2.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **skill:** tighten the stream workflow for the current Tessl reviewer ([#94](https://github.com/martinfrancois/java-streams-skill/issues/94)) ([eaea5a1](https://github.com/martinfrancois/java-streams-skill/commit/eaea5a183e669864ed0f5a66b54c58a1c2a31a08))
+
 ## [1.2.1](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.0...v1.2.1) (2026-09-21)
 
 
