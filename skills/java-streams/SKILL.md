@@ -1,7 +1,7 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a pipeline, result mutability, and stream chain layout.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a stream chain, result mutability, and stream chain layout.
 ---
 
 # Java Streams Skill
@@ -32,12 +32,10 @@ exact file. Do not answer only in chat when a file artifact is requested.
    | Goal | Preferred API |
    |---|---|
    | Arbitrary match, all matches equivalent, order never picks the winner | `filter(...).findAny()` |
-   | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep `sorted(...).filter(...).findFirst()` when it defines the winner, and suggest `min`/`max` only when it keeps that winner |
+   | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep an existing `sorted(...).filter(...).findFirst()` that defines the winner |
    | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
    | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size for zero, one, and more that takes the one element from that list; no `findFirst`/`findAny` anywhere in that lookup, they accept a duplicate silently |
    | Transformed list/set | `map`/`filter` then collect |
-   | Concatenated text | `Collectors.joining` |
-   | Numeric primitive result | `mapToInt`/`mapToLong`/`mapToDouble` terminals |
    | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
 
@@ -73,13 +71,14 @@ exact file. Do not answer only in chat when a file artifact is requested.
      ```
 3. Flatten nested sources deliberately.
    - Use `flatMap`, `flatMap(Optional::stream)` on Java 9+, and `mapMulti` on Java 16+ when
-     clearer. When each element yields zero or one result (parse, then emit on success), `mapMulti`
-     beats a `map`, `filter`, `map` sequence that carries an intermediate type:
-     `events.<Alert>mapMulti(Monitor::alertIfCritical)` with a helper taking `(Event, Consumer<Alert>)`.
+     clearer. When each element yields zero or one result, use `mapMulti` with a helper taking
+     `(Event, Consumer<Alert>)`, as in `events.<Alert>mapMulti(Monitor::alertIfCritical)`; a
+     matcher or `Optional` should not travel through the chain as an intermediate value.
    - For subtype primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble`.
    - When the loop split text with a regex, keep that regex: stream the pieces from a static
      precompiled `Pattern` with `splitAsStream`, not from `Arrays.stream(text.split(...))`, and do
-     not swap `split("\\R")` for `String.lines()`, which recognizes fewer line terminators.
+     not swap `split("\\R")` for `String.lines()`, which recognizes fewer line terminators, unless
+     the text is known to use only `\\n` and `\\r\\n`.
 
    ```java
    // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
@@ -112,13 +111,13 @@ exact file. Do not answer only in chat when a file artifact is requested.
 5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
    as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
-   `Stream<T>` helper). Name a helper after the domain decision it makes and type its parameter
-   to the domain type (`isPastDue(Invoice)`, not `check(String)`).
+   `Stream<T>` helper).
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
-   mutation-heavy logic, or complex early exits. Calls that write to an external system (an API
-   post, a database or file write, a message send) run in a plain loop, never inside `map`,
-   `forEach`, or a helper called from a pipeline; gather what the writes need with a stream first,
-   then loop over the writes. Loops that use the index for anything but element access stay loops.
+   mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
+   database or file write, a message send) are their own step. Gather what they need with a stream
+   chain, then make the writes in a plain loop or a terminal `forEach` that does nothing else;
+   never write from `map` or from a helper inside the chain. A loop that uses its index for
+   anything but element access stays a loop.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and baseline compatibility. Run the marker scan and the parallel-safety
    conditions from [hard-stops.md](references/hard-stops.md) (no custom pool snippets unless asked),

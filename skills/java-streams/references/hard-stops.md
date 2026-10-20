@@ -17,9 +17,8 @@ Fix these before finalizing:
   or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - `findFirst()` or `findAny()` as the selection step where a second match must fail: both accept
-  duplicates silently, and a duplicate check added after them still names the wrong terminal. Use
-  `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
-- A collection allocated before the pipeline and filled from its result afterwards, or a list
+  it silently. Use `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
+- A collection allocated before the stream chain and filled from its result afterwards, or a list
   collected only to be copied into the returned collection. Collect to the returned type directly;
   when callers never modify the result, collect to an unmodifiable one.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
@@ -39,6 +38,8 @@ Fix these before finalizing:
 - Nested `map(... stream ... collect(...)).flatMap(...)` where a direct `flatMap` stream chain is
   clearer.
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
+- A `Matcher`, `Optional`, or other intermediate carried through `map(...).filter(...).map(...)`
+  on Java 16+ so that each element yields zero or one result. Use `mapMulti` with a named helper.
 - `toMap` without a merge function when duplicate keys are possible.
 - `groupingBy` where null classifier keys can reach the collector. Treat this as a required fix,
   not a conditional caveat, unless the code already proves non-null before the collector. In scan
