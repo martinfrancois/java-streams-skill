@@ -16,11 +16,11 @@ Fix these before finalizing:
   `findFirst` and `findAny`, name that `findAny` exception explicitly before discussing parallelism
   or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
-- `findFirst()` or `findAny()` as the selection step where a second match must fail: both accept
-  it silently. Use `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
+- `findFirst()` or `findAny()` for a lookup that must fail when more than one element matches.
+  Use `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
 - A collection allocated before the stream chain and filled from its result afterwards, or a list
   collected only to be copied into the returned collection. Collect to the returned type directly;
-  when callers never modify the result, collect to an unmodifiable one.
+  when the result is only read, collect to an unmodifiable one.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
   The hard-stop scan regex catches only `count() > 0` existence checks, not plain `count()`. If an
@@ -38,8 +38,9 @@ Fix these before finalizing:
 - Nested `map(... stream ... collect(...)).flatMap(...)` where a direct `flatMap` stream chain is
   clearer.
 - `filter(Optional::isPresent).map(Optional::get)` on Java 9+. Use `flatMap(Optional::stream)`.
-- A `Matcher`, `Optional`, or other intermediate carried through `map(...).filter(...).map(...)`
-  on Java 16+ so that each element yields zero or one result. Use `mapMulti` with a named helper.
+- On Java 16+, a `map` that produces an intermediate (`Matcher`, `Optional`, a parse result) only
+  for a `filter` to test it before another `map` unwraps it. Each element yields zero or one
+  result there, which is what `mapMulti` with a named `(T, Consumer<R>)` helper expresses.
 - `toMap` without a merge function when duplicate keys are possible.
 - `groupingBy` where null classifier keys can reach the collector. Treat this as a required fix,
   not a conditional caveat, unless the code already proves non-null before the collector. In scan
@@ -72,9 +73,9 @@ Fix these before finalizing:
 In reviews, avoid examples that put substantial work behind one lambda body, including ad-hoc helper
 expressions like `-> input -> ...` or callbacks passed into custom parallel executors. If a non-trivial
 decision is needed, extract to a named method and keep the stream chain as glue.
-- A chain laid out against its operation count, also when the chain is a method argument. One
-  operation after `stream()` stays on one line; two or more keep `.stream()` on the source line and
-  put each later operation on its own line:
+- Chain layout that ignores the operation count, wherever the chain appears. One operation after
+  `stream()` stays on one line; with two or more, `.stream()` stays on the source line and the
+  chain continues one operation per line:
 
   ```java
   boolean hasOpenInvoice = invoices.stream().anyMatch(Invoice::isOpen);

@@ -34,8 +34,7 @@ exact file. Do not answer only in chat when a file artifact is requested.
    | Arbitrary match, all matches equivalent, order never picks the winner | `filter(...).findAny()` |
    | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep an existing `sorted(...).filter(...).findFirst()` that defines the winner |
    | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
-   | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size for zero, one, and more that takes the one element from that list; no `findFirst`/`findAny` anywhere in that lookup, they accept a duplicate silently |
-   | Transformed list/set | `map`/`filter` then collect |
+   | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size for zero, one, and more that takes the one element from that list; no `findFirst`/`findAny` anywhere in that lookup |
    | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
 
@@ -53,9 +52,9 @@ exact file. Do not answer only in chat when a file artifact is requested.
    - Implementation: write the direct stream result; on Java 16+ prefer
      `names.stream().map(String::toUpperCase).toList()` over a manual `ArrayList` loop. Return
      what the stream collects: no collection allocated first and filled afterwards, no list
-     collected only to be copied into the returned collection. When callers never modify the
-     result, collect to an unmodifiable one (`toList()`, `Collectors.toUnmodifiableSet()`) and
-     return `List.of()` or `Set.of()` from early-exit and catch paths.
+     collected only to be copied into the returned collection. When the result is only read,
+     collect to an unmodifiable one (`toList()`, `Collectors.toUnmodifiableSet()`), and
+     every path that produces nothing returns an empty unmodifiable collection.
    - External-mutation or performance review: show a sequential result-producing snippet first; for
      million-item CPU maps, mention benchmarking a pure parallel variant and include:
      "`parallelStream()` can be slower for small lists or call paths that are usually small."
@@ -72,13 +71,12 @@ exact file. Do not answer only in chat when a file artifact is requested.
 3. Flatten nested sources deliberately.
    - Use `flatMap`, `flatMap(Optional::stream)` on Java 9+, and `mapMulti` on Java 16+ when
      clearer. When each element yields zero or one result, use `mapMulti` with a helper taking
-     `(Event, Consumer<Alert>)`, as in `events.<Alert>mapMulti(Monitor::alertIfCritical)`; a
-     matcher or `Optional` should not travel through the chain as an intermediate value.
+     `(Event, Consumer<Alert>)`, as in `events.<Alert>mapMulti(Monitor::alertIfCritical)`.
    - For subtype primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble`.
-   - When the loop split text with a regex, keep that regex: stream the pieces from a static
-     precompiled `Pattern` with `splitAsStream`, not from `Arrays.stream(text.split(...))`, and do
-     not swap `split("\\R")` for `String.lines()`, which recognizes fewer line terminators, unless
-     the text is known to use only `\\n` and `\\r\\n`.
+   - When the loop split text with a regex, keep that regex and stream the pieces with
+     `splitAsStream` from a precompiled `Pattern`. Do not swap `split("\\R")` for `String.lines()`,
+     which recognizes fewer line terminators, unless the text is known to use only `\\n` and
+     `\\r\\n`.
 
    ```java
    // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
@@ -126,8 +124,8 @@ exact file. Do not answer only in chat when a file artifact is requested.
    explicitly acceptable.
 
 Review output: state the behavior-preserving decision, add one safe snippet, create `review.md`
-when asked (also for rejections), and explain code behavior only. For every change, give its
-reason (clearer intent, or a named behavior difference) and the behavior that stays the same.
+when asked (also for rejections), and explain code behavior only. For every change, say why it
+is better and which behavior it keeps: order, early exit, exceptions, mutability.
 Describe the code, not this workflow: no "skill", "scan", "marker", "hard stop", "checklist",
 "rubric", or "criteria" in a final message, comment, or review unless the user asked about the
 workflow itself.
