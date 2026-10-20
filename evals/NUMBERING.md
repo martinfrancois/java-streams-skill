@@ -58,3 +58,13 @@ Main is two scenarios, 200 checklist points, no weight multipliers. One local sk
 scored `31` 100 and `43` 97 (three points lost for a final message that mentioned an internal
 scan label, which the skill text forbids). The local prediction for the main suite is about
 200 with the skill against 99 without, roughly 2x, to be confirmed by a hosted run.
+
+### With the skill, locally (2026-10-20)
+
+Same harness, skill mode (the skill copied into the agent's `.claude/skills/`), against the skill
+text that adds the fail-on-duplicates lookup, result-mutability, regex line splitting, helper
+naming, chain layout, and external-write rules: `31` scored 100 in six runs of six, `43` 100 in
+four of four. Before those rules, `43` had scored 97 and 99 in two runs for naming an internal
+check in its final message. The wording was then tightened until the Tessl quality review scored
+100; on that final text, `31` and `43` scored 100 in four runs of four each. Local prediction for
+the suite: 200 with the skill against 99 without.

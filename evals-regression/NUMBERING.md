@@ -61,3 +61,11 @@ their checklists ask for exact skill-provided text.
 
 The rule is the one used for the new scenarios: 98 to 100 in every run stays regression, anything
 that dips below 98 in a run is lift material and goes to reference.
+
+Skill mode of the same local harness against the final skill text, one run per scenario unless
+noted: every scenario scored 98 to 100 except `22` (95, length of the audit), `47` (95 over six
+runs, the final message never spells out why `List.of` on an array picks the varargs overload),
+and `39` (100, 100, 75 over three runs: one run kept a loop with a local write instead of
+`anyMatch` plus an `if`). `32` scored 85 to 90 in three runs before the rule that keeps external
+writes in a plain loop and 100 in three runs after it. Those three need the hosted with-context
+run before a release claim.

@@ -113,3 +113,16 @@ They are the first candidates to retire if the reference suite needs trimming.
 and their `Reference` context sentences. Their `evidence_type` is `focused_reference` because
 their tasks share identifiers with the runtime examples. Hosted both-arms evidence against the
 current skill is pending.
+
+### With the skill, locally (2026-10-20)
+
+Skill mode of the same harness against the final skill text, two to six runs per scenario, mean
+and range: `08` 100, `09` 97, `13` 100, `15` 98 (97 to 99), `27` 100 (99 to 100), `28` 100, `30`
+100 (99 to 100), `35` 100 (97 to 100), `37` 98 (95 to 100), `38` 95 (80 to 100), `42` 100 (97 to
+100), `44` 82 (28 to 100, one run let the parser remove duplicates itself), `45` 98 (95 to 100),
+`48` 96 (95 to 97), `49` 100 (98 to 100), `50` 98 (95 to 100), `51` 96 (95 to 96). The skill text
+before this round scored `42` at 72 to 75 (its `findFirst` preference fought the fail-on-duplicates
+lookup), `35` at 85 (no chain-layout rule), `37` at 88 to 100, `38` at 80 to 100, and `45` at 92 to
+93; the rules added on 2026-10-20 target those. The remaining losses on `48`, `50`, and `51` are
+explanation items (why a reduction's empty start cannot collide, naming intent as the reason for a
+change, saying the sort moved into the pipeline), not code shape.
