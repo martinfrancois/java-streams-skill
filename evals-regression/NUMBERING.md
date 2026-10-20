@@ -19,7 +19,9 @@ sixteen in `01a103a9-22fe-713b-bec2-f1bf09957918`. All nineteen scored 100.
 
 ## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
 
-Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md` (DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each `criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
+Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md`
+(DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each
+`criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
 
 Moved here with `evidence_type` `solved_regression`:
 
@@ -57,9 +59,11 @@ their checklists ask for exact skill-provided text.
 The rule is the one used for the new scenarios: 98 to 100 in every run stays regression, anything
 that dips below 98 in a run is lift material and goes to reference.
 
-`39-predicate-loop-audit` became explicit on 2026-10-20 because the maintainer prompt behind its
-source issue passed each method through the skill by name; its explicit baseline is in the table
-below once screened.
+Four scenarios became explicit on 2026-10-20 because the maintainer prompt behind their source
+issue named the skill: `39-predicate-loop-audit` (explicit baseline 100 in both runs, stays here),
+`33-foreach-into-outer-map` (97, range 95 to 98) and `34-identity-mapper-in-tomap` (89, range 80
+to 98), which moved to `evals-reference/` because their explicit baseline dips below 98, and
+reference `37-line-splitting-contract` (96, range 92 to 100).
 
 Skill mode of the same local harness against the final skill text, one run per scenario unless
 noted: every scenario scored 98 to 100 except `22` (95, length of the audit), `47` (95 over six

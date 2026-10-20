@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a Java 17 parser loops over text.split(\"\\\\R\", -1), and the stream rewrite tempts agents to switch to String.lines(), which recognizes fewer line breaks than regex \\R.",
+  "context": "Reference explicit cleanup: a Java 17 parser loops over text.split(\"\\\\R\", -1), and the stream rewrite tempts agents to switch to String.lines(), which recognizes fewer line breaks than regex \\R.",
   "type": "weighted_checklist",
   "checklist": [
     {

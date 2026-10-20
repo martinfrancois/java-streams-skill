@@ -186,8 +186,10 @@ Use `metadata.evidence_type` when scenario placement needs to be explicit:
 - `ordinary_lift`: both variants are fair to compare, so the scenario can live in main or reference.
   This value is invalid in `evals-regression/`.
 - `solved_regression`: both variants solve the scenario at 100%, shown by hosted history or, until
-  the hosted run exists, by the local screen described in `docs/agents/local-screening.md`. This
-  value is invalid outside `evals-regression/`.
+  the hosted run exists, by the local screen described in `docs/agents/local-screening.md` (baseline
+  and skill arm at 98 to 100 in every run; the local judge takes a point or two on focus items in
+  otherwise correct runs). A scenario whose local skill arm dips keeps the type only until the
+  hosted run. This value is invalid outside `evals-regression/`.
 - `skill_context_dependent`: the scenario requires exact skill-provided text, commands, procedures,
   checklists, headers, or bundled reference text. It must live in `evals-regression/`.
 
@@ -195,11 +197,14 @@ With-context must be 100% for every retained scenario in every suite. If with-co
 100%, fix the skill or eval and rerun that scenario targeted before choosing or changing a suite.
 
 Do not hide baseline-solved scenarios just to improve lift. Move baseline-solved scenarios to
-`evals-regression/` when hosted evidence shows both variants are 100%. Keep clean low-delta but
-still diagnostic scenarios in `evals-reference/`.
+`evals-regression/` when both variants are solved: hosted evidence at 100%, or, until the hosted
+run exists, the local screen at 98 to 100 in every run (the local judge takes a point or two on
+focus items in otherwise correct runs). Keep clean low-delta but still diagnostic scenarios in
+`evals-reference/`.
 
 When adding a new scenario, screen it locally first (`scripts/local_screen.sh`, see
-`docs/agents/local-screening.md`), then classify it from an isolated hosted run:
+`docs/agents/local-screening.md`), place it from that screen, and confirm the placement from an
+isolated hosted run when credits allow:
 
 1. Put ordinary candidate scenarios in `evals-reference/`. Put skill-context-dependent scenarios
    that require exact skill-provided text, commands, procedures, checklists, headers, or bundled

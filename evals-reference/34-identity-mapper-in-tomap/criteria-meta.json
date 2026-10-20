@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "invocation": "natural",
+    "invocation": "explicit",
     "task_type": "cleanup",
-    "evidence_type": "solved_regression",
+    "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/44",
-    "reference_selection": "Shows whether the agent writes Function.identity() for identity key and value mappers, both in existing toMap calls and in the collector it writes for a forEach merge, without touching non-identity mappers, merge functions, or map suppliers."
+    "reference_selection": "Explicit baseline 89 (80 to 98) in the local DeepSeek V4.1 Flash screen of 2026-10-20 after the prompt became explicit to match its source issue; see evals-reference/NUMBERING.md."
   },
   "categories": {
     "Creates the revised HarbourCallIndex.java": "safety",

@@ -1,6 +1,6 @@
 # Simplify the newsroom feed planner
 
-Create `NewsroomFeedPlanner.java` with the revised class. Assume Java 17.
+Create `NewsroomFeedPlanner.java` with the revised class. Assume Java 17. Use `$java-streams` for this cleanup.
 
 The newsroom tooling team is sweeping old code. The planner below works; simplify its two methods
 where that makes them clearer, and keep their behavior.
