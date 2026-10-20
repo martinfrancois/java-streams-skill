@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "invocation": "natural",
+    "invocation": "explicit",
     "task_type": "cleanup",
-    "evidence_type": "solved_regression",
+    "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/42",
-    "reference_selection": "Shows whether the agent replaces forEach mutation of an outer list and an outer map with Stream.concat plus distinct().toList() and a toMap or groupingBy collector that keeps the merge rule and the mutable HashMap."
+    "reference_selection": "Explicit baseline 97 (95 to 98) in the local DeepSeek V4.1 Flash screen of 2026-10-20 after the prompt became explicit to match its source issue; see evals-reference/NUMBERING.md."
   },
   "categories": {
     "Creates the revised NewsroomFeedPlanner.java": "safety",

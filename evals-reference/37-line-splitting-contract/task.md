@@ -1,6 +1,6 @@
 # Bring the inspection fault parser in line with the module
 
-Create `InspectionFaultParser.java` with the revised class. Assume Java 17.
+Create `InspectionFaultParser.java` with the revised class. Assume Java 17. Use `$java-streams` for this cleanup.
 
 The fleet maintenance module returns derived data from stream pipelines everywhere except in this
 parser, which still threads a shared list through a helper. Rewrite it as a stream pipeline that

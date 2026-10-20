@@ -25,7 +25,9 @@ baselines rose. Choosing new main scenarios is a maintainer decision.
 
 ## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
 
-Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md` (DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each `criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
+Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md`
+(DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each
+`criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
 
 Numbers `01` to `04` moved to regression numbers `52` to `55` (new numbers, because the
 regression suite already uses `01`, `02`, and `04` for other scenarios). Hosted runs on 2026-10-03
@@ -56,9 +58,12 @@ scan label, which the skill text forbids). The local prediction for the main sui
 ### With the skill, locally (2026-10-20)
 
 Same harness, skill mode (the skill copied into the agent's `.claude/skills/`), against the skill
-text that adds the fail-on-duplicates lookup, result-mutability, regex line splitting, helper
-naming, chain layout, and external-write rules: `31` scored 100 in six runs of six, `43` 100 in
+text that adds the fail-on-duplicates lookup, result-mutability, regex line splitting, chain
+layout, and external-write rules: `31` scored 100 in six runs of six, `43` 100 in
 four of four. Before those rules, `43` had scored 97 and 99 in two runs for naming an internal
 check in its final message. The wording was then tightened until the Tessl quality review scored
-100; on that final text, `31` and `43` scored 100 in four runs of four each. Local prediction for
-the suite: 200 with the skill against 99 without.
+100 and reworked three times in code review so that no rule echoes a checklist; on the final
+text, `31` scored 94 (77 to 100, three runs of four at 100; the fourth used `forEach` per line)
+and `43` 99 (97 to 100) over four runs each. Without the `mapMulti` antipattern bullet in
+`hard-stops.md`, `31` fell to 90 in four runs of four, so that bullet stays. Local prediction for
+the suite: about 193 with the skill against 99 without.

@@ -76,8 +76,10 @@ benchmark claims, or scoring rules.
   - `solved_regression`: a regression scenario that both variants solve at 100%, shown by hosted
     history or, until the hosted run exists, by the local screen (baseline 98 to 100 in every run;
     the local judge takes a point or two on focus and concision items in otherwise correct runs,
-    so 98 counts as solved). The `NUMBERING.md` note must say which evidence placed it. This value
-    is invalid outside `evals-regression/`.
+    so 98 counts as solved, and the local skill arm at 98 or more). A scenario whose local skill
+    arm dips keeps the type only until the hosted run and is listed in this file as provisional.
+    The `NUMBERING.md` note must say which evidence placed it. This value is invalid outside
+    `evals-regression/`.
   - `skill_context_dependent`: a regression scenario that requires exact skill-provided text,
     commands, procedures, checklists, headers, or bundled reference text. This value is required for
     such scenarios and is invalid outside `evals-regression/`.
@@ -261,7 +263,7 @@ Update this section whenever active eval membership or scoring changes.
   predicate instead of a loop that throws).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
-  in `evals-reference/` (`09`, `51`) until an explicit scenario clears the floor.
+  in `evals-reference/` (`09`, `33`, `34`, `37`, `51`) until an explicit scenario clears the floor.
 - Both main scenarios were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
   whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the
@@ -269,17 +271,18 @@ Update this section whenever active eval membership or scoring changes.
   coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 18 scenarios, 1765 total checklist points. `04`, `08`, `09`, `13`, `15`, `27`,
-  `28` plus the issue-derived `30`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`.
-  `04`, `09`, and `13` came back from regression on 2026-10-20 because the local screen scored
-  them under 98 in some runs.
-- Regression suite: 32 scenarios, 4115 total checklist points, including the four former main
+- Reference suite: 20 scenarios, 1965 total checklist points. `04`, `08`, `09`, `13`, `15`, `27`,
+  `28` plus the issue-derived `30`, `33`, `34`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`,
+  `50`, `51`. `04`, `09`, `13`, `33`, and `34` came back from regression on 2026-10-20 because
+  the local screen scored them under 98 in some runs.
+- Regression suite: 30 scenarios, 3915 total checklist points, including the four former main
   scenarios as `52` to `55`. Every scenario that was already there before 2026-10-20 was rescreened
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
 - Every placement made on 2026-10-20 rests on the local screen and is provisional: the hosted
-  with-context arm has not run for the new scenarios, and the local skill arm still dips on `39`,
-  `44`, and `47` in some runs. Reclassify from the hosted result when it exists.
+  with-context arm has not run for the new scenarios, and the local skill arm still dips below 98
+  in some runs on regression `22`, `39`, and `47` and on several reference scenarios (the
+  `NUMBERING.md` notes list them). Reclassify from the hosted result when it exists.
 - Hosted benchmark evidence for the current main suite is pending. Do not publish exact run IDs,
   baseline scores, with-context scores, or lift ratios until a hosted run covers the current
   `evals/` contents.

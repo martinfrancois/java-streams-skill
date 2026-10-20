@@ -25,8 +25,9 @@ directions.
 ## Setup
 
 1. Create an API key at <https://platform.deepseek.com/> and add credit. A run costs one to two
-   US cents; ten US dollars covered about seven hundred runs in October 2026. DeepSeek halves the price in its off-peak
-   window; the current window is on <https://api-docs.deepseek.com/quick_start/pricing/>.
+   US cents; ten US dollars covered about seven hundred runs in October 2026. DeepSeek halves the
+   price in its off-peak window; the current window is on
+   <https://api-docs.deepseek.com/quick_start/pricing/>.
 2. Store the key alone, with no comment line and no trailing text, in `~/deepseek-api-key` and
    make it private:
 
@@ -88,7 +89,7 @@ twenty minutes and under two dollars.
 
 Place scenarios by the baseline arm:
 
-| Baseline mean over the runs | Placement |
+| Baseline over the runs | Placement |
 | --- | --- |
 | 98 to 100 in every run | `evals-regression/` |
 | at least 30 points under 100 | `evals/` candidate, once the skill arm reaches 100 (the repo's with-context rule) |

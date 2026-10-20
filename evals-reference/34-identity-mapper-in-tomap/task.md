@@ -1,6 +1,6 @@
 # Tidy the harbour call index
 
-Create `HarbourCallIndex.java` with the revised class. Assume Java 17.
+Create `HarbourCallIndex.java` with the revised class. Assume Java 17. Use `$java-streams` for this cleanup.
 
 The port operations team keeps lookup tables for vessels, berths, and port calls in the class
 below. It is correct, but the team wants it tidied for readability before more indexes are added.

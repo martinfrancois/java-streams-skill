@@ -56,13 +56,9 @@ With-context run against the PR #94 runtime text (commit `a81acce`) on 2026-10-0
 
 ## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
 
-Local baseline screening, 2026-10-20: each scenario's `task.md` ran through Claude Code with
-DeepSeek V4.1 Flash as the solver (`deepseek-flash` on DeepSeek's own API, the model behind the
-Tessl default solver `deepseek-v4.1-flash`) and no skill context, then Claude Haiku graded the
-written files against the scenario's `criteria.json`. Scores are percentages, mean over the runs
-listed. `scripts/local_screen.sh` reproduces it. This is not hosted evidence: no Tessl run IDs
-exist for these scenarios yet, and hosted confirmation is the next step (see the November issue
-#108).
+Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md`
+(DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each
+`criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
 
 Numbers `29` to `51` were drafted from the open eval issues (one scenario per issue; the issue
 link is in each `criteria-meta.json`). Every draft entered here first and was then placed by its
@@ -74,8 +70,8 @@ local baseline:
 | `30-eager-work-before-allmatch` | #39 | 6 | 75 (73 to 75) | reference: keeps a hand-written loop instead of the lazy stream check, stable 25-point delta, under the 30-point floor |
 | `31-line-to-record-extraction` | #40 | 6 | 30 (20 to 35) | main |
 | `32-hidden-lookup-before-writes` | #41 | 2 | 100 | regression |
-| `33-foreach-into-outer-map` | #42 | 2 | 100 | regression |
-| `34-identity-mapper-in-tomap` | #44 | 2 | 99 | regression |
+| `33-foreach-into-outer-map` | #42 | 2 | 100 natural, later 97 (95 to 98) explicit | regression, then reference once explicit |
+| `34-identity-mapper-in-tomap` | #44 | 2 | 99 natural, later 89 (80 to 98) explicit | regression, then reference once explicit |
 | `35-one-line-stream-chains` | #45 | 6 | 84 (82 to 85) | reference: wraps chains but splits the single `anyMatch` chain every time |
 | `36-unexplained-tocollection` | #46 | 2 | 100 | regression |
 | `37-line-splitting-contract` | #47 | 2 | 94 (87 to 100) | reference |
@@ -106,7 +102,7 @@ They are the first candidates to retire if the reference suite needs trimming.
 
 ## Returned from regression (2026-10-20)
 
-`04-primary-address-review` (explicit), `09-order-collector-report` (explicit), and
+`04-primary-address-review` (natural), `09-order-collector-report` (explicit), and
 `13-training-and-packets` (natural) came back from `evals-regression/` after the local baseline
 screen of the old regression scenarios: `04` scored 82 and 88, never naming the condition under
 which `findAny` is acceptable; `09` scored 98 (96 to 100) over six runs, losing points for
@@ -115,19 +111,24 @@ in one run of six. All three keep their numbers and their `Reference` context se
 `evidence_type` is `focused_reference` because their tasks share identifiers with the runtime
 examples. Hosted both-arms evidence against the current skill is pending.
 
-Invocation style follows the prompt that caused the implementation in each source issue. For `38`
-and `43`, the maintainer named the skill only in the later correction prompt, so both scenarios
-test the original implicit prompt and stay natural.
+Invocation style follows the prompt that caused the implementation in each source issue. `33`,
+`34`, `37`, and regression `39` became explicit on 2026-10-20 for that reason; `33` (explicit
+baseline 97, range 95 to 98) and `34` (89, range 80 to 98) then moved here from regression, and
+`37` screened at 96 (92 to 100) in its explicit form. For `38` and `43`, the maintainer named the
+skill only in the later correction prompt, so both scenarios test the original implicit prompt
+and stay natural.
 
 ### With the skill, locally (2026-10-20)
 
-Skill mode of the same harness against the final skill text, two to six runs per scenario, mean
-and range: `08` 100, `09` 97, `13` 100, `15` 98 (97 to 99), `27` 100 (99 to 100), `28` 100, `30`
-100 (99 to 100), `35` 100 (97 to 100), `37` 98 (95 to 100), `38` 95 (80 to 100), `42` 100 (97 to
-100), `44` 82 (28 to 100, one run let the parser remove duplicates itself), `45` 98 (95 to 100),
-`48` 96 (95 to 97), `49` 100 (98 to 100), `50` 98 (95 to 100), `51` 96 (95 to 96). The skill text
-before this round scored `42` at 72 to 75 (its `findFirst` preference fought the fail-on-duplicates
-lookup), `35` at 85 (no chain-layout rule), `37` at 88 to 100, `38` at 80 to 100, and `45` at 92 to
-93; the rules added on 2026-10-20 target those. The remaining losses on `48`, `50`, and `51` are
-explanation items (why a reduction's empty start cannot collide, naming intent as the reason for a
-change, saying the sort moved into the pipeline), not code shape.
+Skill mode of the same harness against the skill text before the review rounds, two to six runs per
+scenario, mean and range (the final text, after the review rounds, scored `35` 100, `37` 98 (95 to
+100), `38` 100, `42` 100 in two runs each, and `33` 100, `34` 98 explicit): `08` 100, `09` 97, `13`
+100, `15` 98 (97 to 99), `27` 100 (99 to 100), `28` 100, `30` 100 (99 to 100), `35` 100 (97 to 100),
+`37` 98 (95 to 100), `38` 95 (80 to 100), `42` 100 (97 to 100), `44` 82 (28 to 100, one run let the
+parser remove duplicates itself), `45` 98 (95 to 100), `48` 96 (95 to 97), `49` 100 (98 to 100),
+`50` 98 (95 to 100), `51` 96 (95 to 96). The skill text before this round scored `42` at 72 to 75
+(its `findFirst` preference fought the fail-on-duplicates lookup), `35` at 85 (no chain-layout
+rule), `37` at 88 to 100, `38` at 80 to 100, and `45` at 92 to 93; the rules added on 2026-10-20
+target those. The remaining losses on `48`, `50`, and `51` are explanation items (why a reduction's
+empty start cannot collide, naming intent as the reason for a change, saying the sort moved into the
+pipeline), not code shape.

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "invocation": "natural",
+    "invocation": "explicit",
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/47",
