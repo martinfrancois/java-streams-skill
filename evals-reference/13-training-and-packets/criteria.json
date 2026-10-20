@@ -1,5 +1,5 @@
 {
-  "context": "Regression implementation: Java 17 conditional developer email extraction should use a clean direct stream chain, and takeWhile is required for prefix semantics.",
+  "context": "Reference implementation: Java 17 conditional developer email extraction should use a clean direct stream chain, and takeWhile is required for prefix semantics.",
   "type": "weighted_checklist",
   "checklist": [
     {
