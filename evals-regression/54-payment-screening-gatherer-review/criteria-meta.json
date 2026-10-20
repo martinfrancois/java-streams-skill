@@ -2,8 +2,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "review",
-    "main_eval_weight_multiplier": 3,
-    "main_eval_selection": "active replacement for a runtime-reference-overlapping remote stock review; rerun hosted evals before updating benchmark claims"
+    "evidence_type": "solved_regression"
   },
   "categories": {
     "Creates review artifact": "safety",

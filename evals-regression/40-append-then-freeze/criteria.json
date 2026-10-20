@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a Java 17 record builds a temporary ArrayList from a stream only to append one element before its constructor copies the list, next to a stateful loop where the mutable list is honest work.",
+  "context": "Regression natural cleanup: a Java 17 record builds a temporary ArrayList from a stream only to append one element before its constructor copies the list, next to a stateful loop where the mutable list is honest work.",
   "type": "weighted_checklist",
   "checklist": [
     {

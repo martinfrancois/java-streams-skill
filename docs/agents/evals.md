@@ -35,6 +35,12 @@ benchmark claims, or scoring rules.
   - Explicit invocation scenarios may say `Use $java-streams`.
   - Report natural, explicit, main eval combined, reference, and regression results separately when
     hosted data is available.
+  - The main suite must contain a natural scenario; both styles must exist across `evals/` and
+    `evals-reference/` together. An explicit main scenario is wanted but not required, because
+    naming the skill in the prompt primes the current default solver to use streams on its own:
+    in the 2026-10-20 local screen every explicit variant of a failing natural scenario scored 90
+    to 100 unaided (`evals/NUMBERING.md`). Promote an explicit scenario to main only when its
+    explicit form clears the 30-point floor.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
 - Review-only or no-op evals must still require a concrete artifact, such as `review.md`.
 - Skill-context-dependent evals require information that only comes from the skill package or agent
@@ -245,40 +251,54 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 4 active scenarios, 1400 total checklist points.
-- Natural activation subset: 1 scenario.
-- Explicit invocation subset: 3 scenarios.
-- Java 24 bounded remote-call / `Gatherers.mapConcurrent` coverage: 3 scenarios, 1200 checklist
-  points. This dominates the current main score because hosted evidence previously showed strong
-  deltas in that family; do not over-read it as broad Java Streams coverage.
-- Scenarios `01-offer-availability-mapconcurrent` and `02-delivery-appointments-mapconcurrent` are
-  intentionally focused Java 24 runtime-guidance coverage. They should remain different domains and
-  result-carrier patterns from the bundled bounded `Gatherers.mapConcurrent` example in
-  `stream-examples.md`; report them as focused skill-use coverage rather than broad independent lift
-  evidence.
-- Java 17 collector and prefix-operation coverage: 1 scenario, 200 checklist points.
-- Uppercase side-effect review moved from main number `07` back to reference number `26` because it
-  remains useful explicit reference lift evidence for external mutation and parallelism advice, but
-  the main suite should stay focused on the strongest evidence-weighted coverage. Keep it in
-  reference unless future current-suite evidence shows that it meets the 30 pp floor and improves
-  main coverage.
-- Session roster indexing moved from main number `06` to reference number `15` because hosted
-  evidence showed the without-context result was already high while with-context was clean, and the
-  runtime references contain same-domain session-registration examples. It remains useful focused
-  natural Java 17 collector coverage, but it is not ordinary broad lift evidence.
-- Overdue shipment notices is focused reference coverage for extracting non-trivial stream lambda
-  bodies into helpers. Its high multi-line-lambda criterion weight is intentional focused
-  behavior-delta coverage, not ordinary broad lift evidence.
-- Hard-stop scan audits: regression explicit workflow-use only.
-- Reference suite: 6 scenarios, 560 total checklist points. Deleted reference number 12 and
-  regression-moved scenarios are not counted.
-- Regression suite: 19 scenarios, 1820 total checklist points.
-- Hosted benchmark evidence is pending rerun for the current active suite. Do not publish exact
-  run IDs, baseline scores, with-context scores, or lift ratios until they are verified against the
-  current `evals/` contents, denominators, natural/explicit split, and commit/ref.
+- Main eval set: 2 active scenarios, 200 total checklist points, no weight multipliers.
+- Natural activation subset: 2 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
+  the result from one pipeline with lazy lines and `mapMulti` instead of filling a list from
+  `forEach`) and `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
+  predicate instead of a loop that throws).
+- Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
+  because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
+  in `evals-reference/` (`15`, `42`, `51`) until an explicit scenario clears the floor.
+- Both main scenarios were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
+  Flash, the model behind the current Tessl default solver. They are the only screened scenarios
+  whose baseline sits at least 30 points under 100. The former main scenarios (bounded
+  `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
+  correctly unaided.
+- Reference suite: 15 scenarios. `08`, `15`, `27`, `28` plus the issue-derived `30`, `35`, `37`,
+  `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`.
+- Regression suite: 35 scenarios, 3620 total checklist points, including the four former main
+  scenarios as `52` to `55`.
+- Hosted benchmark evidence for the current main suite is pending. Do not publish exact run IDs,
+  baseline scores, with-context scores, or lift ratios until a hosted run covers the current
+  `evals/` contents.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
-  `evals-regression/NUMBERING.md` preserve historical classification rationale, but they are not
-  current benchmark claims.
+  `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
+  numbers that justified each move.
+
+## Local Baseline Screening
+
+Hosted Tessl runs cost credits (20 per scenario with both variants on the free plan) and the
+monthly pool is shared with the other skill repositories. Screen locally first:
+
+```bash
+scripts/local_screen.sh -n 2 evals-reference/<scenario>     # baseline, no skill context
+scripts/local_screen.sh -m skill -n 1 evals-reference/<scenario>
+scripts/local_screen.sh --summary
+```
+
+It drives Claude Code against DeepSeek V4.1 Flash (the model behind Tessl's default solver) and
+grades each run with a Claude judge against `criteria.json`. A run costs about a cent. Use it to:
+
+- classify a new scenario before any hosted run: baseline consistently 98 to 100 is regression
+  material, baseline at least 30 points under 100 is a main candidate, in between is reference;
+- rerun a bimodal scenario four to six times before trusting its mean;
+- check with `-m skill` that the criteria are reachable with the skill before spending hosted
+  credits on the with-context arm.
+
+Local numbers decide placement and go into the `NUMBERING.md` notes as local screening results.
+They are not hosted evidence: benchmark claims, release-readiness claims, and the registry score
+still need the hosted runs described above. Expect a few scenarios to flip either way on Tessl,
+whose harness, prompt, and judge differ.
 
 ## Checks
 

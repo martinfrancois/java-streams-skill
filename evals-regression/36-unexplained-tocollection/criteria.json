@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: four Java 17 methods collect with Collectors.toCollection without saying why, and the revision should simplify the two whose concrete type does not matter and keep the two that need theirs with a rationale comment.",
+  "context": "Regression natural cleanup: four Java 17 methods collect with Collectors.toCollection without saying why, and the revision should simplify the two whose concrete type does not matter and keep the two that need theirs with a rationale comment.",
   "type": "weighted_checklist",
   "checklist": [
     {

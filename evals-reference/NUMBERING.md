@@ -53,3 +53,53 @@ scenario to `evals-regression/` instead of keeping it in normal reference-candid
 With-context run against the PR #94 runtime text (commit `a81acce`) on 2026-10-03, default solver
 `deepseek-v4.1-flash`: all six reference scenarios scored 100 in
 `01a103b0-1209-7449-b98b-7c573a67ece7`. No baseline was run this time to save credits.
+
+## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
+
+Local baseline screening, 2026-10-20: each scenario's `task.md` ran through Claude Code with
+DeepSeek V4.1 Flash as the solver (`deepseek-flash` on DeepSeek's own API, the model behind the
+Tessl default solver `deepseek-v4.1-flash`) and no skill context, then Claude Haiku graded the
+written files against the scenario's `criteria.json`. Scores are percentages, mean over the runs
+listed. `scripts/local_screen.sh` reproduces it. This is not hosted evidence: no Tessl run IDs
+exist for these scenarios yet, and hosted confirmation is the next step (see the November issue
+#108).
+
+Numbers `29` to `51` were drafted from the open eval issues (one scenario per issue; the issue
+link is in each `criteria-meta.json`). Every draft entered here first and was then placed by its
+local baseline:
+
+| Scenario | Issue | Runs | Without skill | Placement |
+| --- | --- | --- | --- | --- |
+| `29-foreach-smell-cleanup` | #5 | 2 | 100 | regression |
+| `30-eager-work-before-allmatch` | #39 | 6 | 75 (73 to 75) | reference: keeps a hand-written loop instead of the lazy stream check, stable 25-point delta, under the 30-point floor |
+| `31-line-to-record-extraction` | #40 | 6 | 30 (20 to 35) | main |
+| `32-hidden-lookup-before-writes` | #41 | 2 | 100 | regression |
+| `33-foreach-into-outer-map` | #42 | 2 | 100 | regression |
+| `34-identity-mapper-in-tomap` | #44 | 2 | 99 | regression |
+| `35-one-line-stream-chains` | #45 | 6 | 84 (82 to 85) | reference: wraps chains but splits the single `anyMatch` chain every time |
+| `36-unexplained-tocollection` | #46 | 2 | 100 | regression |
+| `37-line-splitting-contract` | #47 | 2 | 94 (87 to 100) | reference |
+| `38-temporary-list-then-addall` | #48 | 6 | 87 (80 to 100) | reference |
+| `39-predicate-loop-audit` | #49 | 2 | 100 | regression |
+| `40-append-then-freeze` | #50 | 2 | 100 | regression |
+| `41-equivalent-match-lookup` | #51 | 2 | 100 | regression |
+| `42-zero-one-or-ambiguous-lookup` | #53 | 6 | 91 (84 to 100) | reference |
+| `43-reject-if-any-validator` | #55 | 6 | 69 (48 to 100) | main, made explicit |
+| `44-single-dedup-boundary` | #56 | 6 | 73 (20 to 100) | reference: bimodal, one run in three writes a loop instead of a pipeline |
+| `45-nested-streams-in-optional-chain` | #57 | 6 | 83 (62 to 92) | reference: generic helper names and `findAny` to `findFirst` drift |
+| `46-constructor-owned-snapshot` | #58 | 2 | 100 | regression |
+| `47-direct-immutable-array-mapping` | #59 | 2 | 99 | regression |
+| `48-conditional-delimiter-reduction` | #60 | 2 | 97 | reference |
+| `49-char-predicate-contracts` | #61 | 2 | 96 (92 to 100) | reference |
+| `50-identity-string-reduction` | #62 | 2 | 95 | reference |
+| `51-sort-after-collect` | #72 | 2 | 97 | reference |
+
+The existing reference scenarios were screened the same way: `05` 100 and `26` 100 (both moved to
+`evals-regression/`, keeping their numbers), `08` 94, `15` 90, `27` 76 (six runs, 65 to 100: a
+`for` loop into a pre-sized `ArrayList` in five of six), `28` 39 (two runs, 30 and 47). `28` stays
+focused reference coverage despite its delta because its domain overlaps the runtime example in
+`stream-examples.md`; `31` is the de-domained main-suite version of the same failure.
+
+Scenarios at 95 to 97 (`48`, `50`, `51`, `37`, `49`) stay here as weak lift rather than moving to
+regression, because the regression rule needs both variants at 100 and the baseline is not there.
+They are the first candidates to retire if the reference suite needs trimming.

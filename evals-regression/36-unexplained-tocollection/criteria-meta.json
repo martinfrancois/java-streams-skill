@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/46",
     "reference_selection": "Shows whether the agent separates collection types that carry a contract (first-appearance order, later mutation) from habitual ones, simplifying the habitual ones and documenting the others in code."
   },

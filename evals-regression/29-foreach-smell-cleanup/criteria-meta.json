@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/5",
     "reference_selection": "Shows whether the agent tells result-building stream forEach calls apart from side-effect ones, converting the former to collectors and leaving the latter alone."
   },

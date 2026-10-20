@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a class of five lookups where two match only equivalent values and three depend on list position, testing whether the agent picks the right terminal per lookup instead of changing all or none.",
+  "context": "Regression natural cleanup: a class of five lookups where two match only equivalent values and three depend on list position, testing whether the agent picks the right terminal per lookup instead of changing all or none.",
   "type": "weighted_checklist",
   "checklist": [
     {
