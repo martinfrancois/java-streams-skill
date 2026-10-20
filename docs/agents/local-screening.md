@@ -1,0 +1,128 @@
+# Local Screening With DeepSeek
+
+## Scope
+
+Use this to run eval scenarios against the model behind Tessl's default solver on your own
+machine, for about one cent a run, before spending Tessl credits. It covers setup, the commands,
+how to read the output, and how to tune the skill against it. It does not replace hosted runs:
+benchmark claims, release-readiness claims, and the registry score still come from Tessl.
+
+## Why This Works
+
+Tessl's default solver is `deepseek-v4.1-flash`. DeepSeek's own API serves the same model as
+`deepseek-flash` and offers an Anthropic-compatible endpoint, so the `claude` CLI can drive it
+unchanged with two environment variables. On the four scenarios that formed the main suite before
+October 2026, the hosted publish run scored the baseline arm 100 on all four and local baseline
+runs scored 100, 94, 97, and 100, which is what makes the screen usable for placement.
+
+The harness differs from Tessl in three ways. The agent runs in Claude Code with
+`--dangerously-skip-permissions` and 40 turns; Tessl runs its own harness. The grader is Claude
+Haiku with the scenario's `criteria.json` in the prompt; Tessl grades with its own judge. The
+skill mode copies the skill into `.claude/skills/` and tells the agent to use it; Tessl's
+with-context arm installs the plugin. Expect a few points of drift per scenario on Tessl, in both
+directions.
+
+## Setup
+
+1. Create an API key at <https://platform.deepseek.com/> and add credit. Ten US dollars covered
+   about seven hundred agentic runs in October 2026. DeepSeek halves the price in its off-peak
+   window; the current window is on <https://api-docs.deepseek.com/quick_start/pricing/>.
+2. Store the key alone, with no comment line and no trailing text, in `~/deepseek-api-key` and
+   make it private:
+
+   ```bash
+   chmod 600 ~/deepseek-api-key
+   ```
+
+   Set `DEEPSEEK_API_KEY_FILE` to use another path. The scripts read the file at run time. Never
+   paste the key into a shell profile, a commit, a transcript, or an issue.
+3. Make sure `claude`, `jq`, and `python3` are on `PATH`, and that `claude` is logged in with the
+   account that will pay for the judge calls. The judge defaults to Haiku; set
+   `LOCAL_SCREEN_JUDGE` to pick another model.
+4. Leave `CLAUDECODE` and every other Claude Code variable alone. The scripts isolate the solver
+   with its own `CLAUDE_CONFIG_DIR` under the output directory, so the DeepSeek key never touches
+   the regular Claude login and the regular login never leaks into the solver.
+
+## Running
+
+All commands run from the repository root. Output goes to `.local-screen/<mode>/<scenario>/run-N/`
+(gitignored); set `LOCAL_SCREEN_OUT` to put it elsewhere, for example when comparing two skill
+versions.
+
+```bash
+# baseline arm, no skill: the arm that decides suite placement
+scripts/local_screen.sh -n 2 -p 4 evals-reference/<scenario>
+
+# with the skill from the working tree copied into the agent's .claude/skills/
+scripts/local_screen.sh -m skill -n 2 -p 4 evals/*/ evals-reference/*/
+
+# more runs for a scenario whose two runs disagree
+scripts/local_screen.sh -n 4 -s 3 evals-reference/<scenario>     # runs 3 to 6
+
+# one line per scenario: run count, mean, min, max
+scripts/local_screen.sh --summary
+scripts/local_screen.sh --summary -m skill
+```
+
+What one run does:
+
+1. Copies nothing but the scenario's `task.md` into an empty work directory (skill mode also
+   copies `skills/java-streams` into `.claude/skills/` and prefixes the prompt with one line asking
+   the agent to use it).
+2. Runs `claude -p --model deepseek-flash` with `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
+   and the key from the file, `--max-turns 40`, a 15-minute timeout, JSON output saved as
+   `solver.json`.
+3. Calls `scripts/local_screen_judge.py`, which sends the task, the checklist from `criteria.json`,
+   every file the agent wrote, and the agent's final message to the judge, and saves the item
+   scores as `assessment.json` in the same shape as one Tessl solution. The console shows the
+   total and one `lost` line per item that lost points, with the judge's reason.
+
+Six parallel runs are fine on an ordinary developer machine; each solver run is one `claude`
+process waiting on the network. A full pass over fifty scenarios, two runs each, takes about
+twenty minutes and under two dollars.
+
+## Reading The Output
+
+Place scenarios by the baseline arm:
+
+| Baseline mean over the runs | Placement |
+| --- | --- |
+| 98 to 100 in every run | `evals-regression/` |
+| at least 30 points under 100, and the skill arm reaches 100 | `evals/` candidate |
+| anything else | `evals-reference/` |
+
+Rerun a scenario four to six times before trusting a mean when two runs differ by more than ten
+points; several scenarios are bimodal (the solver either writes the pipeline or writes a loop).
+Read the `lost` lines, not only the totals: they say what the solver did, which is the raw material
+for both scenario fixes and skill fixes.
+
+Keep the explicit-invocation finding in mind. On this solver, a prompt that names `$java-streams`
+primes stream-shaped code even without the skill, so explicit variants of failing natural
+scenarios score 76 to 100 unaided. Screen an explicit scenario in its explicit form; do not infer
+its baseline from a natural variant.
+
+Record local numbers in the suite's `NUMBERING.md` as local screening results, with run counts
+and ranges. Do not present them as hosted evidence anywhere.
+
+## Tuning The Skill Against It
+
+1. Run the skill arm over `evals/` and `evals-reference/` and collect every `lost` line.
+2. For each loss, decide whether the skill is missing a rule or the scenario is unfair. A rule
+   goes into the skill only when it is one the maintainer wants in every project, written in the
+   skill's own words. Never copy a checklist description, a scenario's type or method names, or a
+   scenario-specific hint into the skill; that is cheating, and it also stops working on the next
+   scenario of the same kind.
+3. Change the skill, then rerun the skill arm with `-n 3` on the scenarios that lost points and on
+   a sample of regression scenarios, with `LOCAL_SCREEN_OUT` pointing to a fresh directory so the
+   two versions can be compared side by side.
+4. Run the baseline arm again only when a scenario's task or criteria changed; the skill text does
+   not affect the baseline.
+5. When every main scenario scores 100 with the skill locally, run the main suite on Tessl with
+   both variants (`scripts/run_eval_suite.sh main`) as the hosted confirmation, and follow
+   [Evals](evals.md) for what the hosted result must show before a release.
+
+## References
+
+- [Evals](evals.md)
+- [Workflow](workflow.md)
+- [Pre-Submit Gate](pre-submit-gate.md)
