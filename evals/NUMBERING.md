@@ -67,3 +67,18 @@ text, `31` scored 94 (77 to 100, three runs of four at 100; the fourth used `for
 and `43` 99 (97 to 100) over four runs each. Without the `mapMulti` antipattern bullet in
 `hard-stops.md`, `31` fell to 90 in four runs of four, so that bullet stays. Local prediction for
 the suite: about 193 with the skill against 99 without.
+
+### Hosted confirmation (2026-10-20)
+
+Run `01a159ad-18bb-76ec-8553-fb2364c26b00`, default solver `deepseek-v4.1-flash`, both variants,
+against the final skill text of this rebuild (40 credits):
+
+| Scenario | Without context | With context |
+| --- | --- | --- |
+| `31-line-to-record-extraction` | 26 | 100 |
+| `43-reject-if-any-validator` | 60 | 100 |
+
+Suite: 200 with the skill against 86 without, a lift of about 2.3x. `scripts/classify_eval_result.py`
+recommends main for both (deltas 74 and 40 points against the 30-point floor). The hosted baseline
+sits close to the local screen (26 against 30, 60 against 69), which is the second time the screen
+tracked Tessl.

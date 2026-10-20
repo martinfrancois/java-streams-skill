@@ -5,7 +5,7 @@
     "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/55",
     "reference_selection": "Shows whether the agent turns a reject-if-any loop into anyMatch with a named predicate and one throw, without collecting invalid elements or claiming a speedup.",
-    "main_eval_selection": "promoted from reference after local DeepSeek V4.1 Flash baseline screening; hosted confirmation pending"
+    "main_eval_selection": "promoted from reference after local DeepSeek V4.1 Flash baseline screening; hosted both-variants run on 2026-10-20 confirmed it (see evals/NUMBERING.md)"
   },
   "categories": {
     "Creates revised CalibrationProfileLoader.java": "safety",
