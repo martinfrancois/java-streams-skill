@@ -16,6 +16,12 @@ Fix these before finalizing:
   `findFirst` and `findAny`, name that `findAny` exception explicitly before discussing parallelism
   or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
+- `findFirst()` or `findAny()` as the selection step where a second match must fail: both accept
+  duplicates silently, and a duplicate check added after them still names the wrong terminal. Use
+  `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
+- A collection allocated before the pipeline and filled from its result afterwards, or a list
+  collected only to be copied into the returned collection. Collect to the returned type directly;
+  when callers never modify the result, collect to an unmodifiable one.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
   The hard-stop scan regex catches only `count() > 0` existence checks, not plain `count()`. If an
@@ -65,6 +71,17 @@ Fix these before finalizing:
 In reviews, avoid examples that put substantial work behind one lambda body, including ad-hoc helper
 expressions like `-> input -> ...` or callbacks passed into custom parallel executors. If a non-trivial
 decision is needed, extract to a named method and keep the stream chain as glue.
+- A chain laid out against its operation count, also when the chain is a method argument. One
+  operation after `stream()` stays on one line; two or more keep `.stream()` on the source line and
+  put each later operation on its own line:
+
+  ```java
+  boolean hasOpenInvoice = invoices.stream().anyMatch(Invoice::isOpen);
+  List<String> pastDueNumbers = invoices.stream()
+          .filter(Invoice::isPastDue)
+          .map(Invoice::number)
+          .toList();
+  ```
 - `stream().forEach(...)` or `parallelStream().forEach(...)` that mutates an external
   `Collection`, `Map`, array, counter, holder object, or `StringBuilder`. Make the stream produce
   the result directly with `toList()`, `collect(...)`, `toMap(...)`, `joining`, `sum`, or another

@@ -1,7 +1,7 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a pipeline, result mutability, and stream chain layout.
 ---
 
 # Java Streams Skill
@@ -34,6 +34,7 @@ exact file. Do not answer only in chat when a file artifact is requested.
    | Arbitrary match, all matches equivalent, order never picks the winner | `filter(...).findAny()` |
    | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep `sorted(...).filter(...).findFirst()` when it defines the winner, and suggest `min`/`max` only when it keeps that winner |
    | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
+   | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size for zero, one, and more that takes the one element from that list; no `findFirst`/`findAny` anywhere in that lookup, they accept a duplicate silently |
    | Transformed list/set | `map`/`filter` then collect |
    | Concatenated text | `Collectors.joining` |
    | Numeric primitive result | `mapToInt`/`mapToLong`/`mapToDouble` terminals |
@@ -41,8 +42,7 @@ exact file. Do not answer only in chat when a file artifact is requested.
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
 
    Checkpoint: before writing the pipeline, confirm the chosen terminal returns the requested type
-   and that order, duplicates, and nulls in the input cannot change the winner. In `findFirst`
-   versus `findAny` reviews, state that equivalence condition before any performance claim.
+   and that order, duplicates, and nulls in the input cannot change the winner.
 
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
    `teeing`, and primitive terminals. Do not mutate external containers, arrays, counters, or
@@ -53,13 +53,16 @@ exact file. Do not answer only in chat when a file artifact is requested.
    ```
 
    - Implementation: write the direct stream result; on Java 16+ prefer
-     `names.stream().map(String::toUpperCase).toList()` over a manual `ArrayList` loop.
+     `names.stream().map(String::toUpperCase).toList()` over a manual `ArrayList` loop. Return
+     what the stream collects: no collection allocated first and filled afterwards, no list
+     collected only to be copied into the returned collection. When callers never modify the
+     result, collect to an unmodifiable one (`toList()`, `Collectors.toUnmodifiableSet()`) and
+     return `List.of()` or `Set.of()` from early-exit and catch paths.
    - External-mutation or performance review: show a sequential result-producing snippet first; for
      million-item CPU maps, mention benchmarking a pure parallel variant and include:
      "`parallelStream()` can be slower for small lists or call paths that are usually small."
    - Java 24 bounded blocking calls: carry each element with its result, call the provided service
-     directly, then filter/map/sort; no test hooks, overloads, `CompletableFuture` fan-out, or null
-     sentinels.
+     directly, then filter/map/sort; no `CompletableFuture` fan-out.
 
      ```java
      List<Parcel> cleared = parcels.stream()
@@ -68,9 +71,15 @@ exact file. Do not answer only in chat when a file artifact is requested.
              .map(Map.Entry::getKey)
              .toList();
      ```
-3. Flatten nested sources deliberately. Use `flatMap`, `flatMap(Optional::stream)` on Java 9+,
-   and `mapMulti` on Java 16+ when clearer. For subtype primitives, filter/cast first, then call
-   `mapToInt`/`mapToLong`/`mapToDouble` directly.
+3. Flatten nested sources deliberately.
+   - Use `flatMap`, `flatMap(Optional::stream)` on Java 9+, and `mapMulti` on Java 16+ when
+     clearer. When each element yields zero or one result (parse, then emit on success), `mapMulti`
+     beats a `map`, `filter`, `map` sequence that carries an intermediate type:
+     `events.<Alert>mapMulti(Monitor::alertIfCritical)` with a helper taking `(Event, Consumer<Alert>)`.
+   - For subtype primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble`.
+   - When the loop split text with a regex, keep that regex: stream the pieces from a static
+     precompiled `Pattern` with `splitAsStream`, not from `Arrays.stream(text.split(...))`, and do
+     not swap `split("\\R")` for `String.lines()`, which recognizes fewer line terminators.
 
    ```java
    // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
@@ -101,18 +110,25 @@ exact file. Do not answer only in chat when a file artifact is requested.
    }
    ```
 5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
-   as short glue or method references. Extract a named helper when a lambda would branch or wrap,
-   when a duplicate-key merge rule needs more than a same-line expression for ties, nulls, or
-   ordering, and for nested collector callbacks (a named `Stream<T>` helper).
+   as short glue or method references. Extract a named helper for a lambda that would branch or
+   wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
+   `Stream<T>` helper). Name a helper after the domain decision it makes and type its parameter
+   to the domain type (`isPastDue(Invoice)`, not `check(String)`).
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
-   mutation-heavy logic, or complex early exits.
+   mutation-heavy logic, or complex early exits. Calls that write to an external system (an API
+   post, a database or file write, a message send) run in a plain loop, never inside `map`,
+   `forEach`, or a helper called from a pipeline; gather what the writes need with a stream first,
+   then loop over the writes. Loops that use the index for anything but element access stay loops.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and baseline compatibility. Run the marker scan and the parallel-safety
    conditions from [hard-stops.md](references/hard-stops.md) (no custom pool snippets unless asked),
-   fix hits, and re-scan. In scan audits, keep
-   hard-stop severities: required hits stay required unless explicitly acceptable.
+   fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
+   results. In scan audits, keep hard-stop severities: required hits stay required unless
+   explicitly acceptable.
 
 Review output: state the behavior-preserving decision, add one safe snippet, create `review.md`
-when asked (also for rejections), explain code behavior only, and never write "per the skill",
-"hard stop", "marker", "scan", "checklist", "rubric", or "criteria" unless the user asked about the
+when asked (also for rejections), and explain code behavior only. For every change, give its
+reason (clearer intent, or a named behavior difference) and the behavior that stays the same.
+Describe the code, not this workflow: no "skill", "scan", "marker", "hard stop", "checklist",
+"rubric", or "criteria" in a final message, comment, or review unless the user asked about the
 workflow itself.
