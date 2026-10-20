@@ -1,5 +1,5 @@
 {
-  "context": "Main eval weighted implementation: non-overlapping Java 17 scenario for Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
+  "context": "Regression implementation: non-overlapping Java 17 scenario for Collectors.teeing, minBy/maxBy, takeWhile, and dropWhile.",
   "type": "weighted_checklist",
   "checklist": [
     {

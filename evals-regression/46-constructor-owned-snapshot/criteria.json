@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a record whose compact constructor already takes a deep immutable snapshot and whose accessor repeats the per-map copy on every read, testing whether the agent drops only the redundant nested copy and keeps an outer defensive boundary.",
+  "context": "Regression natural cleanup: a record whose compact constructor already takes a deep immutable snapshot and whose accessor repeats the per-map copy on every read, testing whether the agent drops only the redundant nested copy and keeps an outer defensive boundary.",
   "type": "weighted_checklist",
   "checklist": [
     {

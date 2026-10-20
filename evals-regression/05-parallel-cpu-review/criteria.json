@@ -1,5 +1,5 @@
 {
-  "context": "Reference review coverage for appropriate parallel stream use on CPU-bound stateless work.",
+  "context": "Regression review coverage for appropriate parallel stream use on CPU-bound stateless work.",
   "type": "weighted_checklist",
   "checklist": [
     {

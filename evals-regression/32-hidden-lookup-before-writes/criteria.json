@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a publish method batches one depot lookup but a caption helper quietly fetches more depots per sheet before board writes; tests whether the agent collects every code once with a pure stream, fetches once, renders from the fetched map, and keeps writes out of pipelines.",
+  "context": "Regression natural cleanup: a publish method batches one depot lookup but a caption helper quietly fetches more depots per sheet before board writes; tests whether the agent collects every code once with a pure stream, fetches once, renders from the fetched map, and keeps writes out of pipelines.",
   "type": "weighted_checklist",
   "checklist": [
     {

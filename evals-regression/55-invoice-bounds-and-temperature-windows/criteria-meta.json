@@ -2,8 +2,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "implementation",
-    "main_eval_weight_multiplier": 2,
-    "main_eval_selection": "active replacement for a runtime-reference-overlapping teeing/prefix scenario; rerun hosted evals before updating benchmark claims"
+    "evidence_type": "solved_regression"
   },
   "categories": {
     "Creates coherent Java 17 artifact": "safety",

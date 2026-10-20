@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/49",
     "reference_selection": "Shows whether a loop audit converts only the pure existence loops to anyMatch-style predicates, keeps the single warning write outside the stream, and leaves index-reporting and checked IO loops alone."
   },

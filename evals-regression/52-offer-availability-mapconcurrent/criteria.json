@@ -1,5 +1,5 @@
 {
-  "context": "Main eval weighted implementation: Java 24 blocking per-element remote checks should use bounded Gatherers.mapConcurrent rather than parallelStream or unbounded async work. Scenario 01 intentionally covers Java 24 bounded remote-call guidance with a domain-specific decision carrier while accepting any clear non-null carrier that preserves the Offer plus Availability association. Hosted benchmark provenance is pending rerun for the current active suite.",
+  "context": "Regression implementation: Java 24 blocking per-element remote checks should use bounded Gatherers.mapConcurrent rather than parallelStream or unbounded async work. Scenario 01 intentionally covers Java 24 bounded remote-call guidance with a domain-specific decision carrier while accepting any clear non-null carrier that preserves the Offer plus Availability association. Hosted benchmark provenance is pending rerun for the current active suite.",
   "type": "weighted_checklist",
   "checklist": [
     {

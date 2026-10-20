@@ -724,9 +724,19 @@ def main() -> int:
                     max_score = item.get("max_score")
                     if category in main_eval_category_scores and isinstance(max_score, int):
                         main_eval_category_scores[category] += max_score
-        if main_eval_dirs and not all(main_eval_invocations.values()):
+        if main_eval_dirs and not main_eval_invocations["natural"]:
+            failures.append("evals: main eval set must include a natural invocation scenario")
+        lift_dirs = [d for d in dirs if d.parent.name in {"evals", "evals-reference"}]
+        lift_invocations = {"natural": 0, "explicit": 0}
+        for scenario in lift_dirs:
+            data, _ = load_criteria(scenario / "criteria.json")
+            if data and isinstance(data.get("metadata"), dict):
+                invocation = data["metadata"].get("invocation")
+                if invocation in lift_invocations:
+                    lift_invocations[invocation] += 1
+        if lift_dirs and not all(lift_invocations.values()):
             failures.append(
-                "evals: main eval set must include both natural and explicit invocation scenarios"
+                "evals and evals-reference together must include both natural and explicit invocation scenarios"
             )
         main_eval_total = sum(main_eval_category_scores.values())
         if main_eval_total:

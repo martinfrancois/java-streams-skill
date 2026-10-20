@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: Java 21 line-to-record extraction that builds its result by passing a mutable list into a helper and filling it from a forEach and a split loop; tests whether the agent produces the result from one pipeline with lazy lines and a zero-or-one emission per line.",
+  "context": "Main eval natural cleanup: Java 21 line-to-record extraction that builds its result by passing a mutable list into a helper and filling it from a forEach and a split loop; tests whether the agent produces the result from one pipeline with lazy lines and a zero-or-one emission per line.",
   "type": "weighted_checklist",
   "checklist": [
     {

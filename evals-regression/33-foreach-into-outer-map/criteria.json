@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: two stream pipelines hand their results to external state, one appending to a list from two sources before a distinct pass and one merging counts into a HashMap; tests whether the agent lets the pipelines produce the list and the mutable map directly.",
+  "context": "Regression natural cleanup: two stream pipelines hand their results to external state, one appending to a list from two sources before a distinct pass and one merging counts into a HashMap; tests whether the agent lets the pipelines produce the list and the mutable map directly.",
   "type": "weighted_checklist",
   "checklist": [
     {

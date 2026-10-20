@@ -1,5 +1,5 @@
 {
-  "context": "Main eval weighted natural implementation: non-overlapping Java 24 bounded remote-check scenario; measures bounded stream concurrency for blocking calls without reusing runtime favorite-products examples.",
+  "context": "Regression natural implementation: non-overlapping Java 24 bounded remote-check scenario; measures bounded stream concurrency for blocking calls without reusing runtime favorite-products examples.",
   "type": "weighted_checklist",
   "checklist": [
     {

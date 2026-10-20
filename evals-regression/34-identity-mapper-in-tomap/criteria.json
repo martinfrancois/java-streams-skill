@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: toMap calls written with hand-rolled identity lambdas plus a forEach merge that invites another one; tests whether the agent names identity mappers with Function.identity() while keeping merge functions, map suppliers, and the non-identity mappers intact.",
+  "context": "Regression natural cleanup: toMap calls written with hand-rolled identity lambdas plus a forEach merge that invites another one; tests whether the agent names identity mappers with Function.identity() while keeping merge functions, map suppliers, and the non-identity mappers intact.",
   "type": "weighted_checklist",
   "checklist": [
     {

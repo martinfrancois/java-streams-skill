@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: tests whether the agent collapses List.copyOf(Arrays.asList(array)) inside Optional.map and Stream.map to the direct immutable factory without breaking the snapshot, null-rejection, or element-type contracts.",
+  "context": "Regression natural cleanup: tests whether the agent collapses List.copyOf(Arrays.asList(array)) inside Optional.map and Stream.map to the direct immutable factory without breaking the snapshot, null-rejection, or element-type contracts.",
   "type": "weighted_checklist",
   "checklist": [
     {

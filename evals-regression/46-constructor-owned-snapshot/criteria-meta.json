@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/58",
     "reference_selection": "Shows whether the agent uses the constructor's deep snapshot to drop the accessor's repeated per-map copy while keeping an outer defensive copy for static analysis."
   },

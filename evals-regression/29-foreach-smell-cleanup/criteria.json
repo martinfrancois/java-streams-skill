@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a class mixes stream forEach calls whose purpose is a side effect (paging, logging) with forEach calls that only fill a returned list or map, and tests whether the agent converts only the result-building ones.",
+  "context": "Regression natural cleanup: a class mixes stream forEach calls whose purpose is a side effect (paging, logging) with forEach calls that only fill a returned list or map, and tests whether the agent converts only the result-building ones.",
   "type": "weighted_checklist",
   "checklist": [
     {

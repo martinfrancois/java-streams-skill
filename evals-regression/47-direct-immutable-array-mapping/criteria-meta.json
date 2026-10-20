@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/59",
     "reference_selection": "Shows whether the agent spots an adapter-plus-copy array conversion inside Optional and stream mapping and replaces it with List::of only after reasoning about varargs typing, snapshots, and null rejection."
   },

@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/41",
     "reference_selection": "Shows whether the agent spots per-item remote lookups hidden in a formatting helper and restructures into one pure batch-wide distinct stream of codes, one fetch, pure rendering, and explicit writes."
   },

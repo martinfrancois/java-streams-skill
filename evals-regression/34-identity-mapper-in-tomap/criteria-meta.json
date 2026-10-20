@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/44",
     "reference_selection": "Shows whether the agent writes Function.identity() for identity key and value mappers, both in existing toMap calls and in the collector it writes for a forEach merge, without touching non-identity mappers, merge functions, or map suppliers."
   },
