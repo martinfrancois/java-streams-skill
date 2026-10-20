@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/51",
+    "reference_selection": "Shows whether the agent changes findFirst to findAny only where the domain makes every match equivalent and keeps it where preference, recency, or line order picks the winner."
+  },
+  "categories": {
+    "Creates revised DepotLookups.java": "safety",
+    "Preserves every lookup result": "safety",
+    "Uses an arbitrary-match terminal for equivalent matches": "stream_quality",
+    "Keeps order-sensitive lookups ordered": "stream_quality",
+    "Ties each terminal to the data guarantee": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

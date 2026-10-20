@@ -1,0 +1,2 @@
+Turn a Java loop that splits text with a regex into a stream pipeline without changing which
+characters count as line breaks.

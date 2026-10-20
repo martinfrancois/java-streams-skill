@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural implementation: parsing nested feed entries into a value object whose constructor already removes duplicates first-wins, testing whether the agent leaves duplicate handling in that one place and writes a plain filter-map pipeline.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates EditionFeedParser.java",
+      "max_score": 5,
+      "description": "Creates EditionFeedParser.java with the static parse(String, List<RawFormatEntry>) method, the RawFormatEntry, FormatOption, and EditionCatalog records copied unchanged, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves order, blank filtering, and first-wins result",
+      "max_score": 10,
+      "description": "The returned catalog skips null or blank codes, keeps feed order, lists each stripped code once with the first entry's display name, and returns an unmodifiable formats list. entries is not mutated."
+    },
+    {
+      "name": "Leaves duplicate handling to EditionCatalog",
+      "max_score": 45,
+      "description": "parse does no duplicate removal of its own and relies on the EditionCatalog constructor, which already keeps the first option per stripped code. Score 0 if the parser removes duplicates in any way: a LinkedHashMap or putIfAbsent, a seen Set, distinct(), Collectors.toMap with a merge function, or a filter on a stateful set."
+    },
+    {
+      "name": "Maps entries with a plain filter-map pipeline",
+      "max_score": 25,
+      "description": "parse builds the options with entries.stream().filter(...).map(...).toList() or an equivalent one-to-one pipeline passed to new EditionCatalog, with short lambdas or method references (a named helper is fine for the blank check or the construction). Score 0 for a manual ArrayList loop with add, a mapMulti block lambda, a forEach that mutates a list, or a multi-line lambda."
+    },
+    {
+      "name": "Names the single duplicate owner",
+      "max_score": 10,
+      "description": "A short code comment or the written explanation says the parser skips duplicate removal because EditionCatalog already keeps the first option per code. Score 0 if the explanation describes the parser as removing duplicates or never mentions where duplicates are handled."
+    },
+    {
+      "name": "Keeps the parser focused",
+      "max_score": 5,
+      "description": "Adds no extra public types, overloads, caches, dependencies, or changes to the provided records, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

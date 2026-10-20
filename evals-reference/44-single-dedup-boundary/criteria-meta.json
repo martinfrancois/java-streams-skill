@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/56",
+    "reference_selection": "Shows whether the agent reads the receiving constructor and keeps first-wins duplicate removal in that single boundary instead of repeating it in the parser."
+  },
+  "categories": {
+    "Creates EditionFeedParser.java": "safety",
+    "Preserves order, blank filtering, and first-wins result": "safety",
+    "Leaves duplicate handling to EditionCatalog": "stream_quality",
+    "Maps entries with a plain filter-map pipeline": "stream_quality",
+    "Names the single duplicate owner": "stream_quality",
+    "Keeps the parser focused": "maintainability"
+  }
+}

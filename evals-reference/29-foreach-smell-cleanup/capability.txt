@@ -1,0 +1,2 @@
+Modernize a Java 17 class with several stream forEach calls, replacing the ones that only build a
+returned list or map with result-producing terminals while keeping paging and logging side effects.

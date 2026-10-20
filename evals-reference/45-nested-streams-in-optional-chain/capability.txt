@@ -1,0 +1,2 @@
+Clean up Java Optional lookups that wrap multi-line stream pipelines in map and flatMap lambdas by
+moving the list work into domain-named helpers, keeping order, immutability, and empty results.

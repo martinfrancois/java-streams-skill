@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a Java 17 class mixes two pure existence-check loops with an index-reporting loop and a checked IO loop, and the audit should turn only the existence checks into short-circuiting stream predicates.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised BadgePolicyCheck.java",
+      "max_score": 5,
+      "description": "Creates BadgePolicyCheck.java with the AccessRule record, the four static methods with unchanged signatures (writeAudit still declares throws IOException), and the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves return values, text, and exceptions",
+      "max_score": 10,
+      "description": "hasOvernightRule returns true exactly when some rule has fromHour greater than toHour; checkZones adds the identical warning text once when any zone is missing from knownZones and nothing otherwise; hourErrors returns the same messages with the same zero-based index in input order, in a list callers can add to; writeAudit writes the same characters in the same order and still propagates IOException from out unchanged."
+    },
+    {
+      "name": "Turns the two existence loops into match predicates",
+      "max_score": 40,
+      "description": "hasOvernightRule returns rules.stream().anyMatch(rule -> rule.fromHour() > rule.toHour()) or an equivalent anyMatch (20 points). checkZones computes its condition with zones.stream().anyMatch(zone -> !knownZones.contains(zone)), or the negation of allMatch(knownZones::contains), or an equivalent noneMatch form (20 points). For either method, filter(...).findAny().isPresent(), filter(...).findFirst().isPresent(), filter(...).count() > 0, collecting matches and testing isEmpty(), or forEach with a boolean holder earns no credit for that method, and so does leaving the loop in place."
+    },
+    {
+      "name": "Keeps the warning write outside the stream",
+      "max_score": 15,
+      "description": "checkZones evaluates the boolean first and then calls warnings.add(...) once in a plain if statement outside any lambda. Adding the warning inside forEach, peek, map, or Optional.ifPresent (for example filter(...).findFirst().ifPresent(zone -> warnings.add(...))) earns no credit."
+    },
+    {
+      "name": "Leaves the index and IO loops imperative",
+      "max_score": 25,
+      "description": "writeAudit keeps its for loop calling out.append directly (13 points); converting it to forEach or a stream that wraps IOException in UncheckedIOException, catches it inside a lambda, or uses a sneaky-throw helper earns 0 for writeAudit. hourErrors keeps its indexed for loop (12 points); an IntStream.range rewrite that keeps the identical index, message text, order, and a mutable result earns 6, and any rewrite that loses or changes the reported index earns 0."
+    },
+    {
+      "name": "Keeps the audit focused",
+      "max_score": 5,
+      "description": "Does not change messages, add new validation rules, rename methods or the record, add dependencies, or add new public types, and contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in comments or explanation."
+    }
+  ]
+}

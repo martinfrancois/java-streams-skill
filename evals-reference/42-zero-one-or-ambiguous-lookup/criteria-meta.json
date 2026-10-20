@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "implementation",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/53",
+    "reference_selection": "Shows whether the agent writes a bounded filter-limit(2)-toList lookup with an explicit zero, one, or ambiguous branch rather than collecting every match or taking the first."
+  },
+  "categories": {
+    "Creates RiderLookup.java": "safety",
+    "Returns empty, the single match, or the domain exception": "safety",
+    "Stops scanning at the second match": "stream_quality",
+    "Branches explicitly on zero, one, or ambiguous": "stream_quality",
+    "Does not settle the lookup by encounter order": "stream_quality",
+    "Keeps the lookup focused": "maintainability"
+  }
+}

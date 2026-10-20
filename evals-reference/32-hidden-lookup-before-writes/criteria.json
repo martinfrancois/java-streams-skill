@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a publish method batches one depot lookup but a caption helper quietly fetches more depots per sheet before board writes; tests whether the agent collects every code once with a pure stream, fetches once, renders from the fetched map, and keeps writes out of pipelines.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised RouteSheetPublisher.java",
+      "max_score": 5,
+      "description": "Creates RouteSheetPublisher.java as Java 17-compatible code that compiles as written, keeping the constructor, publish(List<RouteSheet>), and the nested DepotDirectory, DispatchBoard, DepotInfo, RouteSheet, and PublishedSheet types with unchanged signatures."
+    },
+    {
+      "name": "Preserves posts, captions, and returned sheets",
+      "max_score": 10,
+      "description": "Calls board.post exactly once per sheet in input order; each sheet's captions follow handoverDepots order with duplicates kept and the CODE (Display Name) format; returns one PublishedSheet per sheet in input order carrying the same captions that were posted. Score 0 if a sheet is skipped or posted twice, captions are deduplicated or reordered, or depot names for handover codes can be missing."
+    },
+    {
+      "name": "Fetches every depot code once per publish",
+      "max_score": 45,
+      "description": "Before any caption is built, publish gathers the stop codes and the handover codes of all sheets into one distinct list (for example sheets.stream().flatMap(sheet -> Stream.concat(sheet.stopDepots().stream(), sheet.handoverDepots().stream())).distinct().toList()) and calls directory.fetch at most once per publish call, skipping it when the list is empty. Score 0 if directory.fetch can still be called inside the per-sheet loop or from the caption helper, or if handover codes are only deduplicated per sheet rather than across the whole batch."
+    },
+    {
+      "name": "Builds captions only from fetched data",
+      "max_score": 20,
+      "description": "The helper that builds captions takes the already fetched depot map and only reads from it: it has no access to directory, makes no remote call, and copies no map to merge in fresh results. A name that says what it does (for example captionsFor or handoverCaptions) is fine. Score 0 if any method that formats captions can trigger a directory fetch."
+    },
+    {
+      "name": "Keeps board writes out of stream pipelines",
+      "max_score": 15,
+      "description": "board.post stays an explicit statement in a for loop (or a plain Iterable.forEach over the sheets) after the captions are known. Score 0 if board.post runs inside map, peek, filter, a collector, or reduce, for example sheets.stream().map(sheet -> { board.post(...); return ...; }).toList()."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Adds no caching across publish calls, threading, retries, new public API, or extra classes beyond small private helpers or a private record for the per-sheet captions, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

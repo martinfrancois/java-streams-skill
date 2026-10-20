@@ -1,0 +1,2 @@
+Implement a Java feed parser as a one-to-one filter and map stream, leaving first-wins duplicate
+removal to the value object constructor that already owns it.

@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/46",
+    "reference_selection": "Shows whether the agent separates collection types that carry a contract (first-appearance order, later mutation) from habitual ones, simplifying the habitual ones and documenting the others in code."
+  },
+  "categories": {
+    "Creates revised ClaimTriage.java": "safety",
+    "Preserves returned contents, order, and mutability": "safety",
+    "Explains the order-preserving LinkedHashSet": "stream_quality",
+    "Explains the mutable ArrayDeque": "stream_quality",
+    "Simplifies collectors whose concrete type does not matter": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

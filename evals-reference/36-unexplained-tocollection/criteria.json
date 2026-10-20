@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: four Java 17 methods collect with Collectors.toCollection without saying why, and the revision should simplify the two whose concrete type does not matter and keep the two that need theirs with a rationale comment.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised ClaimTriage.java",
+      "max_score": 5,
+      "description": "Creates ClaimTriage.java with the class, the nested ClaimLine record, the four methods with unchanged names, parameters, and return types, and the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves returned contents, order, and mutability",
+      "max_score": 10,
+      "description": "reviewQueue still returns a mutable Deque holding the flagged claim ids in input order followed by escalatedClaimId; affectedPolicies still returns each policy number once in first-appearance order; adjustersInvolved and regionsTouched return the same distinct values. The file does not use Collectors.toSet(), which the task says the lint rejects."
+    },
+    {
+      "name": "Explains the order-preserving LinkedHashSet",
+      "max_score": 25,
+      "description": "affectedPolicies keeps toCollection(LinkedHashSet::new) (or another collector that de-duplicates while keeping first-appearance order) and has a code comment next to it saying the result must drop duplicates while keeping the order policies first appear, or that the letter prints them in that order. Replacing it with HashSet, toUnmodifiableSet(), Set.copyOf, or any unordered set earns no credit. Keeping LinkedHashSet without a comment, or with a comment that only restates the code such as `// collect to set` or `// use LinkedHashSet`, earns at most 5."
+    },
+    {
+      "name": "Explains the mutable ArrayDeque",
+      "max_score": 20,
+      "description": "reviewQueue keeps toCollection(ArrayDeque::new) or an equivalent mutable Deque and has a code comment next to it saying why it must be mutable: escalatedClaimId is appended afterwards, or the dashboard removes ids from the front. Keeping the ArrayDeque with no comment, or with a comment that only names the type such as `// use a deque`, earns at most 5. Any change that makes the returned Deque unmodifiable or reorders the escalated id earns no credit."
+    },
+    {
+      "name": "Simplifies collectors whose concrete type does not matter",
+      "max_score": 35,
+      "description": "adjustersInvolved no longer names HashSet and regionsTouched no longer names LinkedHashSet; each uses toUnmodifiableSet() or an equivalent collector that states its mutability (17 points for adjustersInvolved, 18 for regionsTouched). Keeping toCollection(HashSet::new) or toCollection(LinkedHashSet::new) in either method, even with a comment, earns no credit for that method, because no caller needs a mutable set or iteration order there. Using toSet() also earns no credit for that method."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Changes only the collector choices and the comments that explain them: no renamed methods, no new public types, no rewrites of the filters or mappings, and no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in comments or explanation."
+    }
+  ]
+}

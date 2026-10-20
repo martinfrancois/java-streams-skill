@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/60",
+    "reference_selection": "Shows whether the agent recognizes a conditional first-element delimiter reducer as a joining collector and proves the empty-string starting value cannot collide with a mapped value, instead of rewriting the reduce mechanically."
+  },
+  "categories": {
+    "Creates revised LibrarySearchQuery.java": "safety",
+    "Preserves query output and exceptions": "safety",
+    "Joins quoted terms with a delimiter collector": "stream_quality",
+    "Avoids unsafe reduction rewrites": "stream_quality",
+    "States why the empty start cannot collide": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

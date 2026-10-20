@@ -1,0 +1,2 @@
+Decide, for each Java stream collected into a specific collection type, whether that type matters:
+simplify the collector when it does not, and keep it with a comment giving the real reason when it does.

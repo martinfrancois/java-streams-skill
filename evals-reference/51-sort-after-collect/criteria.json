@@ -1,0 +1,36 @@
+{
+  "context": "Reference explicit cleanup: tests whether the agent, asked to refactor two filter-then-sort loops and reduce duplication, places the comparator sort inside each stream pipeline before collection instead of sorting the collected list afterwards.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised DepotMaintenancePlanner.java",
+      "max_score": 5,
+      "description": "Creates DepotMaintenancePlanner.java containing the revised DepotMaintenancePlanner class with openTasksForDepot(List<ServiceTask>, Depot) and overdueTasks(List<ServiceTask>, LocalDate) returning List<ServiceTask>, the Depot enum, the ServiceTask record, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves filtering, order, and mutability",
+      "max_score": 10,
+      "description": "Both methods still exclude completed tasks, apply the same depot and overdue conditions, order results by serviceDue then vehicle id with ties kept in input order, return lists the caller can append to (Collectors.toList(), Collectors.toCollection(ArrayList::new), or equivalent, not Stream.toList() or List.copyOf), leave the input list unmodified, and still throw NullPointerException for a null task or null serviceDue. Deduct fully if any of these changes."
+    },
+    {
+      "name": "Sorts inside the stream pipeline",
+      "max_score": 50,
+      "description": "Each result comes from one stream pipeline of the shape tasks.stream().filter(...).sorted(BY_SERVICE_DATE_THEN_VEHICLE).collect(...), whether written in each method or in one shared private method. Award 20 if only one of the two methods sorts inside its pipeline. Award 0 if both still collect first and then call list.sort(...) or Collections.sort(...) on the collected list, or open a second stream over the collected list just to sort it."
+    },
+    {
+      "name": "Removes the duplicated loop shape",
+      "max_score": 20,
+      "description": "The shared part, excluding completed tasks, sorting with the shared comparator, and collecting a mutable list, appears once, for example in a private method that takes a Predicate<ServiceTask> for the method-specific condition, while each public method states only its own condition. Award 10 if both methods are converted to pipelines but repeat the full filter, sort, and collect chain. Deduct fully if the deduplication uses peek, forEach into an external list, parallelStream(), or replaces the full sort with min, max, or findFirst."
+    },
+    {
+      "name": "Explains without speed promises",
+      "max_score": 10,
+      "description": "The summary says the sort moved into the pipeline so the method builds its result without mutating the collected list afterwards, and notes that sorted() keeps ties in encounter order for this sequential ordered stream. Deduct fully if it claims that sorted() is guaranteed to be faster, calls the comparator fewer times, or avoids buffering all elements."
+    },
+    {
+      "name": "Keeps the refactor focused",
+      "max_score": 5,
+      "description": "Keeps the public method signatures, the comparator, the Depot enum, and the ServiceTask record unchanged, adds no dependencies or new public types, and does not use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code or prose."
+    }
+  ]
+}

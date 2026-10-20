@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a record whose compact constructor already takes a deep immutable snapshot and whose accessor repeats the per-map copy on every read, testing whether the agent drops only the redundant nested copy and keeps an outer defensive boundary.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised ClaimHistory.java",
+      "max_score": 5,
+      "description": "Creates ClaimHistory.java with the ClaimHistory record, its compact constructor, an explicit adjusterNotes() accessor, noteCount, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves detachment, order, and null rejection",
+      "max_score": 10,
+      "description": "After the change, source list and source map changes still do not reach the record, the returned list and its maps still reject modification, note order is kept, and a null note or a null key or value still throws NullPointerException at construction. The blank claimId check is unchanged."
+    },
+    {
+      "name": "Drops the per-read nested copy",
+      "max_score": 45,
+      "description": "adjusterNotes() no longer streams over the notes or copies each map; it returns List.copyOf(adjusterNotes), Collections.unmodifiableList(adjusterNotes), or an equivalent outer-only boundary. Score 0 if the accessor still calls stream().map(Map::copyOf), loops over the maps, or copies any individual note."
+    },
+    {
+      "name": "Keeps an outer defensive accessor",
+      "max_score": 20,
+      "description": "The explicit accessor stays and still returns a copy or unmodifiable wrapper of the list, as the static-analysis rule requires. Score 0 if the override is removed or the accessor returns the field directly."
+    },
+    {
+      "name": "Keeps the constructor as the deep snapshot owner",
+      "max_score": 15,
+      "description": "The compact constructor still copies each map, for example stream().map(Map::copyOf).toList(), so nested maps are snapshotted once at construction. Score 0 if the per-map copy is removed from the constructor, moved to the accessor only, or replaced by a shallow List.copyOf that leaves source maps shared."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Changes only the accessor, adds no caches, dependencies, or public methods, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

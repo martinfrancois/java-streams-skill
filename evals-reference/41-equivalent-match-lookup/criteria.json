@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a class of five lookups where two match only equivalent values and three depend on list position, testing whether the agent picks the right terminal per lookup instead of changing all or none.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised DepotLookups.java",
+      "max_score": 5,
+      "description": "Creates DepotLookups.java with the five methods, the LoadingDock, HaulRoute, and TelemetryPing records, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves every lookup result",
+      "max_score": 10,
+      "description": "Each method keeps its signature and filters, returns Optional, and returns the same value for sequential callers: dockByCode skips closed docks and matches the code without case, registeredTag strips the scanned tag and matches without case, fallbackRoute returns the first open route in list order, newestPing returns the first matching ping in list order, and headline returns the first non-blank line."
+    },
+    {
+      "name": "Uses an arbitrary-match terminal for equivalent matches",
+      "max_score": 35,
+      "description": "dockByCode and registeredTag both end in filter(...).findAny(), because a dock code identifies one open dock and duplicate registry tags name the same vehicle. Score 18 when only one of the two is changed. Score 0 when both still use findFirst(), or when either is rewritten as a loop, collected to a list and indexed, or reduced."
+    },
+    {
+      "name": "Keeps order-sensitive lookups ordered",
+      "max_score": 35,
+      "description": "fallbackRoute, newestPing, and headline still take the first match in encounter order, with filter(...).findFirst() or an equivalent that keeps the same winner. Deduct 12 for each of the three that is changed to findAny(), made parallel, re-sorted, or rewritten as max/min by a key the method was not already using. Score 0 when all three lose their encounter-order winner."
+    },
+    {
+      "name": "Ties each terminal to the data guarantee",
+      "max_score": 10,
+      "description": "A code comment or the written explanation gives the reason for each choice in domain terms: unique dock codes or same-vehicle duplicate tags for the changed lookups, dispatcher preference, newest-first order, or first-line meaning for the kept ones. Score 0 when the change is justified mainly as being faster, or when the explanation says sequential execution alone makes findFirst unnecessary."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Avoids unrelated rewrites, new public APIs, dependencies, or helper classes, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

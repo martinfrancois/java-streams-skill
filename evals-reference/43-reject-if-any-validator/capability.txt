@@ -1,0 +1,2 @@
+Rewrite a Java validation loop that rejects input when any element is invalid as one short-circuiting
+existence check with a named predicate, keeping the shared exception unchanged.

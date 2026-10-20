@@ -1,0 +1,31 @@
+{
+  "context": "Reference natural cleanup: a Java 17 method streams directory entries into a temporary list and then addAll-copies it into a HashSet it returns, and the simplification should collect the final set directly from the stream.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised SectorClaims.java",
+      "max_score": 5,
+      "description": "Creates SectorClaims.java with the class, the FlightPlanReader interface, the constructor, the unchanged sectorsClaimedByOtherPlans(Path, Path) signature, and the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves empty results and exception handling",
+      "max_score": 10,
+      "description": "A null planDir or a planDir that is not a directory still returns an empty set; an IOException from Files.list is still caught and returns an empty set; Files.list is still closed with try-with-resources; the three filters, the planReader call, and the flattening of each plan's sector list keep the same logic, so the returned set contains the same distinct sectors."
+    },
+    {
+      "name": "Collects the final set directly from the stream",
+      "max_score": 50,
+      "description": "The stream inside the try block ends in a collector that produces the returned set, and the method returns it, for example `return entries.filter(...)...flatMap(List::stream).collect(Collectors.toUnmodifiableSet());`. There is no intermediate List of sectors, no addAll, no new HashSet<>(list), no Set.copyOf(list) over a toList() result, and no forEach(claimed::add) or add inside a lambda. collect(Collectors.toCollection(HashSet::new)) returned directly also earns full credit on this item. Keeping toList() followed by any copy into a set earns no credit."
+    },
+    {
+      "name": "Matches result mutability to the caller",
+      "max_score": 30,
+      "description": "Because the caller never modifies the result, the stream path returns an unmodifiable set (Collectors.toUnmodifiableSet()) and the early-return and catch paths return Set.of() or another unmodifiable empty set, with no pre-allocated mutable HashSet left in the method. Returning a mutable set built with Collectors.toCollection(HashSet::new) or Collectors.toSet() earns 10, because it works but still implies callers may mutate the result. Keeping the pre-allocated `Set<String> claimed = new HashSet<>()` earns no credit."
+    },
+    {
+      "name": "Keeps the simplification focused",
+      "max_score": 5,
+      "description": "Keeps the catch comment's meaning, does not change which files are read, does not add logging, caching, dependencies, or new public types, and contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in comments or explanation."
+    }
+  ]
+}

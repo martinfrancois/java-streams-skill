@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: tests whether the agent turns a non-empty charAt digit loop into a short-circuiting primitive char stream predicate while keeping the empty-input result and UTF-16 code unit semantics, and states both contracts.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised PolicyCodeValidator.java",
+      "max_score": 5,
+      "description": "Creates PolicyCodeValidator.java containing the revised PolicyCodeValidator class with invalidPolicies(List<InsurancePolicy>), static isNumeric(String), the InsurancePolicy record, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves isNumeric results and exceptions",
+      "max_score": 10,
+      "description": "The revised isNumeric returns false for \"\", true for ASCII digits and for BMP non-ASCII digits such as Arabic-Indic digits, false for strings with signs, whitespace, or letters, false for a supplementary digit such as U+1D7D9 (two surrogate code units), and still throws NullPointerException for null. invalidPolicies returns the same policies in the same order. Deduct fully if any of these changes."
+    },
+    {
+      "name": "Uses a short-circuiting char stream predicate",
+      "max_score": 35,
+      "description": "isNumeric uses value.chars().allMatch(Character::isDigit), or an equivalent noneMatch or anyMatch formulation over value.chars(), combined with an explicit non-empty check, for example !value.isEmpty() && value.chars().allMatch(Character::isDigit). Award 0 if the charAt loop remains, or if the code collects or counts characters instead of using a short-circuiting match terminal."
+    },
+    {
+      "name": "Keeps the empty and code unit contracts",
+      "max_score": 30,
+      "description": "Deduct fully for any of these: dropping the empty-string guard so \"\" returns true; iterating with codePoints() instead of chars(), which accepts a supplementary digit the original rejects; boxing the stream with mapToObj, boxed(), or Character objects; or replacing the check with a regular expression such as \\\\d+, \\\\p{Nd}+, or matches(...), which changes which characters count as digits or how surrogates are handled."
+    },
+    {
+      "name": "States the vacuous truth and UTF-16 reasoning",
+      "max_score": 15,
+      "description": "The response or a short code comment states that allMatch returns true for an empty stream, so the explicit non-empty check is required, and that chars() walks UTF-16 code units like charAt, so a supplementary digit stays rejected, while codePoints() would accept it. Award 7 if only one of the two points is stated."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Keeps isNumeric static with the same signature, leaves invalidPolicies and the InsurancePolicy record unchanged apart from trivial formatting, adds no dependencies or new public types, and does not use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code or prose."
+    }
+  ]
+}

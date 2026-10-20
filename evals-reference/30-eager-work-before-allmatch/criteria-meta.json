@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/39",
+    "reference_selection": "Shows whether the agent notices that allMatch only short-circuits work inside the pipeline and moves the costly per-tag verification behind skip(1) and allMatch instead of keeping an eager verdict list."
+  },
+  "categories": {
+    "Creates the revised ManuscriptLicenseResolver.java": "safety",
+    "Preserves the zero, one, and many tag rules": "safety",
+    "Verifies the remaining tags inside the short-circuiting check": "stream_quality",
+    "Verifies the first tag once and compares only the rest": "stream_quality",
+    "Drops the materialized verdict list": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

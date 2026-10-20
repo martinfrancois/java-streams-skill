@@ -1,0 +1,2 @@
+Notice when a Java stream builds a temporary list only to copy it into the collection a method
+returns, and collect straight into that result with mutability that matches what callers need.

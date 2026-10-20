@@ -1,0 +1,2 @@
+Implement a Java stream lookup that returns none or the single match and fails on duplicates,
+reading only as far as the second match.

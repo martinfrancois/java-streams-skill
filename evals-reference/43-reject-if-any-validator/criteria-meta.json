@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/55",
+    "reference_selection": "Shows whether the agent turns a reject-if-any loop into anyMatch with a named predicate and one throw, without collecting invalid elements or claiming a speedup."
+  },
+  "categories": {
+    "Creates revised CalibrationProfileLoader.java": "safety",
+    "Preserves the exception and validation boundary": "safety",
+    "States the rule as one existence check": "stream_quality",
+    "Names the unusable-offset predicate": "stream_quality",
+    "Keeps short-circuiting without a speed claim": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

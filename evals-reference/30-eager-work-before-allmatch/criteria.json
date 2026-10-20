@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: an all-tags-must-agree check verifies every tag into a list before calling allMatch, so the short-circuit only skips cheap comparisons; tests whether the agent moves the expensive verification into the lazy pipeline.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised ManuscriptLicenseResolver.java",
+      "max_score": 5,
+      "description": "Creates ManuscriptLicenseResolver.java as Java 17-compatible code that compiles as written, keeping the constructor, resolve(List<LicenseTag>) and the nested LicenseRegistry, Status, LicenseTag, and LicenseVerdict types with unchanged signatures."
+    },
+    {
+      "name": "Preserves the zero, one, and many tag rules",
+      "max_score": 10,
+      "description": "Returns LicenseVerdict.none() for no tags without calling the registry; returns the single tag's verdict unchanged for one tag; for several tags returns the first verdict only when it is VERIFIED and every other tag verifies to an equal SPDX id ignoring case, and otherwise returns the invalid verdict with the same message. Score 0 if it reverts to first-tag-wins, accepts several tags that all fail verification, or changes the conflict message."
+    },
+    {
+      "name": "Verifies the remaining tags inside the short-circuiting check",
+      "max_score": 45,
+      "description": "The registry calls for the tags after the first happen inside the lazy stream that decides agreement, for example tags.stream().skip(1).map(tag -> registry.verify(tag.rawValue())).allMatch(verdict -> sameLicense(leading, verdict)), or an equivalent noneMatch/anyMatch form, so a conflicting tag stops all later registry calls. The first verdict's VERIFIED status is checked before any other tag is verified (for example with && ahead of the stream). Score 0 if every tag is verified into a list, array, or collected stream before the agreement check runs, since the short-circuit then saves only comparisons. A hand-written loop with an early return on the first mismatch scores at most 20: it stops the calls but is longer than the stream form without being clearer."
+    },
+    {
+      "name": "Verifies the first tag once and compares only the rest",
+      "max_score": 20,
+      "description": "The first tag is verified exactly once and used as the comparison target, and only the remaining tags (for example via skip(1) or tags.subList(1, tags.size())) are compared against it. Score 0 if the first tag is verified a second time during comparison, or if the agreement check still compares the first verdict with itself."
+    },
+    {
+      "name": "Drops the materialized verdict list",
+      "max_score": 15,
+      "description": "The revised resolve no longer builds a List<LicenseVerdict>, array, or other collection holding every verdict, and the zero, one, and many cases read as a flat switch expression on tags.size() or flat early returns rather than nested ifs. Score 0 if any collection of all verdicts remains."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Limits changes to resolve and small private helpers it needs (such as a helper for the conflict verdict or for verifying one tag): no caching, threading, new public API, or changes to the nested types, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

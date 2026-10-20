@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/48",
+    "reference_selection": "Shows whether the agent removes a toList() plus addAll copy into a returned set by collecting the final unmodifiable set directly, while keeping the empty-directory and IOException paths."
+  },
+  "categories": {
+    "Creates revised SectorClaims.java": "safety",
+    "Preserves empty results and exception handling": "safety",
+    "Collects the final set directly from the stream": "stream_quality",
+    "Matches result mutability to the caller": "stream_quality",
+    "Keeps the simplification focused": "maintainability"
+  }
+}

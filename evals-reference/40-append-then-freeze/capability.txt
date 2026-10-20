@@ -1,0 +1,2 @@
+Replace a Java list that exists only to append one element before an immutable copy with a direct
+ordered stream result, while keeping a mutable list where stateful building is the clearer code.

@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: tests whether the agent replaces a reduce(\"\", ...) accumulator that special-cases the empty string with a delimiter-joining collector, and proves the quoted terms can never collide with that empty starting value.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised LibrarySearchQuery.java",
+      "max_score": 5,
+      "description": "Creates LibrarySearchQuery.java containing the revised LibrarySearchQuery class with facetClause(SearchFacet), anyOf(List<String>), quoteTerm, the SearchFacet record, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves query output and exceptions",
+      "max_score": 10,
+      "description": "The revised anyOf returns \"\" for an empty list, the single quoted term for one term, and quoted terms in list order separated by \" OR \" for several terms. Escaping in quoteTerm is unchanged, an empty term still renders as two double-quote characters with separators around it, including as the first term, and a null term still throws NullPointerException. Deduct fully if any of these changes."
+    },
+    {
+      "name": "Joins quoted terms with a delimiter collector",
+      "max_score": 45,
+      "description": "anyOf keeps the quoting step as a separate map(LibrarySearchQuery::quoteTerm) or equivalent short lambda and ends with collect(Collectors.joining(\" OR \")). Award 25 for String.join(\" OR \", ...) over an intermediate list of quoted terms, or a StringJoiner fed from the mapped stream. Award 0 if anyOf still uses reduce with a branch on the empty accumulator, or an imperative StringBuilder loop."
+    },
+    {
+      "name": "Avoids unsafe reduction rewrites",
+      "max_score": 20,
+      "description": "Deduct fully for any of these: reduce(\"\", (query, term) -> query + \" OR \" + term), which adds a leading separator; filtering out or skipping empty terms or empty quoted values; joining the raw terms before quoting them; moving the quoting or escaping into the accumulator or collector lambda; or a reduce rewrite that changes the output for a list whose first term is empty."
+    },
+    {
+      "name": "States why the empty start cannot collide",
+      "max_score": 15,
+      "description": "The response or a short code comment explains that the old reducer treats an empty accumulator as \"no terms yet\", that joining would differ if a mapped value could be empty (for example a leading empty value loses its separator in the old code), and that the rewrite is equivalent here because quoteTerm always returns at least two quote characters, so no mapped value is empty. Award 7 if it only claims equivalence without the empty-value argument."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Leaves facetClause, quoteTerm, and the SearchFacet record unchanged apart from what the anyOf rewrite needs, adds no new dependencies or public types, and does not use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code or prose."
+    }
+  ]
+}

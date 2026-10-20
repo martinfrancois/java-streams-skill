@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: tests whether the agent collapses List.copyOf(Arrays.asList(array)) inside Optional.map and Stream.map to the direct immutable factory without breaking the snapshot, null-rejection, or element-type contracts.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised ManuscriptKeywords.java",
+      "max_score": 5,
+      "description": "Creates ManuscriptKeywords.java containing the revised ManuscriptKeywords class with keywordsFor(String) returning Optional<List<String>>, keywordSets(List<ManuscriptDraft>) returning List<List<String>>, the ManuscriptDraft record, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves lookup and snapshot behavior",
+      "max_score": 10,
+      "description": "The revised code still returns Optional.empty() for an unknown id or a null keywords array, still skips null arrays in keywordSets while keeping the order of drafts, returns unmodifiable lists in array order, returns an empty list for an empty array, copies the array so later writes to it are not visible, and still throws NullPointerException for a null array element. Deduct fully if any of these changes."
+    },
+    {
+      "name": "Maps arrays with the direct immutable factory",
+      "max_score": 45,
+      "description": "Both conversions, in keywordsFor and in keywordSets, replace List.copyOf(Arrays.asList(words)) with the direct factory: .map(List::of) or the lambda words -> List.of(words), typed so that the String[] is spread into String elements and the result is List<String>. Award 20 if only one of the two sites is converted. Award 0 if both still use List.copyOf(Arrays.asList(...)) or another two-step adapter plus copy."
+    },
+    {
+      "name": "Avoids view and null-tolerant replacements",
+      "max_score": 20,
+      "description": "Deduct fully if either conversion uses any of these: Arrays.asList(words) alone or Collections.unmodifiableList(Arrays.asList(words)), which return views backed by the array; Arrays.stream(words).toList() or Stream.of(words).toList(), which accept null elements; Collectors.toList() or new ArrayList<>(...), which return a modifiable list; or a cast, explicit type witness, or target type that produces List<String[]> holding the array as one element."
+    },
+    {
+      "name": "States the varargs and contract reasoning",
+      "max_score": 15,
+      "description": "The response or a short code comment explains why List.of with a String[] argument resolves to the varargs overload and returns List<String> rather than a one-element List<String[]>, and that List.of copies the array, rejects null elements with NullPointerException, and returns an unmodifiable list. Award 7 if it only claims equivalence without naming the overload or element-type point."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Leaves the constructor, the Map.copyOf call, the Optional and stream structure, and the public method signatures unchanged apart from the conversion, adds no new dependencies or public types, and does not use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code or prose."
+    }
+  ]
+}

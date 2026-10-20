@@ -1,0 +1,2 @@
+Restructure Java 17 batch publishing so a pure stream gathers every lookup code across all items
+once, a single remote fetch serves all rendering, and board writes stay in an explicit loop.

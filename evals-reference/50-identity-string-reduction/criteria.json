@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: tests whether the agent replaces reduce(\"\", String::concat) with the no-delimiter joining collector and justifies it by intent and a non-null proof for renderLine rather than an unmeasured speed claim.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised StatementExport.java",
+      "max_score": 5,
+      "description": "Creates StatementExport.java containing the revised StatementExport class with render(List<LedgerEntry>), renderLine, the LedgerEntry record, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves output order and exceptions",
+      "max_score": 10,
+      "description": "The revised render returns \"\" for an empty list, concatenates rendered lines in list order with no added separator, keeps empty strings from zero-amount entries as contributing nothing, still throws IllegalArgumentException for an amount with more than two decimals, and still throws NullPointerException for a null entry. renderLine and its format string are unchanged. Deduct fully if any of these changes."
+    },
+    {
+      "name": "Concatenates with the joining collector",
+      "max_score": 45,
+      "description": "render keeps map(StatementExport::renderLine) and ends with collect(Collectors.joining()) with no delimiter. Award 20 for String.join(\"\", ...) over an intermediate list, or a StringBuilder fed through collect with a supplier, accumulator, and combiner. Award 0 if render still uses reduce(\"\", String::concat), reduce with a lambda such as (left, right) -> left + right or left.concat(right), or an imperative loop."
+    },
+    {
+      "name": "Avoids extra steps and null-unsafe claims",
+      "max_score": 15,
+      "description": "Deduct fully for any of these: adding a delimiter such as \"\\n\"; filtering out empty strings or zero-amount entries before rendering, which would skip the scale check; collecting to an intermediate list only to join it when a direct collector fits; writing a custom Collector; or stating that joining() and String::concat behave the same for null values."
+    },
+    {
+      "name": "States the null and intent reasoning",
+      "max_score": 20,
+      "description": "The response or a short code comment states that String.concat(null) throws NullPointerException while joining() appends the text \"null\", and that the rewrite is safe because renderLine always returns a non-null string (an empty string or a String.format result) or throws. It gives clearer intent as the reason for the change and does not claim a measured or guaranteed speedup as the justification. Award 10 if the null difference is missing but the rest is present, and 0 if the only stated reason is performance."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Changes only the terminal of render, leaves renderLine and the LedgerEntry record unchanged, adds no dependencies or new public types, and does not use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code or prose."
+    }
+  ]
+}

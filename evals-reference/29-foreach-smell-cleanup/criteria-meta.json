@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/5",
+    "reference_selection": "Shows whether the agent tells result-building stream forEach calls apart from side-effect ones, converting the former to collectors and leaving the latter alone."
+  },
+  "categories": {
+    "Creates the revised DepotServiceDesk.java": "safety",
+    "Preserves side effects, order, and returned values": "safety",
+    "Returns the overdue id list from the pipeline": "stream_quality",
+    "Returns the depot totals from a collector": "stream_quality",
+    "Leaves real side effects as side effects": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}
