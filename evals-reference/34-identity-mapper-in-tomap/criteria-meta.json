@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/44",
+    "reference_selection": "Shows whether the agent writes Function.identity() for identity key and value mappers, both in existing toMap calls and in the collector it writes for a forEach merge, without touching non-identity mappers, merge functions, or map suppliers."
+  },
+  "categories": {
+    "Creates the revised HarbourCallIndex.java": "safety",
+    "Preserves winners, map types, and real mappers": "safety",
+    "Names identity key mappers": "stream_quality",
+    "Names identity value mappers": "stream_quality",
+    "Counts flags with a collector": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

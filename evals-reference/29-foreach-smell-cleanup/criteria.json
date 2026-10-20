@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a class mixes stream forEach calls whose purpose is a side effect (paging, logging) with forEach calls that only fill a returned list or map, and tests whether the agent converts only the result-building ones.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised DepotServiceDesk.java",
+      "max_score": 5,
+      "description": "Creates DepotServiceDesk.java as Java 17-compatible code that compiles as written, keeping the constructor, the four methods with unchanged signatures, the WorkshopPager interface, the ServiceVisit record, and the needed imports."
+    },
+    {
+      "name": "Preserves side effects, order, and returned values",
+      "max_score": 10,
+      "description": "pageOverdue still calls pager.page once per overdue visit in input order; logDepotLoad still logs one line per visit in input order with the same text; overdueVehicleIds returns overdue vehicle ids in input order; labourMinutesByDepot returns correct per-depot sums with keys in ascending depot order (a TreeMap or other sorted map). Score 0 if any method drops visits, changes the overdue filter, switches to parallelStream, or returns the depot totals in a HashMap or other unsorted map."
+    },
+    {
+      "name": "Returns the overdue id list from the pipeline",
+      "max_score": 25,
+      "description": "overdueVehicleIds produces its result directly from the stream, for example visits.stream().filter(ServiceVisit::overdue).map(ServiceVisit::vehicleId).toList() or .collect(Collectors.toList()). Score 0 if it still creates an ArrayList and fills it with forEach(ids::add), add calls in a loop, or any other mutation of a list declared outside the pipeline."
+    },
+    {
+      "name": "Returns the depot totals from a collector",
+      "max_score": 30,
+      "description": "labourMinutesByDepot produces the sorted map from a collector, for example Collectors.groupingBy(ServiceVisit::depot, TreeMap::new, Collectors.summingInt(ServiceVisit::labourMinutes)) or Collectors.toMap(ServiceVisit::depot, ServiceVisit::labourMinutes, Integer::sum, TreeMap::new). Score 0 if it still calls totals.merge or put from inside a stream forEach. A plain for loop that merges into a TreeMap scores at most 8, since the stream code exists only to build a value."
+    },
+    {
+      "name": "Leaves real side effects as side effects",
+      "max_score": 25,
+      "description": "pageOverdue and logDepotLoad keep the pager call and the log call in a terminal side-effect form: stream forEach, Iterable.forEach (for example visits.forEach(...)), forEachOrdered, or an enhanced for loop all earn full credit. Score 0 if paging or logging moves into map, peek, filter, a collector, or reduce, or if either method collects visits into a list only to loop over it afterwards, or if the method gains a return value it did not have."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Changes only what the modernization needs: no new public API, extra classes, dependencies, caching, or threading, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

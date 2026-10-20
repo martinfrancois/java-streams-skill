@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a correct Java 17 class squeezes several multi-operation stream chains onto single lines, and the readability pass should wrap them one operation per line with .stream() kept on the source line.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised BranchLoanSummary.java",
+      "max_score": 5,
+      "description": "Creates BranchLoanSummary.java containing the class, the nested BookLoan record, and the five methods with unchanged names, parameters, and return types, plus the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves every method's results",
+      "max_score": 10,
+      "description": "Each method keeps its operations in the same order and returns the same values: overdueIsbns filters unreturned then overdue loans and maps to isbn with toList(); outstandingFeeCents keeps both filters, mapToLong(BookLoan::feeCents), and sum(); mostOverdue keeps the filter and max(Comparator.comparingInt(BookLoan::daysOverdue)); hasBorrowed keeps anyMatch on memberId; exportFields keeps the LinkedHashMap insertion order and both toList() terminals, with members still sorted. No chain is replaced by a loop, no terminal operation changes (for example toList() to collect(...)), and encounter order and mutability are unchanged."
+    },
+    {
+      "name": "Keeps .stream() on the source line",
+      "max_score": 30,
+      "description": "In every chain that gets wrapped, .stream() stays on the same line as its receiver, for example `return loans.stream()` or `fields.put(\"isbns\", loans.stream()`. Full credit when all wrapped chains do this. Moving .stream() to its own continuation line (`return loans` followed by `.stream()` on the next line) fails this item for every chain where it happens; scale the score by the share of wrapped chains that keep .stream() on the source line."
+    },
+    {
+      "name": "Puts each later operation on its own line",
+      "max_score": 35,
+      "description": "Each of the five chains with two or more operations after .stream() (overdueIsbns, outstandingFeeCents, mostOverdue, and the isbns and members fields in exportFields) has every following intermediate and terminal operation on its own continuation line starting with a dot, for example `.filter(...)`, `.map(...)`, `.toList()` each on separate lines. A chain left on one line, or wrapped only partly (two operations sharing a line such as `.map(BookLoan::isbn).toList()` or `.mapToLong(BookLoan::feeCents).sum()`), loses that chain's share of the points (7 per chain)."
+    },
+    {
+      "name": "Leaves the one-operation chain compact",
+      "max_score": 15,
+      "description": "hasBorrowed, whose chain has a single operation after .stream(), stays on one line as `return loans.stream().anyMatch(loan -> loan.memberId().equals(memberId));` or equivalently compact. Splitting that single anyMatch onto a continuation line, or rewriting it into a loop, earns no credit."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Limits the change to layout: no renamed methods or variables, no new helpers or records that change logic, no formatter plugin or build changes, and no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in code comments or explanation."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a Java 17 parser loops over text.split(\"\\\\R\", -1), and the stream rewrite tempts agents to switch to String.lines(), which recognizes fewer line breaks than regex \\R.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised InspectionFaultParser.java",
+      "max_score": 5,
+      "description": "Creates InspectionFaultParser.java with the class, FAULT_LINE, both records, the static faultCodes(InspectionNote) method, and the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves returned faults and null handling",
+      "max_score": 10,
+      "description": "faultCodes returns faults from summary first, then body, then each followUps entry in list order, and lines in their original order within each text; null or blank texts contribute nothing and do not throw; DEFECT maps to blocksRelease true and ADVISORY to false; the returned list is unmodifiable (Stream.toList(), List.copyOf, or Collectors.toUnmodifiableList())."
+    },
+    {
+      "name": "Keeps the regex line-break contract",
+      "max_score": 40,
+      "description": "Lines are still produced by splitting on the regex \\R, through Pattern.compile(\"\\\\R\").splitAsStream(text), Arrays.stream(text.split(\"\\\\R\", -1)), Stream.of(text.split(\"\\\\R\", -1)), or an equivalent \\R split. Any switch to String.lines(), BufferedReader.lines(), split(\"\\n\"), split(\"\\\\r?\\\\n\"), split(\"\\\\r\\\\n|\\\\r|\\\\n\"), or System.lineSeparator() earns no credit, because those do not split on NEL (U+0085), line separator (U+2028), or paragraph separator (U+2029) the way \\R does. A comment or explanation that claims String.lines() is equivalent to split(\"\\\\R\") also earns no credit."
+    },
+    {
+      "name": "Streams lines from a precompiled pattern",
+      "max_score": 15,
+      "description": "The line source is a static final Pattern for \\R used with splitAsStream(text), which streams the lines without building an intermediate array. Arrays.stream or Stream.of over text.split(\"\\\\R\", -1) earns 7. Calling Pattern.compile(\"\\\\R\") inside the per-text method on every call earns 10. Any source that loses \\R semantics earns 0."
+    },
+    {
+      "name": "Produces faults from the pipeline without a shared list",
+      "max_score": 25,
+      "description": "faultCodes returns the result of a stream pipeline that combines summary, body, and followUps (for example Stream.concat(Stream.of(note.summary(), note.body()), note.followUps().stream())) and flatMaps each text through a helper returning Stream<FaultCode>, ending in toList(). No ArrayList is passed to a helper, there is no forEach(faults::add) or add inside a lambda, and the per-line loop is gone. Keeping either imperative loop earns no credit; keeping the shared list but feeding it from forEach earns no credit."
+    },
+    {
+      "name": "Keeps the rewrite focused",
+      "max_score": 5,
+      "description": "Does not change FAULT_LINE, add new label kinds, trim or normalize lines beyond what the regex already does, add dependencies, or add new public types, and contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in comments or explanation."
+    }
+  ]
+}

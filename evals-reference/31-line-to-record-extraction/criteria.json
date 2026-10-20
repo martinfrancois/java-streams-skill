@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: Java 21 line-to-record extraction that builds its result by passing a mutable list into a helper and filling it from a forEach and a split loop; tests whether the agent produces the result from one pipeline with lazy lines and a zero-or-one emission per line.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised InspectionDefectExtractor.java",
+      "max_score": 5,
+      "description": "Creates InspectionDefectExtractor.java as Java 21-compatible code that compiles as written, keeping static defects(InspectionReport), DEFECT_LINE, severity, the nested types, and all needed imports (for example java.util.function.Consumer and java.util.stream.Stream if used)."
+    },
+    {
+      "name": "Preserves extraction order and matching behavior",
+      "max_score": 10,
+      "description": "Returns notes from the summary, then the findings, then each remark text in list order; skips null and blank texts from all three sources; keeps whole-line matching with DEFECT_LINE.matcher(line).matches() (not find()); builds each note as new DefectNote(matcher.group(2).strip(), severity(matcher.group(1))); and returns an unmodifiable list (Stream.toList() or List.copyOf). Score 0 if any source is dropped, null text can throw, matching changes to find(), or the result becomes a mutable ArrayList."
+    },
+    {
+      "name": "Produces the result from one pipeline",
+      "max_score": 35,
+      "description": "defects returns the notes straight from a stream pipeline that combines the summary, the findings, and the remark texts (for example Stream.concat(Stream.of(report.summary(), report.findings()), report.remarks().stream().map(MechanicRemark::text)) followed by a null/blank filter, flatMap to a per-text Stream<DefectNote> helper, and toList()). Score 0 if a List<DefectNote> is still created outside the pipeline and filled with add, if any helper keeps the shape addDefects(List<DefectNote>, String) that mutates the caller's list, or if forEach (including text.lines().forEach(...)) appends to an external list. flatMap at the text level is the expected way to join the per-text streams and must not be penalized."
+    },
+    {
+      "name": "Emits zero or one note per line with mapMulti",
+      "max_score": 30,
+      "description": "The per-line step uses mapMulti with a small emitter, for example text.lines().<DefectNote>mapMulti(InspectionDefectExtractor::emitDefect) where emitDefect(String line, Consumer<? super DefectNote> sink) calls sink.accept only when the line matches. Partial credit: text.lines().map(DEFECT_LINE::matcher).filter(Matcher::matches).map(...) scores at most 20; a line-level flatMap that returns Stream.of(note) or Stream.empty() (or Optional.stream()) for each line scores at most 10, because it builds a tiny stream per line. Score 0 for a forEach or for loop that appends to a list."
+    },
+    {
+      "name": "Splits lines lazily",
+      "max_score": 15,
+      "description": "Replaces text.split(\"\\\\R\", -1) with String.lines() (or another lazy line stream such as a precompiled Pattern.splitAsStream) and never materializes a String[] or List<String> of lines. Score 0 if the eager split array remains or the lines are collected into a list before matching."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Keeps the change to defects and its private helpers: no custom collectors, extra classes, new public API, or parallel streams, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

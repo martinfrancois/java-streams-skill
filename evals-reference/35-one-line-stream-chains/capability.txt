@@ -1,0 +1,2 @@
+Lay out multi-operation Java stream chains for reading: the source call keeps `.stream()`, each
+later operation gets its own line, and one-operation chains stay compact, with no behavior change.

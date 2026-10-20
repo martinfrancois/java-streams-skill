@@ -1,0 +1,2 @@
+Replace Java 17 stream forEach calls that fill an outer list or map with pipelines that produce
+the ordered distinct list and the mutable count map directly, keeping merge and order behavior.

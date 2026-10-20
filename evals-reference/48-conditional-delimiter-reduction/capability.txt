@@ -1,0 +1,2 @@
+Replace a hand-written first-element delimiter reduction with a delimiter-joining collector, after
+proving that no mapped value can equal the reducer's empty-string starting value.

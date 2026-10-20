@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/58",
+    "reference_selection": "Shows whether the agent uses the constructor's deep snapshot to drop the accessor's repeated per-map copy while keeping an outer defensive copy for static analysis."
+  },
+  "categories": {
+    "Creates revised ClaimHistory.java": "safety",
+    "Preserves detachment, order, and null rejection": "safety",
+    "Drops the per-read nested copy": "stream_quality",
+    "Keeps an outer defensive accessor": "stream_quality",
+    "Keeps the constructor as the deep snapshot owner": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

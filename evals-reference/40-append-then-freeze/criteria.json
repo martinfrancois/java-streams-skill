@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a Java 17 record builds a temporary ArrayList from a stream only to append one element before its constructor copies the list, next to a stateful loop where the mutable list is honest work.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised BroadcastSchedule.java",
+      "max_score": 5,
+      "description": "Creates BroadcastSchedule.java with the BroadcastSchedule record, the nested AirSegment record, the compact constructor, withSegment, withNewsBreaks, and the imports it needs, as Java 17-compatible code."
+    },
+    {
+      "name": "Preserves segment order and the immutable copy",
+      "max_score": 10,
+      "description": "withSegment returns kept segments in their original order with segment last, using the same sameSlotOrId test; withNewsBreaks returns the identical list, inserting newsBreak before a live segment once sinceBreak reaches everyMinutes; the compact constructor still copies segments with List.copyOf, so the record exposes no mutable state."
+    },
+    {
+      "name": "Builds withSegment's list without a temporary buffer",
+      "max_score": 45,
+      "description": "withSegment produces its list directly from a stream, for example `Stream.concat(segments.stream().filter(existing -> !sameSlotOrId(existing, segment)), Stream.of(segment)).toList()` passed to the constructor. Keeping `new ArrayList<>(...toList())` followed by add, collecting with Collectors.toCollection(ArrayList::new) and then calling add, or any other mutable list that is appended to before the constructor call earns no credit. A shape that changes order, such as putting segment first or sorting, also earns no credit."
+    },
+    {
+      "name": "Leaves withNewsBreaks imperative",
+      "max_score": 25,
+      "description": "withNewsBreaks keeps its for loop with the sinceBreak counter and a local mutable list. Rewriting it as a stream that tracks sinceBreak through an AtomicInteger, a one-element array, a field, a stateful flatMap or mapMulti lambda, or a reduce over lists earns no credit, because the running counter makes the loop the clearer code."
+    },
+    {
+      "name": "Keeps the concatenation readable",
+      "max_score": 10,
+      "description": "The withSegment pipeline uses one-line lambdas or method references, such as the existing sameSlotOrId helper, with no block lambda in braces and no nested stream inside a lambda. A flatMap with a conditional or a ternary that decides whether to emit segment earns no credit here."
+    },
+    {
+      "name": "Keeps the refactor focused",
+      "max_score": 5,
+      "description": "Changes only withSegment's list construction and imports: no new public methods, no renamed components, no changes to sameSlotOrId or the news-break rule, no dependencies, and no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria in comments or explanation."
+    }
+  ]
+}

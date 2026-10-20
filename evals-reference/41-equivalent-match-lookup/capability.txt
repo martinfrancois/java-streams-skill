@@ -1,0 +1,2 @@
+Audit a set of Java stream lookups and use an arbitrary-match terminal only where every match is
+equivalent, keeping first-match terminals where list order picks the result.

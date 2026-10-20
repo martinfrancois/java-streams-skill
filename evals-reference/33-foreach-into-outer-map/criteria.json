@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: two stream pipelines hand their results to external state, one appending to a list from two sources before a distinct pass and one merging counts into a HashMap; tests whether the agent lets the pipelines produce the list and the mutable map directly.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised NewsroomFeedPlanner.java",
+      "max_score": 5,
+      "description": "Creates NewsroomFeedPlanner.java as Java 17-compatible code that compiles as written, keeping the constructor, syndicationFeeds(List<String>), openDraftsByDesk(), DraftStory, and all needed imports."
+    },
+    {
+      "name": "Preserves feed order, duplicates, and counts",
+      "max_score": 10,
+      "description": "syndicationFeeds returns configured feeds first, then trimmed non-blank feeds from the comma-separated variable, keeping only the first occurrence of each URI in that order; openDraftsByDesk returns correct counts of unpublished drafts per stripped, lower-cased desk. Score 0 if the order changes, duplicates survive, the result becomes a Set, or blank entries are kept."
+    },
+    {
+      "name": "Builds the feed list in one pipeline",
+      "max_score": 35,
+      "description": "syndicationFeeds combines the two ordered sources with Stream.concat (ideally as two named Stream<URI> locals such as configured and fromEnvironment) and returns .distinct().toList() from that single pipeline. Score 0 if it still creates an ArrayList filled by forEach(feeds::add), builds two lists and joins them with addAll, or streams an intermediate list a second time for distinct. A LinkedHashSet copied into a list scores at most 10."
+    },
+    {
+      "name": "Counts desks with a merging collector",
+      "max_score": 30,
+      "description": "openDraftsByDesk returns the map from a collector that states duplicate handling, for example Collectors.toMap(Function.identity(), desk -> 1, Integer::sum, HashMap::new) or Collectors.groupingBy(Function.identity(), HashMap::new, Collectors.summingInt(desk -> 1)); a desk -> desk key mapper is acceptable here. Score 0 if counts.merge still runs inside forEach, or if Collectors.toMap is used without a merge function, since repeated desks would throw IllegalStateException."
+    },
+    {
+      "name": "Keeps the count map a mutable HashMap",
+      "max_score": 15,
+      "description": "The collector names HashMap::new as the map supplier (or the result is copied into new HashMap<>(...)), so callers can still add entries. Score 5 if it relies on the default supplier of toMap or groupingBy, whose map type and mutability are not guaranteed. Score 0 if the result becomes unmodifiable (Map.copyOf, Collectors.toUnmodifiableMap, Collections.unmodifiableMap)."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Limits changes to the two methods: no parallelStream, concurrent collectors, extra classes, or claims that the new version is guaranteed faster, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

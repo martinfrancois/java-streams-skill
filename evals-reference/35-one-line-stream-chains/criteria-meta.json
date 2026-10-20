@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/45",
+    "reference_selection": "Shows whether a readability cleanup wraps multi-operation stream chains one operation per line with .stream() on the source line while leaving a one-operation chain on one line."
+  },
+  "categories": {
+    "Creates revised BranchLoanSummary.java": "safety",
+    "Preserves every method's results": "safety",
+    "Keeps .stream() on the source line": "stream_quality",
+    "Puts each later operation on its own line": "stream_quality",
+    "Leaves the one-operation chain compact": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

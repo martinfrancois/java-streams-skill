@@ -1,0 +1,2 @@
+Replace a charAt universal-predicate loop with a primitive character stream terminal while keeping
+the non-empty guard and UTF-16 code unit iteration, and explain both contracts.

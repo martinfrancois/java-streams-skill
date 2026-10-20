@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/40",
+    "reference_selection": "Shows whether the agent replaces mutable-list helpers and forEach accumulation with a single toList pipeline over String.lines() that uses mapMulti for the zero-or-one note per line, rather than a forEach or line-level flatMap rewrite."
+  },
+  "categories": {
+    "Creates the revised InspectionDefectExtractor.java": "safety",
+    "Preserves extraction order and matching behavior": "safety",
+    "Produces the result from one pipeline": "stream_quality",
+    "Emits zero or one note per line with mapMulti": "stream_quality",
+    "Splits lines lazily": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

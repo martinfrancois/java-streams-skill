@@ -1,0 +1,2 @@
+Replace an identity string concatenation reduction with the no-delimiter joining collector, after
+proving that mapped values are never null, since concat and joining treat null differently.

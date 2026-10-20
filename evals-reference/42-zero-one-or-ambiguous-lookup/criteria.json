@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural implementation: a zero, one, or ambiguous lookup over a long list, testing whether the agent stops at the second match and branches on the three outcomes instead of collecting every match or taking the first one.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates RiderLookup.java",
+      "max_score": 5,
+      "description": "Creates RiderLookup.java with the riderByCode(InsurancePolicy, String) method, the CoverageRider and InsurancePolicy records, AmbiguousRiderException unchanged, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Returns empty, the single match, or the domain exception",
+      "max_score": 10,
+      "description": "Matches with null-safe equality such as Objects.equals, returns Optional.empty() for no match, returns the one matching rider for a single match, and throws AmbiguousRiderException built from policy.policyNumber() and riderCode whenever two or more riders match. Score 0 if any path returns a rider while a second match exists, throws a different exception type, or throws on a null code."
+    },
+    {
+      "name": "Stops scanning at the second match",
+      "max_score": 40,
+      "description": "The work is bounded at two matches: filter(...).limit(2) before the terminal, or an equivalent that stops reading riders once a second match is seen. Score 0 for filter(...).toList(), collect(Collectors.toList()), count(), or grouping that reads every rider, and for a first lookup followed by a second full pass to check for duplicates."
+    },
+    {
+      "name": "Branches explicitly on zero, one, or ambiguous",
+      "max_score": 25,
+      "description": "A short stream pipeline produces at most two matches (filter, limit(2), toList or an equivalent collector), and a switch or if/else on the result size handles 0, 1, and more than 1 as separate visible branches. Score 12 for a correct bounded loop that remembers one match and throws on the second. Score 0 when the duplicate check hides inside a reduce or collector merge lambda that throws, or inside a multi-line lambda."
+    },
+    {
+      "name": "Does not settle the lookup by encounter order",
+      "max_score": 15,
+      "description": "Does not use findFirst() or findAny() as the selection step, since either one silently accepts duplicates. Score 0 if findFirst or findAny picks the result, even when a separate duplicate check is added after it."
+    },
+    {
+      "name": "Keeps the lookup focused",
+      "max_score": 5,
+      "description": "Adds no caches, indexes, dependencies, extra public types, or parallel streams, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

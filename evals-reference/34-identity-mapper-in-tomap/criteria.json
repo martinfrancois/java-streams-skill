@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: toMap calls written with hand-rolled identity lambdas plus a forEach merge that invites another one; tests whether the agent names identity mappers with Function.identity() while keeping merge functions, map suppliers, and the non-identity mappers intact.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates the revised HarbourCallIndex.java",
+      "max_score": 5,
+      "description": "Creates HarbourCallIndex.java as Java 17-compatible code that compiles as written, keeping the four method signatures, the later helper, the Vessel and PortCall records, and imports for everything used (including java.util.function.Function if Function.identity() appears)."
+    },
+    {
+      "name": "Preserves winners, map types, and real mappers",
+      "max_score": 10,
+      "description": "Keeps the first vessel per IMO with LinkedHashMap::new, the later-arrival call per berth via later with TreeMap::new, the first label with TreeMap::new, and a TreeMap of flag counts. The berth value mapper still strips and upper-cases the label, and the flag count value mapper still yields 1 per call. Score 0 if a merge function or map supplier is dropped, a non-identity mapper such as berthLabel.strip().toUpperCase(Locale.ROOT) or flag -> 1 is replaced with Function.identity(), or any map becomes unmodifiable."
+    },
+    {
+      "name": "Names identity key mappers",
+      "max_score": 35,
+      "description": "Every key mapper that returns its input unchanged uses Function.identity(): the berth label key in berthCodesByLabel and the flag key in the callsPerFlag collector, for example toMap(Function.identity(), flag -> 1, Integer::sum, TreeMap::new) or groupingBy(Function.identity(), TreeMap::new, summingInt(flag -> 1)). Deduct fully if either key mapper is still written as x -> x, or if a custom identity helper replaces java.util.function.Function.identity()."
+    },
+    {
+      "name": "Names identity value mappers",
+      "max_score": 30,
+      "description": "The value mappers in vesselsByImo and latestCallByBerth use Function.identity() instead of vessel -> vessel and portCall -> portCall. Award 15 if only one of the two is converted. Score 0 if both remain identity lambdas or a custom identity helper is introduced."
+    },
+    {
+      "name": "Counts flags with a collector",
+      "max_score": 15,
+      "description": "callsPerFlag returns its TreeMap straight from a collector with a merge or summing rule (toMap with Integer::sum and TreeMap::new, or groupingBy with TreeMap::new and summingInt). Score 0 if tally.merge still runs inside forEach or a loop fills an external map."
+    },
+    {
+      "name": "Keeps the revision focused",
+      "max_score": 5,
+      "description": "Limits changes to the collector calls and the forEach in callsPerFlag: no new public API, extra classes, parallel streams, or reformatting of unrelated code, and no comments or prose that use internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

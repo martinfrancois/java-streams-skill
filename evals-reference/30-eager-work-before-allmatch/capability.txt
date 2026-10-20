@@ -1,0 +1,2 @@
+Refactor a Java 17 all-must-agree check so the expensive per-element work runs lazily inside the
+short-circuiting stream, after verifying the first element once, instead of eagerly into a list.

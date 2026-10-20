@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/61",
+    "reference_selection": "Shows whether the agent rewrites a charAt digit loop as chars().allMatch with the empty guard kept and avoids the more Unicode-looking codePoints() choice that changes supplementary-character results."
+  },
+  "categories": {
+    "Creates revised PolicyCodeValidator.java": "safety",
+    "Preserves isNumeric results and exceptions": "safety",
+    "Uses a short-circuiting char stream predicate": "stream_quality",
+    "Keeps the empty and code unit contracts": "stream_quality",
+    "States the vacuous truth and UTF-16 reasoning": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

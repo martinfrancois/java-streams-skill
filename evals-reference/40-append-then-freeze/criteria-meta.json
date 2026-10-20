@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/50",
+    "reference_selection": "Shows whether an immutable-by-default pass replaces an append-one-then-copy ArrayList with an ordered Stream.concat result while leaving the counter-driven builder loop imperative."
+  },
+  "categories": {
+    "Creates revised BroadcastSchedule.java": "safety",
+    "Preserves segment order and the immutable copy": "safety",
+    "Builds withSegment's list without a temporary buffer": "stream_quality",
+    "Leaves withNewsBreaks imperative": "stream_quality",
+    "Keeps the concatenation readable": "stream_quality",
+    "Keeps the refactor focused": "maintainability"
+  }
+}

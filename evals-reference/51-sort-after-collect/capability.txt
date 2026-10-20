@@ -1,0 +1,2 @@
+Refactor filter loops that are followed by an immediate sort of the collected list into single
+stream pipelines that sort before collecting, keeping stable ordering and a mutable result.

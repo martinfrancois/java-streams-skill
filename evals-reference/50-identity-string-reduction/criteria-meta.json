@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/62",
+    "reference_selection": "Shows whether the agent recognizes reduce(\"\", String::concat) as joining() and proves non-null mapped values, since the two treat null differently, without adding delimiters, filters, or speed claims."
+  },
+  "categories": {
+    "Creates revised StatementExport.java": "safety",
+    "Preserves output order and exceptions": "safety",
+    "Concatenates with the joining collector": "stream_quality",
+    "Avoids extra steps and null-unsafe claims": "stream_quality",
+    "States the null and intent reasoning": "stream_quality",
+    "Keeps the cleanup focused": "maintainability"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "explicit",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "issue": "https://github.com/martinfrancois/java-streams-skill/issues/72",
+    "reference_selection": "Shows whether an explicitly invoked refactor checks what happens to a freshly collected list and folds the following comparator sort into the same pipeline, instead of converting only the filter loop."
+  },
+  "categories": {
+    "Creates revised DepotMaintenancePlanner.java": "safety",
+    "Preserves filtering, order, and mutability": "safety",
+    "Sorts inside the stream pipeline": "stream_quality",
+    "Removes the duplicated loop shape": "stream_quality",
+    "Explains without speed promises": "stream_quality",
+    "Keeps the refactor focused": "maintainability"
+  }
+}

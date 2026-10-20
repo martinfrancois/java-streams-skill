@@ -1,0 +1,2 @@
+Tidy Java 17 toMap and counting collectors so identity key and value mappers use Function.identity()
+while merge functions, map suppliers, and non-identity mappers stay as they were.

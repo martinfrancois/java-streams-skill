@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: a correct loop that only asks whether any element is invalid and throws one shared exception, testing whether the agent states it as one existence check with a named predicate and keeps the exception boundary.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised CalibrationProfileLoader.java",
+      "max_score": 5,
+      "description": "Creates CalibrationProfileLoader.java with the SensorOffset and CalibrationProfile records, CalibrationException, load, the revised validation, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves the exception and validation boundary",
+      "max_score": 10,
+      "description": "Throws CalibrationException with code calibration_invalid and the original message for any offset with a null or blank sensorId or a null or non-finite offset; checks no other field, so null tag values still pass; load still validates before returning the profile."
+    },
+    {
+      "name": "States the rule as one existence check",
+      "max_score": 40,
+      "description": "The validation reads as if (offsets.stream().anyMatch(...)) { throw ... } with a single throw outside the stream, or noneMatch with the condition inverted. Score 0 for keeping the original loop, filter(...).findAny().isPresent(), filter(...).findFirst().ifPresent(...) with a throw, filter(...).count() > 0, filter(...).toList().isEmpty(), collecting the invalid offsets, or forEach with a throw inside the lambda."
+    },
+    {
+      "name": "Names the unusable-offset predicate",
+      "max_score": 25,
+      "description": "The null, blank, and finite checks live in a named method such as isUnusable(SensorOffset), passed to the terminal as a method reference or a one-expression call. Score 10 when the full condition stays inline as a single-line lambda. Score 0 when the lambda spans several lines or uses a block body."
+    },
+    {
+      "name": "Keeps short-circuiting without a speed claim",
+      "max_score": 15,
+      "description": "The revision still stops at the first unusable offset and uses no parallel stream. Any explanation presents the change as clearer intent and notes or implies the loop already stopped early; score 0 if the change is justified as a performance improvement."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Changes only the validation, adds no new public types, dependencies, or validation of tags, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

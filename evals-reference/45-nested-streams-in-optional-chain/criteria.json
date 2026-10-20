@@ -1,0 +1,36 @@
+{
+  "context": "Reference natural cleanup: Optional lookups whose map and flatMap lambdas each start a multi-line stream pipeline, testing whether the agent moves the list work into domain-named helpers and keeps the equivalent-match terminal.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Creates revised RentalRateCard.java",
+      "max_score": 5,
+      "description": "Creates RentalRateCard.java with the MileagePackage record, the constructor, packagesFor, packageCodesFor, packageBlurb, the needed imports, and Java 17-compatible code that would compile."
+    },
+    {
+      "name": "Preserves empty results, order, and immutability",
+      "max_score": 10,
+      "description": "packageCodesFor returns an unmodifiable list in stored order or an empty Optional for an unknown or blank class; packageBlurb strips the requested code, matches it without case, and returns an empty Optional for an unknown class, a blank code, no matching package, or a null or blank blurb. Public signatures are unchanged."
+    },
+    {
+      "name": "Moves list pipelines out of the Optional lambdas",
+      "max_score": 45,
+      "description": "The Optional chains only compose: packageCodesFor uses map with a method reference or one-line call to a named helper such as packageCodes(List<MileagePackage>), and packageBlurb uses flatMap with a one-line call to a named helper such as packageByCode(packages, code) that owns the stream. Score 20 when only one of the two methods is fixed. Score 0 when a stream chain inside a map or flatMap lambda still continues across several lines in both methods."
+    },
+    {
+      "name": "Uses domain-named helpers",
+      "max_score": 20,
+      "description": "Each extracted helper is a private method typed to MileagePackage with a rate-card name. Score 0 for a generic helper such as <T, R> List<R> mapAll(List<T>, Function<T, R>), an Optional utility class, or a helper whose name says nothing about packages or codes."
+    },
+    {
+      "name": "Keeps the equivalent-match lookup",
+      "max_score": 15,
+      "description": "The code lookup still ends in filter(...).findAny(), since package codes are unique within a vehicle class ignoring case and every match is equivalent. Score 0 if it switches to findFirst() without an order requirement, adds a parallel stream, or replaces the lookup with a loop."
+    },
+    {
+      "name": "Keeps the cleanup focused",
+      "max_score": 5,
+      "description": "Changes only the two lookups and their new private helpers, adds no public API, caches, or dependencies, and the output contains no internal workflow labels such as hard stop, marker, scan, checklist, skill, rubric, or criteria."
+    }
+  ]
+}

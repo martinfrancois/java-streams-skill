@@ -1,0 +1,2 @@
+Replace an adapter-plus-copy conversion of a String[] inside Optional and stream mapping with the
+direct immutable list factory, while keeping the snapshot, null, order, and element-type contracts.

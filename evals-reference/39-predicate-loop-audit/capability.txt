@@ -1,0 +1,2 @@
+Audit a Java class loop by loop and turn only the pure "does any element match" loops into stream
+predicates, leaving index-based diagnostics and checked IO loops imperative.

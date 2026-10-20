@@ -1,0 +1,2 @@
+Simplify a Java record whose constructor already takes a deep immutable snapshot by removing the
+accessor's repeated per-element stream copy, keeping one outer defensive copy.
