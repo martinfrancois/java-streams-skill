@@ -5,7 +5,7 @@
     "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/40",
     "reference_selection": "Shows whether the agent replaces mutable-list helpers and forEach accumulation with a single toList pipeline over String.lines() that uses mapMulti for the zero-or-one note per line, rather than a forEach or line-level flatMap rewrite.",
-    "main_eval_selection": "promoted from reference after local DeepSeek V4.1 Flash baseline screening; hosted confirmation pending"
+    "main_eval_selection": "promoted from reference after local DeepSeek V4.1 Flash baseline screening; hosted both-variants run on 2026-10-20 confirmed it (see evals/NUMBERING.md)"
   },
   "categories": {
     "Creates the revised InspectionDefectExtractor.java": "safety",

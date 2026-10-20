@@ -279,13 +279,14 @@ Update this section whenever active eval membership or scoring changes.
   scenarios as `52` to `55`. Every scenario that was already there before 2026-10-20 was rescreened
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
-- Every placement made on 2026-10-20 rests on the local screen and is provisional: the hosted
-  with-context arm has not run for the new scenarios, and the local skill arm still dips below 98
+- Every reference and regression placement made on 2026-10-20 rests on the local screen and is
+  provisional: the hosted with-context arm has not run for the new scenarios, and the local skill arm still dips below 98
   in some runs on regression `22`, `39`, and `47` and on several reference scenarios (the
   `NUMBERING.md` notes list them). Reclassify from the hosted result when it exists.
-- Hosted benchmark evidence for the current main suite is pending. Do not publish exact run IDs,
-  baseline scores, with-context scores, or lift ratios until a hosted run covers the current
-  `evals/` contents.
+- Hosted evidence for the current main suite, 2026-10-20, default solver, both variants: 200 with
+  context against 86 without (`31` 26 to 100, `43` 60 to 100), about 2.3x. The run ID is in
+  `evals/NUMBERING.md`. The reference and regression suites still lack hosted runs against this
+  skill text.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
   numbers that justified each move.
