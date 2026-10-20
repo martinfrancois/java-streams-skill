@@ -6,6 +6,7 @@ prints the score with every item that lost points. Used by scripts/local_screen.
 can be rerun on its own to re-grade a run with another judge model.
 """
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -17,6 +18,8 @@ criteria = json.loads((scenario_dir / "criteria.json").read_text())
 task = (scenario_dir / "task.md").read_text()
 solver = json.loads((run_dir / "solver.json").read_text())
 work = run_dir / "work"
+key_file = Path(os.environ.get("DEEPSEEK_API_KEY_FILE", Path.home() / "deepseek-api-key"))
+secret = key_file.read_text().strip() if key_file.is_file() else ""
 files = []
 for path in sorted(work.rglob("*")):
     if not path.is_file() or path.suffix == ".class" or ".claude" in path.parts:
@@ -24,6 +27,8 @@ for path in sorted(work.rglob("*")):
     if path.stat().st_size > 60000:
         continue
     text = path.read_text(errors="replace").replace("\x00", "")
+    if secret:
+        text = text.replace(secret, "[redacted]")
     files.append(f"### {path.relative_to(work)}\n```\n{text}\n```")
 artifacts = "\n\n".join(files) or "(no files written)"
 checklist = json.dumps(criteria["checklist"], indent=2)

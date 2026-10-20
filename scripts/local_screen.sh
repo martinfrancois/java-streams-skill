@@ -15,10 +15,23 @@
 #
 # Needs: a DeepSeek API key in $DEEPSEEK_API_KEY_FILE (default ~/deepseek-api-key),
 # the claude CLI, jq, python3. Output goes to $LOCAL_SCREEN_OUT (default
-# .local-screen/, gitignored). One agentic run costs about one to two US cents.
+# .local-screen/, gitignored). One agentic run costs one to two US cents. An
+# existing run directory is left alone; pick new run numbers with -s to rerun.
 # The judge call uses the regular claude login; set LOCAL_SCREEN_JUDGE to change
 # its model (default haiku).
 set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  scripts/local_screen.sh [-n runs] [-p parallel] [-m baseline|skill] [-s start] <scenario-dir>...
+  scripts/local_screen.sh --summary [-m baseline|skill]
+
+Runs each scenario's task.md through Claude Code with DeepSeek V4.1 Flash as the
+solver and grades every run against criteria.json with a Claude judge. See
+docs/agents/local-screening.md.
+USAGE
+}
 
 repo="$(cd "$(dirname "$0")/.." && pwd -P)"
 out_root="${LOCAL_SCREEN_OUT:-$repo/.local-screen}"
@@ -31,7 +44,7 @@ while [ $# -gt 0 ]; do
     -m) mode="$2"; shift 2 ;;
     -s) start="$2"; shift 2 ;;
     --summary) summary=1; shift ;;
-    -h|--help) sed -n 2,22p "$0"; exit 0 ;;
+    -h|--help) usage; exit 0 ;;
     --) shift; break ;;
     -*) echo "unknown flag $1" >&2; exit 2 ;;
     *) break ;;
@@ -66,7 +79,8 @@ solve_one() {
   name="$(basename "$scenario_dir")"
   run_dir="$out/$name/run-$i"
   work="$run_dir/work"
-  rm -rf "$run_dir"; mkdir -p "$work"
+  if [ -e "$run_dir" ]; then echo "[$name] run $i exists, skipping (use -s for new run numbers)"; return 0; fi
+  mkdir -p "$work"
   prompt="$(cat "$scenario_dir/task.md")"
   if [ "$mode" = skill ]; then
     mkdir -p "$work/.claude/skills"
