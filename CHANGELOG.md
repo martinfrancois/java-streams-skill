@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.2...v1.2.3) (2026-10-20)
+
+
+### Bug Fixes
+
+* **skill:** add the lookup, mutability, splitting, layout, and write-boundary rules ([be4d3ec](https://github.com/martinfrancois/java-streams-skill/commit/be4d3ece1336097991a6395a9ce58cc1a48ada09))
+* **skill:** keep the new rules inside the skill's own scope ([e0d531f](https://github.com/martinfrancois/java-streams-skill/commit/e0d531f2748e7238035ffb9ebbbee38e47eceb9e))
+* **skill:** say the new rules in the skill's words, not the checklists' ([cea8c63](https://github.com/martinfrancois/java-streams-skill/commit/cea8c630d53c83b32ef43486cc74c378b68cf28f))
+
 ## [1.2.2](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.1...v1.2.2) (2026-10-04)
 
 
