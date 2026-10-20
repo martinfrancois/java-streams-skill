@@ -221,6 +221,21 @@ def load_criteria(criteria_file: Path) -> tuple[dict[str, Any] | None, list[str]
     return data, failures
 
 
+def count_invocations(scenarios: list[Path]) -> dict[str, int]:
+    """Tally metadata.invocation over scenarios; unreadable criteria count as neither."""
+    counts = {"natural": 0, "explicit": 0}
+    for scenario in scenarios:
+        criteria = scenario / "criteria.json"
+        if not criteria.exists():
+            continue
+        data, _ = load_criteria(criteria)
+        if data and isinstance(data.get("metadata"), dict):
+            invocation = data["metadata"].get("invocation")
+            if invocation in counts:
+                counts[invocation] += 1
+    return counts
+
+
 def invocation_from_task(task_text: str) -> bool:
     return any(re.search(pattern, task_text, re.IGNORECASE) for pattern in EXPLICIT_INVOCATION_PATTERNS)
 
@@ -695,27 +710,16 @@ def main() -> int:
 
     main_eval_root = Path("evals") if Path("evals").exists() else None
     failures: list[str] = []
-    invocations: dict[str, int] = {"natural": 0, "explicit": 0}
     for scenario in dirs:
         failures.extend(validate_scenario(scenario, main_eval_root))
-        criteria = scenario / "criteria.json"
-        if criteria.exists():
-            data, _ = load_criteria(criteria)
-            if data and isinstance(data.get("metadata"), dict):
-                invocation = data["metadata"].get("invocation")
-                if invocation in invocations:
-                    invocations[invocation] += 1
+    invocations = count_invocations(dirs)
 
     if main_eval_root and any(path.resolve() == main_eval_root.resolve() for path in paths if path.exists()):
         main_eval_dirs = [d for d in dirs if d.parent.resolve() == main_eval_root.resolve()]
-        main_eval_invocations = {"natural": 0, "explicit": 0}
+        main_eval_invocations = count_invocations(main_eval_dirs)
         main_eval_category_scores = {category: 0 for category in CRITERION_CATEGORIES}
         for scenario in main_eval_dirs:
             data, _ = load_criteria(scenario / "criteria.json")
-            if data and isinstance(data.get("metadata"), dict):
-                invocation = data["metadata"].get("invocation")
-                if invocation in main_eval_invocations:
-                    main_eval_invocations[invocation] += 1
             if data and isinstance(data.get("checklist"), list):
                 for item in data["checklist"]:
                     if not isinstance(item, dict):
@@ -726,18 +730,17 @@ def main() -> int:
                         main_eval_category_scores[category] += max_score
         if main_eval_dirs and not main_eval_invocations["natural"]:
             failures.append("evals: main eval set must include a natural invocation scenario")
-        lift_dirs = [d for d in dirs if d.parent.name in {"evals", "evals-reference"}]
-        lift_invocations = {"natural": 0, "explicit": 0}
-        for scenario in lift_dirs:
-            data, _ = load_criteria(scenario / "criteria.json")
-            if data and isinstance(data.get("metadata"), dict):
-                invocation = data["metadata"].get("invocation")
-                if invocation in lift_invocations:
-                    lift_invocations[invocation] += 1
-        if lift_dirs and not all(lift_invocations.values()):
-            failures.append(
-                "evals and evals-reference together must include both natural and explicit invocation scenarios"
-            )
+        # The mix rule spans two suites, so it only applies when both were given.
+        reference_root = Path("evals-reference")
+        reference_given = reference_root.exists() and any(
+            path.resolve() == reference_root.resolve() for path in paths if path.exists()
+        )
+        if reference_given:
+            lift_dirs = [d for d in dirs if d.parent.name in {"evals", "evals-reference"}]
+            if lift_dirs and not all(count_invocations(lift_dirs).values()):
+                failures.append(
+                    "evals and evals-reference together must include both natural and explicit invocation scenarios"
+                )
         main_eval_total = sum(main_eval_category_scores.values())
         if main_eval_total:
             stream_quality = main_eval_category_scores["stream_quality"]
