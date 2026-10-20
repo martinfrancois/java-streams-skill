@@ -38,3 +38,26 @@ Moved here with `evidence_type` `solved_regression`:
 - `29`, `32`, `33`, `34`, `36`, `39`, `40`, `41`, `46`, `47`: new scenarios drafted from the eval
   issues whose local baseline was 98 to 100 in every run. Their with-context side has no hosted
   evidence yet; run them with context once credits allow and keep them only if they score 100.
+
+## Old regression scenarios rescreened (2026-10-20)
+
+The scenarios that were already here before the rebuild had hosted both-arms evidence from the
+old solver only, so they went through the same local baseline screen (two runs each, six for the
+two that disagreed). Skill-context-dependent scenarios stay here whatever their baseline, because
+their checklists ask for exact skill-provided text.
+
+| Scenario | Runs | Baseline | Placement |
+| --- | --- | --- | --- |
+| `06`, `10`, `14`, `16`, `17`, `20`, `24` | 2 | 100 | stays |
+| `11-null-category-price-index` | 2 | 100 (99 to 100) | stays |
+| `07-catalog-feed` | 2 | 99 (98 to 99) | stays |
+| `18-priority-findany-review` | 2 | 99 (98 to 99) | stays |
+| `19-null-collector-review` | 2 | 98 | stays |
+| `22-java8-version-scan` | 2 | 99 | stays, skill-context-dependent |
+| `23-collector-order-scan` | 2 | 94 (93 to 94) | stays, skill-context-dependent |
+| `25-hard-stop-scan-audit` | 2 | 96 (93 to 98) | stays, skill-context-dependent |
+| `09-order-collector-report` | 6 | 98 (96 to 100) | back to reference: flattens the orders twice instead of once in four runs of six |
+| `13-training-and-packets` | 6 | 97 (83 to 100) | back to reference: one run of six writes nested loops instead of `flatMap` |
+
+The rule is the one used for the new scenarios: 98 to 100 in every run stays regression, anything
+that dips below 98 in a run is lift material and goes to reference.

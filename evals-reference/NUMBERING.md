@@ -84,7 +84,7 @@ local baseline:
 | `40-append-then-freeze` | #50 | 2 | 100 | regression |
 | `41-equivalent-match-lookup` | #51 | 2 | 100 | regression |
 | `42-zero-one-or-ambiguous-lookup` | #53 | 6 | 91 (84 to 100) | reference |
-| `43-reject-if-any-validator` | #55 | 6 | 69 (48 to 100) | main, made explicit |
+| `43-reject-if-any-validator` | #55 | 6 | 69 (48 to 100) | main |
 | `44-single-dedup-boundary` | #56 | 6 | 73 (20 to 100) | reference: bimodal, one run in three writes a loop instead of a pipeline |
 | `45-nested-streams-in-optional-chain` | #57 | 6 | 83 (62 to 92) | reference: generic helper names and `findAny` to `findFirst` drift |
 | `46-constructor-owned-snapshot` | #58 | 2 | 100 | regression |
@@ -103,3 +103,13 @@ focused reference coverage despite its delta because its domain overlaps the run
 Scenarios at 95 to 97 (`48`, `50`, `51`, `37`, `49`) stay here as weak lift rather than moving to
 regression, because the regression rule needs both variants at 100 and the baseline is not there.
 They are the first candidates to retire if the reference suite needs trimming.
+
+## Returned from regression (2026-10-20)
+
+`09-order-collector-report` (explicit) and `13-training-and-packets` (natural) came back from
+`evals-regression/` after the local baseline screen of the old regression scenarios: `09` scored
+98 (96 to 100) over six runs, losing points for flattening the orders twice, and `13` scored 97
+(83 to 100), writing nested loops instead of `flatMap` in one run of six. Both keep their numbers
+and their `Reference` context sentences. Their `evidence_type` is `focused_reference` because
+their tasks share identifiers with the runtime examples. Hosted both-arms evidence against the
+current skill is pending.

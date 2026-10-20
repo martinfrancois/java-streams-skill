@@ -2,7 +2,9 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "implementation",
-    "evidence_type": "solved_regression"
+    "evidence_type": "focused_reference",
+    "reference_selection": "Returned from regression after the local DeepSeek V4.1 Flash baseline screen of 2026-10-20 scored it under 98 in some runs; see evals-reference/NUMBERING.md.",
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence."
   },
   "categories": {
     "Creates coherent Java 17 artifact": "safety",

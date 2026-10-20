@@ -261,13 +261,19 @@ Update this section whenever active eval membership or scoring changes.
   in `evals-reference/` (`15`, `42`, `51`) until an explicit scenario clears the floor.
 - Both main scenarios were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
-  whose baseline sits at least 30 points under 100. The former main scenarios (bounded
+  whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the
+  runtime references (`28` also fails unaided but overlaps them, so it stays focused reference
+  coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 15 scenarios. `08`, `15`, `27`, `28` plus the issue-derived `30`, `35`, `37`,
-  `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`.
-- Regression suite: 35 scenarios, 3620 total checklist points, including the four former main
-  scenarios as `52` to `55`.
+- Reference suite: 17 scenarios, 1700 total checklist points. `08`, `09`, `13`, `15`, `27`, `28`
+  plus the issue-derived `30`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`. `09` and
+  `13` came back from regression on 2026-10-20 because the local screen scored them under 98 in
+  some runs.
+- Regression suite: 33 scenarios, 4180 total checklist points, including the four former main
+  scenarios as `52` to `55`. Every scenario that was already there before 2026-10-20 was rescreened
+  locally and stays only because its baseline was 98 to 100 in every run or because it is
+  skill-context-dependent.
 - Hosted benchmark evidence for the current main suite is pending. Do not publish exact run IDs,
   baseline scores, with-context scores, or lift ratios until a hosted run covers the current
   `evals/` contents.
@@ -278,27 +284,13 @@ Update this section whenever active eval membership or scoring changes.
 ## Local Baseline Screening
 
 Hosted Tessl runs cost credits (20 per scenario with both variants on the free plan) and the
-monthly pool is shared with the other skill repositories. Screen locally first:
-
-```bash
-scripts/local_screen.sh -n 2 evals-reference/<scenario>     # baseline, no skill context
-scripts/local_screen.sh -m skill -n 1 evals-reference/<scenario>
-scripts/local_screen.sh --summary
-```
-
-It drives Claude Code against DeepSeek V4.1 Flash (the model behind Tessl's default solver) and
-grades each run with a Claude judge against `criteria.json`. A run costs about a cent. Use it to:
-
-- classify a new scenario before any hosted run: baseline consistently 98 to 100 is regression
-  material, baseline at least 30 points under 100 is a main candidate, in between is reference;
-- rerun a bimodal scenario four to six times before trusting its mean;
-- check with `-m skill` that the criteria are reachable with the skill before spending hosted
-  credits on the with-context arm.
-
-Local numbers decide placement and go into the `NUMBERING.md` notes as local screening results.
-They are not hosted evidence: benchmark claims, release-readiness claims, and the registry score
-still need the hosted runs described above. Expect a few scenarios to flip either way on Tessl,
-whose harness, prompt, and judge differ.
+monthly pool is shared with the other skill repositories. Screen locally first with
+`scripts/local_screen.sh`, which runs a scenario through the model behind Tessl's default solver
+for about a cent and grades it with a Claude judge. Setup, commands, placement thresholds, and the
+skill-tuning loop are in [Local Screening With DeepSeek](local-screening.md). Local numbers decide
+placement and go into the `NUMBERING.md` notes as local screening results. They are not hosted
+evidence: benchmark claims, release-readiness claims, and the registry score still need the hosted
+runs described above.
 
 ## Checks
 
@@ -310,3 +302,4 @@ the criteria JSON check listed there.
 - [Workflow](workflow.md)
 - [Skill Behavior](skill-behavior.md)
 - [Pre-Submit Gate](pre-submit-gate.md)
+- [Local Screening With DeepSeek](local-screening.md)
