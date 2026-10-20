@@ -1,5 +1,5 @@
 {
-  "context": "Regression natural cleanup: a Java 17 class mixes two pure existence-check loops with an index-reporting loop and a checked IO loop, and the audit should turn only the existence checks into short-circuiting stream predicates.",
+  "context": "Regression explicit cleanup: a Java 17 class mixes two pure existence-check loops with an index-reporting loop and a checked IO loop, and the audit should turn only the existence checks into short-circuiting stream predicates.",
   "type": "weighted_checklist",
   "checklist": [
     {

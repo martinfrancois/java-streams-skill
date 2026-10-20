@@ -25,13 +25,7 @@ baselines rose. Choosing new main scenarios is a maintainer decision.
 
 ## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
 
-Local baseline screening, 2026-10-20: each scenario's `task.md` ran through Claude Code with
-DeepSeek V4.1 Flash as the solver (`deepseek-flash` on DeepSeek's own API, the model behind the
-Tessl default solver `deepseek-v4.1-flash`) and no skill context, then Claude Haiku graded the
-written files against the scenario's `criteria.json`. Scores are percentages, mean over the runs
-listed. `scripts/local_screen.sh` reproduces it. This is not hosted evidence: no Tessl run IDs
-exist for these scenarios yet, and hosted confirmation is the next step (see the November issue
-#108).
+Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md` (DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each `criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
 
 Numbers `01` to `04` moved to regression numbers `52` to `55` (new numbers, because the
 regression suite already uses `01`, `02`, and `04` for other scenarios). Hosted runs on 2026-10-03

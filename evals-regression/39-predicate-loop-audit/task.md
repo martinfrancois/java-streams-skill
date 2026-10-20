@@ -3,8 +3,8 @@
 Create `BadgePolicyCheck.java` with the revised class. Assume Java 17.
 
 The building access team is going through its older classes loop by loop. For each loop in
-`BadgePolicyCheck`, decide whether a stream version would make the method clearer. Change the
-loops where it would and leave the others alone.
+`BadgePolicyCheck`, pass the containing method through `$java-streams` and decide whether a stream
+version would make it clearer. Change the loops where it would and leave the others alone.
 
 ```java
 import java.io.IOException;

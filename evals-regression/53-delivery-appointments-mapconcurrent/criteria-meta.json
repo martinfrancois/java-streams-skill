@@ -3,7 +3,7 @@
     "invocation": "natural",
     "task_type": "implementation",
     "evidence_type": "solved_regression",
-    "runtime_reference_overlap_rationale": "Focused main-suite coverage for bounded mapConcurrent service-stub usage; not ordinary broad natural lift."
+    "runtime_reference_overlap_rationale": "Focused regression coverage for bounded mapConcurrent service-stub usage, formerly main; not ordinary broad natural lift."
   },
   "categories": {
     "Creates coherent Java 24 artifact": "safety",
