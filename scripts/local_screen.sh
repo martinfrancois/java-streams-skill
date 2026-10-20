@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
-# Screen eval scenarios locally before spending Tessl credits.
+# Screen eval scenarios locally before spending Tessl credits: run each scenario
+# through Claude Code with DeepSeek V4.1 Flash as the solver and grade the result
+# with a Claude judge. Baseline mode gives the solver no skill context and decides
+# suite placement; skill mode copies skills/java-streams into the work directory.
+# Run with -h for usage; docs/agents/local-screening.md has the full method.
 #
-# Runs each scenario's task.md through Claude Code with DeepSeek V4.1 Flash as the
-# solver (DeepSeek's `deepseek-flash`, the model behind Tessl's default solver) and
-# grades every run against the scenario's criteria.json with a Claude judge. The
-# baseline mode (default) gives the solver no skill context, which is the arm that
-# decides suite placement: a scenario the solver already solves unaided cannot show
-# lift. The skill mode copies skills/java-streams into the work directory and asks
-# the agent to use it, as a cheap check that the criteria are reachable.
-#
-# Usage:
-#   scripts/local_screen.sh [-n runs] [-p parallel] [-m baseline|skill] [-s start] <scenario-dir>...
-#   scripts/local_screen.sh --summary [-m baseline|skill]
-#
-# Needs: a DeepSeek API key in $DEEPSEEK_API_KEY_FILE (default ~/deepseek-api-key),
-# the claude CLI, jq, python3. Output goes to $LOCAL_SCREEN_OUT (default
-# .local-screen/, gitignored). One agentic run costs one to two US cents. An
-# existing run directory is left alone; pick new run numbers with -s to rerun.
-# The judge call uses the regular claude login; set LOCAL_SCREEN_JUDGE to change
-# its model (default haiku).
+# Needs: a DeepSeek API key file at $DEEPSEEK_API_KEY_FILE (default
+# ~/deepseek-api-key), the claude CLI, jq, python3. Output goes to
+# $LOCAL_SCREEN_OUT (default .local-screen/, gitignored). One run costs one to
+# two US cents. An existing run directory is left alone; pick new run numbers
+# with -s to rerun. The judge uses the regular claude login; LOCAL_SCREEN_JUDGE
+# sets its model (default haiku).
 set -euo pipefail
 
 usage() {
@@ -99,7 +91,8 @@ $prompt"
       --dangerously-skip-permissions --max-turns 40 \
       "$prompt" > "$run_dir/solver.json" 2> "$run_dir/solver.err" || echo "[$name] run $i: solver exit $?"
   )
-  python3 "$repo/scripts/local_screen_judge.py" "$scenario_dir" "$run_dir" "${LOCAL_SCREEN_JUDGE:-haiku}"
+  DEEPSEEK_API_KEY_FILE="$key_file" python3 "$repo/scripts/local_screen_judge.py" \
+    "$scenario_dir" "$run_dir" "${LOCAL_SCREEN_JUDGE:-haiku}" "$mode"
 }
 export -f solve_one
 export out mode cfg key_file repo
