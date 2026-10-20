@@ -169,7 +169,8 @@ checks; these are useful with-context safety checks, but they do not directly dr
 claim.
 
 The main eval set should stay focused on realistic tasks where context should improve stream
-quality. It must include natural activation prompts and explicit invocation prompts. Natural
+quality. It must include at least one natural activation prompt; `evals/` and `evals-reference/`
+together must cover both natural and explicit invocation. Natural
 scenarios must not mention `$java-streams` or ask to use the skill. Explicit scenarios may name the
 skill and must be labeled as explicit in `criteria-meta.json`.
 
@@ -184,8 +185,9 @@ Use `metadata.evidence_type` when scenario placement needs to be explicit:
 
 - `ordinary_lift`: both variants are fair to compare, so the scenario can live in main or reference.
   This value is invalid in `evals-regression/`.
-- `solved_regression`: hosted history shows both variants solve the scenario at 100%. This value is
-  invalid outside `evals-regression/`.
+- `solved_regression`: both variants solve the scenario at 100%, shown by hosted history or, until
+  the hosted run exists, by the local screen described in `docs/agents/local-screening.md`. This
+  value is invalid outside `evals-regression/`.
 - `skill_context_dependent`: the scenario requires exact skill-provided text, commands, procedures,
   checklists, headers, or bundled reference text. It must live in `evals-regression/`.
 
@@ -196,7 +198,8 @@ Do not hide baseline-solved scenarios just to improve lift. Move baseline-solved
 `evals-regression/` when hosted evidence shows both variants are 100%. Keep clean low-delta but
 still diagnostic scenarios in `evals-reference/`.
 
-When adding a new scenario, classify it from an isolated hosted run:
+When adding a new scenario, screen it locally first (`scripts/local_screen.sh`, see
+`docs/agents/local-screening.md`), then classify it from an isolated hosted run:
 
 1. Put ordinary candidate scenarios in `evals-reference/`. Put skill-context-dependent scenarios
    that require exact skill-provided text, commands, procedures, checklists, headers, or bundled

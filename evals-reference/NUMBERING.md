@@ -100,19 +100,24 @@ The existing reference scenarios were screened the same way: `05` 100 and `26` 1
 focused reference coverage despite its delta because its domain overlaps the runtime example in
 `stream-examples.md`; `31` is the de-domained main-suite version of the same failure.
 
-Scenarios at 95 to 97 (`48`, `50`, `51`, `37`, `49`) stay here as weak lift rather than moving to
-regression, because the regression rule needs both variants at 100 and the baseline is not there.
+Scenarios at 94 to 97 (`37`, `48`, `49`, `50`, `51`) stay here as weak lift rather than moving to
+regression, because the regression rule needs both variants solved and the baseline is not there.
 They are the first candidates to retire if the reference suite needs trimming.
 
 ## Returned from regression (2026-10-20)
 
-`09-order-collector-report` (explicit) and `13-training-and-packets` (natural) came back from
-`evals-regression/` after the local baseline screen of the old regression scenarios: `09` scored
-98 (96 to 100) over six runs, losing points for flattening the orders twice, and `13` scored 97
-(83 to 100), writing nested loops instead of `flatMap` in one run of six. Both keep their numbers
-and their `Reference` context sentences. Their `evidence_type` is `focused_reference` because
-their tasks share identifiers with the runtime examples. Hosted both-arms evidence against the
-current skill is pending.
+`04-primary-address-review` (explicit), `09-order-collector-report` (explicit), and
+`13-training-and-packets` (natural) came back from `evals-regression/` after the local baseline
+screen of the old regression scenarios: `04` scored 82 and 88, never naming the condition under
+which `findAny` is acceptable; `09` scored 98 (96 to 100) over six runs, losing points for
+flattening the orders twice; `13` scored 97 (83 to 100), writing nested loops instead of `flatMap`
+in one run of six. All three keep their numbers and their `Reference` context sentences. Their
+`evidence_type` is `focused_reference` because their tasks share identifiers with the runtime
+examples. Hosted both-arms evidence against the current skill is pending.
+
+Invocation style follows the prompt that caused the implementation in each source issue. For `38`
+and `43`, the maintainer named the skill only in the later correction prompt, so both scenarios
+test the original implicit prompt and stay natural.
 
 ### With the skill, locally (2026-10-20)
 

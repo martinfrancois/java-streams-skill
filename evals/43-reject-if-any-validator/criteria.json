@@ -1,5 +1,5 @@
 {
-  "context": "Reference natural cleanup: a correct loop that only asks whether any element is invalid and throws one shared exception, testing whether the agent states it as one existence check with a named predicate and keeps the exception boundary.",
+  "context": "Main eval natural cleanup: a correct loop that only asks whether any element is invalid and throws one shared exception, testing whether the agent states it as one existence check with a named predicate and keeps the exception boundary.",
   "type": "weighted_checklist",
   "checklist": [
     {

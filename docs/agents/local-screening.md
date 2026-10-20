@@ -3,7 +3,7 @@
 ## Scope
 
 Use this to run eval scenarios against the model behind Tessl's default solver on your own
-machine, for about one cent a run, before spending Tessl credits. It covers setup, the commands,
+machine, for one to two cents a run, before spending Tessl credits. It covers setup, the commands,
 how to read the output, and how to tune the skill against it. It does not replace hosted runs:
 benchmark claims, release-readiness claims, and the registry score still come from Tessl.
 
@@ -24,8 +24,8 @@ directions.
 
 ## Setup
 
-1. Create an API key at <https://platform.deepseek.com/> and add credit. Ten US dollars covered
-   about seven hundred agentic runs in October 2026. DeepSeek halves the price in its off-peak
+1. Create an API key at <https://platform.deepseek.com/> and add credit. A run costs one to two
+   US cents; ten US dollars covered about seven hundred runs in October 2026. DeepSeek halves the price in its off-peak
    window; the current window is on <https://api-docs.deepseek.com/quick_start/pricing/>.
 2. Store the key alone, with no comment line and no trailing text, in `~/deepseek-api-key` and
    make it private:
@@ -66,15 +66,18 @@ scripts/local_screen.sh --summary -m skill
 
 What one run does:
 
-1. Copies nothing but the scenario's `task.md` into an empty work directory (skill mode also
-   copies `skills/java-streams` into `.claude/skills/` and prefixes the prompt with one line asking
-   the agent to use it).
+1. Creates an empty work directory and passes the scenario's `task.md` as the prompt (skill mode
+   also copies `skills/java-streams` into `.claude/skills/` of that directory and prefixes the
+   prompt with one line asking the agent to use it). An existing run directory is never deleted;
+   rerun with `-s` and new run numbers.
 2. Runs `claude -p --model deepseek-flash` with `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
    and the key from the file, `--max-turns 40`, a 15-minute timeout, JSON output saved as
    `solver.json`.
 3. Calls `scripts/local_screen_judge.py`, which sends the task, the checklist from `criteria.json`,
-   every file the agent wrote, and the agent's final message to the judge, and saves the item
-   scores as `assessment.json` in the same shape as one Tessl solution. The console shows the
+   the files the agent wrote (skipping `.class` files, anything under `.claude/`, and files over
+   60,000 bytes, with the API key redacted if the agent copied it anywhere), and the agent's final
+   message to the judge, and saves the item scores as `assessment.json` in the same shape as one
+   Tessl solution. The console shows the
    total and one `lost` line per item that lost points, with the judge's reason.
 
 Six parallel runs are fine on an ordinary developer machine; each solver run is one `claude`
@@ -88,7 +91,7 @@ Place scenarios by the baseline arm:
 | Baseline mean over the runs | Placement |
 | --- | --- |
 | 98 to 100 in every run | `evals-regression/` |
-| at least 30 points under 100, and the skill arm reaches 100 | `evals/` candidate |
+| at least 30 points under 100 | `evals/` candidate, once the skill arm reaches 100 (the repo's with-context rule) |
 | anything else | `evals-reference/` |
 
 Rerun a scenario four to six times before trusting a mean when two runs differ by more than ten

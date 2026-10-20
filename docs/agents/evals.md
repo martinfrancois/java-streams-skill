@@ -38,7 +38,7 @@ benchmark claims, or scoring rules.
   - The main suite must contain a natural scenario; both styles must exist across `evals/` and
     `evals-reference/` together. An explicit main scenario is wanted but not required, because
     naming the skill in the prompt primes the current default solver to use streams on its own:
-    in the 2026-10-20 local screen every explicit variant of a failing natural scenario scored 90
+    in the 2026-10-20 local screen every explicit variant of a failing natural scenario scored 76
     to 100 unaided (`evals/NUMBERING.md`). Promote an explicit scenario to main only when its
     explicit form clears the 30-point floor.
 - Include evals where the agent writes new stream code, not only reviews or refactors snippets.
@@ -73,8 +73,11 @@ benchmark claims, or scoring rules.
   - `focused_reference`: a reference-suite scenario that intentionally emphasizes a specific skill
     behavior or behavior delta. It may carry high weight on that focused behavior, but it is not
     ordinary broad lift or unseen generalization evidence.
-  - `solved_regression`: a regression scenario that hosted history shows both variants solve at
-    100%. This value is invalid outside `evals-regression/`.
+  - `solved_regression`: a regression scenario that both variants solve at 100%, shown by hosted
+    history or, until the hosted run exists, by the local screen (baseline 98 to 100 in every run;
+    the local judge takes a point or two on focus and concision items in otherwise correct runs,
+    so 98 counts as solved). The `NUMBERING.md` note must say which evidence placed it. This value
+    is invalid outside `evals-regression/`.
   - `skill_context_dependent`: a regression scenario that requires exact skill-provided text,
     commands, procedures, checklists, headers, or bundled reference text. This value is required for
     such scenarios and is invalid outside `evals-regression/`.
@@ -258,7 +261,7 @@ Update this section whenever active eval membership or scoring changes.
   predicate instead of a loop that throws).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
-  in `evals-reference/` (`15`, `42`, `51`) until an explicit scenario clears the floor.
+  in `evals-reference/` (`09`, `51`) until an explicit scenario clears the floor.
 - Both main scenarios were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
   whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the
@@ -266,14 +269,17 @@ Update this section whenever active eval membership or scoring changes.
   coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 17 scenarios, 1700 total checklist points. `08`, `09`, `13`, `15`, `27`, `28`
-  plus the issue-derived `30`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`. `09` and
-  `13` came back from regression on 2026-10-20 because the local screen scored them under 98 in
-  some runs.
-- Regression suite: 33 scenarios, 4180 total checklist points, including the four former main
+- Reference suite: 18 scenarios, 1765 total checklist points. `04`, `08`, `09`, `13`, `15`, `27`,
+  `28` plus the issue-derived `30`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`, `50`, `51`.
+  `04`, `09`, and `13` came back from regression on 2026-10-20 because the local screen scored
+  them under 98 in some runs.
+- Regression suite: 32 scenarios, 4115 total checklist points, including the four former main
   scenarios as `52` to `55`. Every scenario that was already there before 2026-10-20 was rescreened
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
+- Every placement made on 2026-10-20 rests on the local screen and is provisional: the hosted
+  with-context arm has not run for the new scenarios, and the local skill arm still dips on `39`,
+  `44`, and `47` in some runs. Reclassify from the hosted result when it exists.
 - Hosted benchmark evidence for the current main suite is pending. Do not publish exact run IDs,
   baseline scores, with-context scores, or lift ratios until a hosted run covers the current
   `evals/` contents.
@@ -286,7 +292,7 @@ Update this section whenever active eval membership or scoring changes.
 Hosted Tessl runs cost credits (20 per scenario with both variants on the free plan) and the
 monthly pool is shared with the other skill repositories. Screen locally first with
 `scripts/local_screen.sh`, which runs a scenario through the model behind Tessl's default solver
-for about a cent and grades it with a Claude judge. Setup, commands, placement thresholds, and the
+for one to two cents and grades it with a Claude judge. Setup, commands, placement thresholds, and the
 skill-tuning loop are in [Local Screening With DeepSeek](local-screening.md). Local numbers decide
 placement and go into the `NUMBERING.md` notes as local screening results. They are not hosted
 evidence: benchmark claims, release-readiness claims, and the registry score still need the hosted

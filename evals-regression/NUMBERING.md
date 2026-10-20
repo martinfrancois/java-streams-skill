@@ -19,13 +19,7 @@ sixteen in `01a103a9-22fe-713b-bec2-f1bf09957918`. All nineteen scored 100.
 
 ## Rebuild for the deepseek-v4.1-flash solver (2026-10-20)
 
-Local baseline screening, 2026-10-20: each scenario's `task.md` ran through Claude Code with
-DeepSeek V4.1 Flash as the solver (`deepseek-flash` on DeepSeek's own API, the model behind the
-Tessl default solver `deepseek-v4.1-flash`) and no skill context, then Claude Haiku graded the
-written files against the scenario's `criteria.json`. Scores are percentages, mean over the runs
-listed. `scripts/local_screen.sh` reproduces it. This is not hosted evidence: no Tessl run IDs
-exist for these scenarios yet, and hosted confirmation is the next step (see the November issue
-#108).
+Local baseline screening, 2026-10-20, with the method in `docs/agents/local-screening.md` (DeepSeek V4.1 Flash as the solver, no skill context, a Claude Haiku judge against each `criteria.json`; scores are percentages, mean over the runs listed). Not hosted evidence.
 
 Moved here with `evidence_type` `solved_regression`:
 
@@ -48,7 +42,7 @@ their checklists ask for exact skill-provided text.
 
 | Scenario | Runs | Baseline | Placement |
 | --- | --- | --- | --- |
-| `06`, `10`, `14`, `16`, `17`, `20`, `24` | 2 | 100 | stays |
+| `01`, `02`, `06`, `10`, `14`, `16`, `17`, `20`, `24` | 2 | 100 | stays |
 | `11-null-category-price-index` | 2 | 100 (99 to 100) | stays |
 | `07-catalog-feed` | 2 | 99 (98 to 99) | stays |
 | `18-priority-findany-review` | 2 | 99 (98 to 99) | stays |
@@ -58,9 +52,14 @@ their checklists ask for exact skill-provided text.
 | `25-hard-stop-scan-audit` | 2 | 96 (93 to 98) | stays, skill-context-dependent |
 | `09-order-collector-report` | 6 | 98 (96 to 100) | back to reference: flattens the orders twice instead of once in four runs of six |
 | `13-training-and-packets` | 6 | 97 (83 to 100) | back to reference: one run of six writes nested loops instead of `flatMap` |
+| `04-primary-address-review` | 2 | 85 (82 to 88) | back to reference: never names the condition under which `findAny` is acceptable |
 
 The rule is the one used for the new scenarios: 98 to 100 in every run stays regression, anything
 that dips below 98 in a run is lift material and goes to reference.
+
+`39-predicate-loop-audit` became explicit on 2026-10-20 because the maintainer prompt behind its
+source issue passed each method through the skill by name; its explicit baseline is in the table
+below once screened.
 
 Skill mode of the same local harness against the final skill text, one run per scenario unless
 noted: every scenario scored 98 to 100 except `22` (95, length of the audit), `47` (95 over six
