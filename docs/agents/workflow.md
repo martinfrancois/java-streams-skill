@@ -31,8 +31,9 @@ release-readiness.
   patch-bump dry-run for PR safety. For skill, eval, package, or release changes that should publish
   a new version, let Release Please bump the version before the exact-version publish check.
 
-- For skill behavior or eval changes, run hosted evals with Tessl's default solver by default, but
-  start with the smallest useful set to conserve Tessl daily rate-limit budget. Use
+- For skill behavior or eval changes, screen locally first with `scripts/local_screen.sh` (see
+  [Local Screening With DeepSeek](local-screening.md)), then run hosted evals with Tessl's default
+  solver, starting with the smallest useful set to conserve Tessl daily rate-limit budget. Use
   `scripts/run_eval_suite.sh` so the run uses plugin context and the right variant policy. If the
   account has model-selection entitlement, Sonnet 4.6 or a better frontier model is recommended for
   a more representative real-world check.
@@ -234,3 +235,4 @@ release-readiness.
 - [Eval Guidance](evals.md)
 - [Public Metadata And OSS Readiness](public-metadata.md)
 - [Pre-Submit Gate](pre-submit-gate.md)
+- [Local Screening With DeepSeek](local-screening.md)

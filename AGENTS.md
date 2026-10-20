@@ -21,5 +21,6 @@ that correction durable in the relevant file under `docs/agents/`.
 - [Skill Behavior](docs/agents/skill-behavior.md)
 - [Ownership Boundaries](docs/agents/ownership-boundaries.md)
 - [Eval Guidance](docs/agents/evals.md)
+- [Local Screening With DeepSeek](docs/agents/local-screening.md)
 - [Public Metadata And OSS Readiness](docs/agents/public-metadata.md)
 - [Maintaining Agent Docs](docs/agents/maintaining-agent-docs.md)
