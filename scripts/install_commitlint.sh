@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-commitlint_home="${RUNNER_TEMP:-$(mktemp -d)}/commitlint"
-mkdir -p "$commitlint_home"
-printf '{"private":true}\n' > "$commitlint_home/package.json"
-cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
-pnpm --dir "$commitlint_home" add --silent --ignore-scripts \
-  @commitlint/cli@21.2.3 \
-  @commitlint/config-conventional@21.2.3
+# shellcheck source=scripts/lib/commitlint_install.sh
+. "$(dirname "$0")/lib/commitlint_install.sh"
+install_commitlint "${RUNNER_TEMP:-$(mktemp -d)}/commitlint"
 
 {
-  echo "COMMITLINT_BIN=$commitlint_home/node_modules/.bin/commitlint"
-  echo "COMMITLINT_CONFIG=$commitlint_home/commitlint.config.cjs"
+  echo "COMMITLINT_BIN=$COMMITLINT_BIN"
+  echo "COMMITLINT_CONFIG=$COMMITLINT_CONFIG"
 } >> "${GITHUB_ENV:?GITHUB_ENV is required}"
