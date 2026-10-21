@@ -59,9 +59,9 @@ the slot, with a hosted baseline of 42 and a local skill arm of 100 and 99 on th
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-20 | `01a159c4-b7c4-72b6-a3cb-72706a19e7d4` (1.2.3 publish) | 26 / 100 | 60 / 100 | | 1.2.3 |
 | 2026-10-21 | `01a15be9-9a93-7157-84cf-7393ea2023b6` | 26 / 100 | 60 / 100 | 100 / 100 | PR #132, before the file-explanation rule |
+| 2026-10-21 | `01a15c15-6f3e-7661-abcf-e2d03b80bef8` (`57` in place of `56`) | 28 / 100 | 40 / 100 | `57`: 46 / 100 | PR #132 after the second review round, before the version gates left the body |
 
-Cells are baseline / with the skill. The run that confirms `57` in this suite is added here when
-it exists.
+Cells are baseline / with the skill. The run on the final text is added when it exists.
 
 All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
 none qualifies under this solver: naming `$java-streams` in the prompt primes it to write streams
