@@ -59,8 +59,8 @@ within the project's Java baseline.
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, `teeing`, and
    primitive terminals. Do not mutate external containers, arrays, counters, or
    builders from `forEach`; let the stream produce the result directly. A loop that stops as soon
-   as some element matches is an existence check for `anyMatch` or `noneMatch`; whatever the loop
-   did on the match happens once the terminal has answered.
+   as some element matches is an existence check for `anyMatch` or `noneMatch`, with what the loop
+   did on the match placed after it.
 
    ```java
    long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
@@ -135,7 +135,7 @@ within the project's Java baseline.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering, and
    baseline compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md)
    (no custom pool snippets unless asked), fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
-   results; in a scan audit a required hit stays required unless it is explicitly acceptable.
+   results; in a scan audit, required hits stay required.
 
 Describe the code, never this workflow (no "skill", "scan", "marker", "hard stop", "checklist",
 "rubric", or "criteria" in output) unless the user asked about the workflow itself.
