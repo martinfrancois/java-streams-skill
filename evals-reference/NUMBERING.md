@@ -132,3 +132,31 @@ rule), `37` at 88 to 100, `38` at 80 to 100, and `45` at 92 to 93; the rules add
 target those. The remaining losses on `48`, `50`, and `51` are explanation items (why a reduction's
 empty start cannot collide, naming intent as the reason for a change, saying the sort moved into the
 pipeline), not code shape.
+
+## Hosted run against 1.2.3 (2026-10-20)
+
+Both arms, run `01a15b56-2871-7164-b5d3-19c53180fae6`, default solver, all twenty reference
+scenarios as they stood after the 1.2.3 release (baseline / with the skill, percent):
+
+| Scenario | Baseline | With skill | Outcome |
+| --- | --- | --- | --- |
+| `04`, `08`, `09`, `13`, `33`, `37`, `45` | 100 | 100 | moved to `evals-regression/` as `solved_regression` |
+| `15-session-roster-indexes` | 73 | 100 | stays, focused reference |
+| `27-uppercase-names-implementation` | 75 | 100 | stays |
+| `28-overdue-shipment-notices` | 57 | 100 | stays, focused reference (its domain overlaps a runtime example) |
+| `30-eager-work-before-allmatch` | 75 | 100 | stays |
+| `38-temporary-list-then-addall` | 80 | 100 | stays |
+| `42-zero-one-or-ambiguous-lookup` | 87 | 100 | stays |
+| `34-identity-mapper-in-tomap` | 98 | 99 | with-skill rerun needed: extracted a helper the prompt did not ask for |
+| `35-one-line-stream-chains` | 82 | 76 | with-skill rerun needed: merged two `filter` calls into a helper and left one chain unwrapped |
+| `44-single-dedup-boundary` | 75 | 89 | with-skill rerun needed: nested the records it was told to copy, no comment naming the duplicate owner |
+| `48-conditional-delimiter-reduction` | 85 | 85 | with-skill rerun needed: no explanation after the code |
+| `49-char-predicate-contracts` | 85 | 85 | with-skill rerun needed: no explanation after the code |
+| `50-identity-string-reduction` | 45 | 80 | with-skill rerun needed: no explanation after the code |
+| `51-sort-after-collect` | 90 | 90 | with-skill rerun needed: no summary after the code |
+
+The local screen had called the seven moved scenarios solved and the others lift material, which
+matches. Six of the seven with-skill misses are the same shape: the task asks for a few sentences
+after the code and the solver returned code only, so the skill text now says that a requested
+explanation belongs in the final message and that a prompt which limits the change (layout only,
+no new helpers) keeps every operation as it is.

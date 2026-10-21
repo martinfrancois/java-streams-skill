@@ -1,0 +1,2 @@
+Refactor Java 21 line-based record extraction from several review texts into one result-producing
+pipeline that splits lines lazily and emits zero or one record per line.

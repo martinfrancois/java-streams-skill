@@ -42,6 +42,13 @@ scenarios whose baseline sits at least 30 points below the with-context ceiling:
 | --- | --- | --- | --- |
 | `31-line-to-record-extraction` (natural) | 6 | mean 30, range 20 to 35 | fills a mutable list from a `forEach` or a loop; never one pipeline, never `mapMulti` |
 | `43-reject-if-any-validator` (natural) | 6 | mean 69, range 48 to 100 | keeps the `for` loop with `throw` inside in four runs of six, `anyMatch` in the other two |
+| `56-guest-review-complaints` (natural) | 4 | mean 49, range 26 to 100 | fills a list from a loop over `split("\\R")` in three runs of four; the fourth writes the pipeline |
+
+`56` was drafted on 2026-10-20 after the hosted reference run as a second line-extraction task in
+a new domain (hotel reviews instead of vehicle inspections), with no identifier shared with the
+runtime examples. The skill arm scored 100 in three local runs of three. It joins the suite so the
+registry score rests on three scenarios rather than two; the hosted both-arms run that confirms it
+is listed below once it exists.
 
 Both are natural. The suite used to require one explicit scenario as well, and the screen shows why
 none qualifies under this solver: naming `$java-streams` in the prompt primes it to write streams

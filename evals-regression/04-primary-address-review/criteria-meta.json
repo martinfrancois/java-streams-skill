@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "review",
-    "evidence_type": "focused_reference",
+    "evidence_type": "solved_regression",
     "reference_selection": "Returned from regression after the local DeepSeek V4.1 Flash baseline screen of 2026-10-20 scored it 82 and 88; see evals-reference/NUMBERING.md.",
     "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence."
   },

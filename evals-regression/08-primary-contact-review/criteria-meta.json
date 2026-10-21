@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "natural",
     "task_type": "review",
-    "evidence_type": "focused_reference",
+    "evidence_type": "solved_regression",
     "reference_selection": "Focused reference coverage for preserving priority ordering when reviewing findFirst versus findAny changes.",
     "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
   },

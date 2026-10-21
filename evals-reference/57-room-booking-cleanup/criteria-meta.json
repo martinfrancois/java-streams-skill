@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "reference_selection": "Shows whether a fill-then-freeze loop becomes one collecting pipeline and whether a lookup that must fail on duplicates stays free of findFirst; local DeepSeek V4.1 Flash baseline 52, 96, 98, 100 over four runs, so it stays reference coverage."
+  },
+  "categories": {
+    "Creates coherent Java 17 artifact": "safety",
+    "Preserves behavior": "safety",
+    "Collects the confirmed list in one pipeline": "stream_quality",
+    "No freeze after fill": "stream_quality",
+    "Ambiguity lookup without findFirst": "stream_quality",
+    "Named steps instead of block lambdas": "stream_quality",
+    "Explains the changes": "stream_quality",
+    "Keeps the change focused": "maintainability"
+  }
+}
