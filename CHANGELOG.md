@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.4...v1.2.5) (2026-10-21)
+
+
+### Bug Fixes
+
+* **evals:** publish the three-scenario main suite ([81fb1e0](https://github.com/martinfrancois/java-streams-skill/commit/81fb1e04d6f4838fb51553a5d68bf8075e86c0d7))
+
 ## [1.2.4](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.3...v1.2.4) (2026-10-21)
 
 
