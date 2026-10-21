@@ -29,9 +29,9 @@ within the project's Java baseline.
 
 ## Core Workflow
 
-0. Check the Java baseline first. Use [java-stream-api.md](references/java-stream-api.md) for
-   minimum versions and fallbacks; do not emulate unavailable APIs with stateful or multi-line
-   lambdas.
+0. Check the Java baseline first. [java-stream-api.md](references/java-stream-api.md) lists the
+   minimum version of every API named below and the fallback for older projects; do not emulate
+   an unavailable API with stateful or multi-line lambdas.
 1. Identify the requested result and pick the matching terminal or collector:
 
    | Goal | Preferred API |
@@ -40,7 +40,7 @@ within the project's Java baseline.
    | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep an existing `sorted(...).filter(...).findFirst()` that defines the winner |
    | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
    | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size (below); no `findFirst`/`findAny` anywhere in that lookup |
-   | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
+   | Two aggregates over same input | `Collectors.teeing` |
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
 
    ```java
@@ -55,8 +55,8 @@ within the project's Java baseline.
    Checkpoint: before writing the chain, confirm the chosen terminal returns the requested type
    and that order, duplicates, and nulls in the input cannot change the winner.
 
-2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
-   `teeing`, and primitive terminals. Do not mutate external containers, arrays, counters, or
+2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, `teeing`, and
+   primitive terminals. Do not mutate external containers, arrays, counters, or
    builders from `forEach`; let the stream produce the result directly. A loop that stops as soon
    as some element matches is an existence check for `anyMatch` or `noneMatch`; whatever the loop
    did on the match happens after the terminal, outside the stream.
@@ -65,7 +65,7 @@ within the project's Java baseline.
    long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
    ```
 
-   - Implementation: write the direct stream result; on Java 16+ prefer
+   - Implementation: write the direct stream result; prefer
      `names.stream().map(String::toUpperCase).toList()` over a manual `ArrayList` loop. Return
      what the stream collects: no collection allocated first and filled afterwards, no list
      collected only to be copied into the returned collection. When the result is only read,
@@ -74,7 +74,7 @@ within the project's Java baseline.
    - External-mutation or performance review: show a sequential result-producing snippet first; for
      million-item CPU maps, mention benchmarking a pure parallel variant and include:
      "`parallelStream()` can be slower for small lists or call paths that are usually small."
-   - Java 24 bounded blocking calls: carry each element with its result, call the provided service
+   - Bounded blocking calls (`Gatherers.mapConcurrent`): carry each element with its result, call the provided service
      directly, then filter/map/sort; no `CompletableFuture` fan-out.
 
      ```java
@@ -85,8 +85,7 @@ within the project's Java baseline.
              .toList();
      ```
 3. Flatten nested sources deliberately.
-   - Use `flatMap`, `flatMap(Optional::stream)` on Java 9+, and `mapMulti` on Java 16+ when
-     clearer. When each element yields zero or one result, use `mapMulti` with a helper taking
+   - Use `flatMap`, `flatMap(Optional::stream)`, and `mapMulti` when clearer. When each element yields zero or one result, use `mapMulti` with a helper taking
      `(Event, Consumer<Alert>)`, as in `events.<Alert>mapMulti(Monitor::alertIfCritical)`.
    - For subtype primitives, filter/cast first, then call `mapToInt`/`mapToLong`/`mapToDouble`.
    - When the loop split text with a regex, keep that regex and stream the pieces with
@@ -95,7 +94,7 @@ within the project's Java baseline.
      `\\r\\n`.
 
    ```java
-   // Java 9+: flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
+   // flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
    optionals.stream().flatMap(Optional::stream).collect(Collectors.toList());
    ```
 4. Choose accumulation/collectors by result semantics: use `reduce(identity, op)` for immutable
