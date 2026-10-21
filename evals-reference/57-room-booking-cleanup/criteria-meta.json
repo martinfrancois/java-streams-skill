@@ -3,7 +3,7 @@
     "invocation": "natural",
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
-    "main_eval_selection": "hosted both-arms run of 2026-10-21 scored 42 without the skill on the prompt before it asked for a comment (the explanation item scored 0 of 10) and the final skill text scored 100 and 99 locally; the hosted run on the current prompt is in evals/NUMBERING.md"
+    "reference_selection": "Bimodal unaided (hosted baselines 42, 46, 51, then 100 on the final text) and the skill arm scored 98 twice for a comment that never said request order stays, so it misses both main rules and waits in reference."
   },
   "categories": {
     "Creates coherent Java 17 artifact": "safety",
