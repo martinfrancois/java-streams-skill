@@ -78,7 +78,7 @@ What one run does:
    the files the agent wrote (skipping `.class` files, anything under `.claude/`, and files over
    60,000 bytes, with the API key redacted if the agent copied it anywhere) to the judge, and
    saves the item scores as `assessment.json` in the same shape as one Tessl solution. The
-   agent's final message is left out, because Tessl's judge grades only the files: a task that
+   agent's final message is left out, because Tessl's judge grades only the files, so a task that
    asks for an explanation is only satisfied by an explanation in a file. Set
    `LOCAL_SCREEN_JUDGE_MESSAGE=1` to include the message when comparing with an older run. The console shows the
    total and one `lost` line per item that lost points, with the judge's reason.
