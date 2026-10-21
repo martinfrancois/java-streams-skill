@@ -22,7 +22,10 @@ overloads, caches, retries, or adapters unless asked.
 ## Core Workflow
 
 When the prompt asks for a named artifact such as `review.md` or a Java source file, create that
-exact file. Do not answer only in chat when a file artifact is requested.
+exact file; do not answer only in chat. When it asks for a summary, an explanation, or a few
+sentences after the code, write them in the final message: code alone is not a complete answer.
+When it asks for a comment in the code, put it in the file. Types the prompt says to copy
+unchanged stay where and as they were.
 
 0. Check the Java baseline first. Use [java-stream-api.md](references/java-stream-api.md) for
    minimum versions and fallbacks; do not emulate unavailable APIs with stateful or multi-line
@@ -109,23 +112,27 @@ exact file. Do not answer only in chat when a file artifact is requested.
 5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
    as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
-   `Stream<T>` helper).
+   `Stream<T>` helper). When the prompt limits the change (layout only, no new helpers, one
+   method, the collector calls), keep every operation, its order, and the existing helpers, and
+   change nothing else: two `filter` calls stay two `filter` calls.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream
    chain, then make the writes in a plain loop or a terminal `forEach` that does nothing else;
    never write from `map` or from a helper inside the chain. A loop that uses its index for
-   anything but element access stays a loop.
+   anything but element access stays a loop, not an `IntStream.range` chain.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
    parallel-safety, and baseline compatibility. Run the marker scan and the parallel-safety
    conditions from [hard-stops.md](references/hard-stops.md) (no custom pool snippets unless asked),
    fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
-   results. In scan audits, keep hard-stop severities: required hits stay required unless
-   explicitly acceptable.
+   results; in a scan audit a required hit stays required unless it is explicitly acceptable.
 
 Review output: state the behavior-preserving decision, add one safe snippet, create `review.md`
 when asked (also for rejections), and explain code behavior only. For every change, say why it
-is better and which behavior it keeps: order, early exit, exceptions, mutability.
+is better (the intent it makes clearer, not speed) and which behavior it keeps: order, early exit,
+exceptions, mutability. For each case the old code treated specially (the step 7 list, plus
+`allMatch` on an empty stream), say what the new code does with it and what would differ if an
+input could take a value it cannot.
 Describe the code, not this workflow: no "skill", "scan", "marker", "hard stop", "checklist",
 "rubric", or "criteria" in a final message, comment, or review unless the user asked about the
 workflow itself.
