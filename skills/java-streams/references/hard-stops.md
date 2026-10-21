@@ -17,9 +17,9 @@ Fix these before finalizing:
   or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
 - `findFirst()` or `findAny()` for a lookup that must fail when more than one element matches;
-  the goal table in SKILL.md has the bounded shape.
+  the goal table in SKILL.md has the bounded lookup.
 - A collection filled from the chain's result and then returned or copied, instead of being
-  collected by the chain (step 2 of SKILL.md).
+  collected by the chain.
 - Plain `count()` is appropriate when the requested result is a numeric count; do not replace it
   with `anyMatch`.
   The hard-stop scan regex catches only `count() > 0` existence checks, not plain `count()`. If an

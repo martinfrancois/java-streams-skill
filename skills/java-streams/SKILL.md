@@ -1,7 +1,7 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever a Java task writes, reviews, or refactors a stream pipeline or a collector, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a stream chain, result mutability, and stream chain layout.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever a Java task writes, reviews, or refactors a stream chain or a collector, such as stream chains, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a stream chain, result mutability, and stream chain layout.
 ---
 
 # Java Streams Skill
@@ -57,9 +57,9 @@ within the project's Java baseline.
 
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
    `teeing`, and primitive terminals. Do not mutate external containers, arrays, counters, or
-   builders from `forEach`; let the stream produce the result directly. A loop that returns, or
-   records one thing, as soon as some element matches is an existence check: compute the boolean
-   with `anyMatch`/`noneMatch`, then do the one write in a plain `if` after it.
+   builders from `forEach`; let the stream produce the result directly. A loop that stops as soon
+   as some element matches is an existence check for `anyMatch` or `noneMatch`; whatever the loop
+   did on the match happens after the terminal, outside the stream.
 
    ```java
    long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
@@ -124,15 +124,15 @@ within the project's Java baseline.
    ```
 5. Keep stream lambdas as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
-   `Stream<T>` helper). When the prompt limits the change (layout only, no new helpers, one
-   method, the collector calls), keep every operation, its order, and the existing lambdas and
-   helpers; add nothing the prompt did not ask for.
+   `Stream<T>` helper). When the prompt limits the change to one concern, one method, or one
+   call, keep every operation, its order, and the existing lambdas and helpers; add nothing the
+   prompt did not ask for.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream
    chain, then make the writes in a plain loop or a terminal `forEach` that does nothing else;
    never write from `map` or from a helper inside the chain. A loop that uses its index for
-   anything but element access stays a loop, not an `IntStream.range` chain.
+   anything but element access stays a loop.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering, and
    baseline compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md)
    (no custom pool snippets unless asked), fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
