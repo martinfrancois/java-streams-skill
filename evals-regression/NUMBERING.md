@@ -72,3 +72,14 @@ and `39` (100, 100, 75 over three runs: one run kept a loop with a local write i
 `anyMatch` plus an `if`). `32` scored 85 to 90 in three runs before the rule that keeps external
 writes in a plain loop and 100 in three runs after it. Those three need the hosted with-context
 run before a release claim.
+
+## Hosted runs against 1.2.3 (2026-10-20)
+
+With context only, run `01a15b56-5d17-77e8-bace-caf566877685`, default solver: twenty-eight of
+the thirty scenarios scored 100. `39-predicate-loop-audit` scored 94 (rewrote the indexed loop
+as `IntStream.range` although its index feeds the message) and `47-direct-immutable-array-mapping`
+85 (no explanation after the code). Both are rerun targeted after the skill text change that
+targets them.
+
+`04`, `08`, `09`, `13`, `33`, `37`, and `45` moved here from `evals-reference/` after run
+`01a15b56-2871-7164-b5d3-19c53180fae6` scored each 100 without context and 100 with context.

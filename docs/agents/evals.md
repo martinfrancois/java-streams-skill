@@ -256,37 +256,39 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 2 active scenarios, 200 total checklist points, no weight multipliers.
-- Natural activation subset: 2 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
+- Main eval set: 3 active scenarios, 300 total checklist points, no weight multipliers.
+- Natural activation subset: 3 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
   the result from one pipeline with lazy lines and `mapMulti` instead of filling a list from
-  `forEach`) and `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
-  predicate instead of a loop that throws).
+  `forEach`), `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
+  predicate instead of a loop that throws), and `56-guest-review-complaints` (Java 21 cleanup in
+  another domain with the same failure shape as `31`, added after the 1.2.3 release).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
   in `evals-reference/` (`09`, `33`, `34`, `37`, `51`) until an explicit scenario clears the floor.
-- Both main scenarios were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
+- `31` and `43` were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
   whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the
   runtime references (`28` also fails unaided but overlaps them, so it stays focused reference
   coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 20 scenarios, 1965 total checklist points. `04`, `08`, `09`, `13`, `15`, `27`,
-  `28` plus the issue-derived `30`, `33`, `34`, `35`, `37`, `38`, `42`, `44`, `45`, `48`, `49`,
-  `50`, `51`. `04`, `09`, `13`, `33`, and `34` came back from regression on 2026-10-20 because
-  the local screen scored them under 98 in some runs.
-- Regression suite: 30 scenarios, 3915 total checklist points, including the four former main
-  scenarios as `52` to `55`. Every scenario that was already there before 2026-10-20 was rescreened
+- Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
+  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `57` (room
+  bookings, added after the 1.2.3 release). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
+  to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
+- Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
+  scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3
+  solved in both arms. Every scenario that was already there before 2026-10-20 was rescreened
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
-- Every reference and regression placement made on 2026-10-20 rests on the local screen and is
-  provisional: the hosted with-context arm has not run for the new scenarios, and the local skill arm still dips below 98
-  in some runs on regression `22`, `39`, and `47` and on several reference scenarios (the
-  `NUMBERING.md` notes list them). Reclassify from the hosted result when it exists.
+- Hosted runs against 1.2.3 on 2026-10-20 (both arms for reference, with context for
+  regression; run IDs in the suite `NUMBERING.md` files) confirmed every local placement. The
+  with-skill arm lost points on nine scenarios, seven of them for returning code without the
+  explanation the task asked for; the skill text change that followed targets that, and those
+  scenarios are rerun targeted before the next release.
 - Hosted evidence for the current main suite, 2026-10-20, default solver, both variants: 200 with
   context against 86 without (`31` 26 to 100, `43` 60 to 100), about 2.3x. The run ID is in
-  `evals/NUMBERING.md`. The reference and regression suites still lack hosted runs against this
-  skill text.
+  `evals/NUMBERING.md`. `56` joins the suite with local evidence only until its hosted run.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
   numbers that justified each move.

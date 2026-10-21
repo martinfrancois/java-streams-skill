@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "ordinary_lift",
+    "main_eval_selection": "drafted as a second line-extraction scenario in a new domain after the 1.2.3 reference run; local DeepSeek V4.1 Flash baseline 26 to 35 in three runs of four (100 in the fourth), skill arm 100 in three of three (see evals/NUMBERING.md)"
+  },
+  "categories": {
+    "Creates the revised GuestComplaintExtractor.java": "safety",
+    "Preserves extraction order and matching behavior": "safety",
+    "Produces the result from one pipeline": "stream_quality",
+    "Emits zero or one complaint per line with mapMulti": "stream_quality",
+    "Splits lines lazily": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

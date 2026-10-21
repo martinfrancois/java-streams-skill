@@ -2,7 +2,7 @@
   "metadata": {
     "invocation": "explicit",
     "task_type": "cleanup",
-    "evidence_type": "ordinary_lift",
+    "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/47",
     "reference_selection": "Shows whether a loop-to-stream rewrite keeps the old regex \\R line splitting instead of switching to String.lines(), which drops Unicode line breaks."
   },

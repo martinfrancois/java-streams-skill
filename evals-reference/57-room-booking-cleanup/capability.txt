@@ -1,0 +1,2 @@
+Rewrite a fill-then-freeze booking loop as one collecting pipeline and keep a fail-on-duplicates
+lookup free of findFirst.
