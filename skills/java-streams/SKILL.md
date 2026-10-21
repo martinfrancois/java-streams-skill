@@ -16,9 +16,9 @@ within the project's Java baseline.
   code, and into the final message.
 - A review states the behavior-preserving decision with one safe snippet, in `review.md` when
   asked (also for rejections).
-- Explain each change by what it makes clearer, which behavior it keeps, and how it handles the
-  cases the old code treated specially, such as a match terminal on an empty stream. Never claim
-  it is faster.
+- Explain each change by the intent it expresses, the behavior it preserves, and how it handles
+  the cases the old code treated specially, such as a match terminal given no elements. Never
+  claim it is faster.
 
 ## Reference Bundle
 
@@ -30,9 +30,9 @@ within the project's Java baseline.
 
 ## Core Workflow
 
-0. Check the Java baseline first. [java-stream-api.md](references/java-stream-api.md) lists the
-   minimum version of every API named below and the fallback for older projects; do not emulate
-   an unavailable API with stateful or multi-line lambdas.
+0. Check the Java baseline first. [java-stream-api.md](references/java-stream-api.md) lists
+   minimum versions and fallbacks for older projects; do not emulate an unavailable API with
+   stateful or multi-line lambdas.
 1. Identify the requested result and pick the matching terminal or collector:
 
    | Goal | Preferred API |
@@ -60,7 +60,7 @@ within the project's Java baseline.
    primitive terminals. Do not mutate external containers, arrays, counters, or
    builders from `forEach`; let the stream produce the result directly. A loop that stops as soon
    as some element matches is an existence check for `anyMatch` or `noneMatch`; whatever the loop
-   did on the match happens after the terminal, outside the stream.
+   did on the match happens once the terminal has answered.
 
    ```java
    long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
@@ -75,7 +75,7 @@ within the project's Java baseline.
    - External-mutation or performance review: show a sequential result-producing snippet first; for
      million-item CPU maps, mention benchmarking a pure parallel variant and include:
      "`parallelStream()` can be slower for small lists or call paths that are usually small."
-   - Bounded blocking calls (`Gatherers.mapConcurrent`): carry each element with its result, call the provided service
+   - For bounded blocking calls (`Gatherers.mapConcurrent`), carry each element with its result, call the provided service
      directly, then filter/map/sort; no `CompletableFuture` fan-out.
 
      ```java
