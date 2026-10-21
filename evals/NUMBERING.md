@@ -66,6 +66,8 @@ the slot for two runs, then solved unaided on the final text and went back to re
 | 2026-10-21 | `01a15c4f-0097-701c-a5f7-98824e1b36d8` | 30 / 100 | 45 / 100 | | 1.2.4 text (`3f1dafe`) |
 | 2026-10-21 | `01a15c63-e954-7294-84fa-64e9b0535dee` (1.2.4 publish) | 30 / 100 | 45 / 100 | | 1.2.4 |
 | 2026-10-21 | `01a15e1e-5465-766d-a35e-b3c43ba5a1bd` (reference run) | | | `56`: 35 / 100 | 1.2.4 |
+| 2026-10-21 | `01a15e43-919a-74cc-b164-4b531fbc73f3` (1.2.5 publish) | 30 / 100 | 45 / 95 | 35 / 100 | 1.2.5 |
+| 2026-10-21 | `01a15e4b-428e-7644-aa82-47abb9268bc1` (`43` isolated rerun) | | 45 / 100 | | 1.2.5 |
 
 Cells are baseline / with the skill. On the final text `57` solved unaided and still lost the
 same two points with the skill, so it moved to `evals-reference/`. `56` came back as the third
@@ -73,8 +75,9 @@ scenario after the 1.2.4 reference run scored it 35 without the skill and 100 wi
 bimodal unaided (100 on its first hosted run, 26 to 35 in three local runs of four), it is the
 same failure shape as `31` in another domain, and its skill arm has been 100 on every run. It is
 `focused_main` because its regex splitting shares identifiers with the line-splitting rule. The
-main suite is `31`, `43`, `56`; the 1.2.5 publish-time run is recorded here when it exists. (The
-empty release commit on PR #134 was dropped by the rebase merge, so this note carries it.)
+main suite is `31`, `43`, `56`. The 1.2.5 publish-time run scored 295 with the skill against 110
+without, about 2.7x; `43` lost five points there for the word "scan" in a code comment, which the
+skill text forbids, and scored 100 on its isolated rerun, the accepted check for a single slip.
 
 
 All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
