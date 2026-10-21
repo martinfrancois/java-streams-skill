@@ -288,8 +288,8 @@ Update this section whenever active eval membership or scoring changes.
   explanation the task asked for; the skill text change that followed targets that, and those
   scenarios are rerun targeted before the next release.
 - Hosted evidence for `31` and `43`, 2026-10-20 and 2026-10-21, default solver, both variants:
-  26 to 100 and 45 to 100 on the final text (run `01a15c29-0a0d-73fb-ad4e-7b2802b3331e`), about
-  2.8x. The runs
+  20 to 100 and 45 to 100 on the final text (run `01a15c34-a10d-7509-af30-6da0b6b57f68`), about
+  3.1x. The runs
   are tabled in `evals/NUMBERING.md`, which also records the run that confirms the three together.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
