@@ -42,6 +42,7 @@ while [ $# -gt 0 ]; do
     *) break ;;
   esac
 done
+case "$mode" in baseline|skill) ;; *) echo "-m takes baseline or skill, not $mode" >&2; exit 2 ;; esac
 out="$out_root/$mode"
 mkdir -p "$out"
 
@@ -97,8 +98,8 @@ $prompt"
 export -f solve_one
 export out mode cfg key_file repo
 
-jobs=()
+runs_to_do=()
 for s in "$@"; do
-  for i in $(seq "$start" $((start + runs - 1))); do jobs+=("$s"$'\t'"$i"); done
+  for i in $(seq "$start" $((start + runs - 1))); do runs_to_do+=("$s"$'\t'"$i"); done
 done
-printf '%s\n' "${jobs[@]}" | xargs -P "$par" -L 1 bash -c 'solve_one "$0" "$1"'
+printf '%s\n' "${runs_to_do[@]}" | xargs -P "$par" -L 1 bash -c 'solve_one "$0" "$1"'
