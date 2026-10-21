@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.6](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.5...v1.2.6) (2026-10-21)
+
+
+### Bug Fixes
+
+* **evals:** state 35's limit in its prompt and accept a derived key in 34 ([d4f65ac](https://github.com/martinfrancois/java-streams-skill/commit/d4f65acd56c042d34e04dc0dc708d19797a57b56))
+* **skill:** read the prompt's limit before extracting any helper ([3047909](https://github.com/martinfrancois/java-streams-skill/commit/30479090f26fb1572cf90403c12dca790e91bba1))
+
 ## [1.2.5](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.4...v1.2.5) (2026-10-21)
 
 
