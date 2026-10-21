@@ -62,10 +62,11 @@ the slot for two runs, then solved unaided on the final text and went back to re
 | 2026-10-21 | `01a15c15-6f3e-7661-abcf-e2d03b80bef8` (`57` in place of `56`) | 28 / 100 | 40 / 100 | `57`: 46 / 100 | PR #132 text at commit `c9064c6`, before the second review round's skill fixes |
 | 2026-10-21 | `01a15c22-abfe-75f7-b8b8-12aa20d18c0a` | 35 / 100 | 45 / 100 | `57`: 51 / 98 (the comment never said request order stays) | text at `c96a02a`, before the third round's wording fixes |
 | 2026-10-21 | `01a15c29-0a0d-73fb-ad4e-7b2802b3331e` | 26 / 100 | 45 / 100 | `57`: 100 / 98 | final text (`afc713c`) |
+| 2026-10-21 | `01a15c34-a10d-7509-af30-6da0b6b57f68` | 20 / 100 | 45 / 100 | | final text (`b4d78d4`, two sentences shorter) |
 
 Cells are baseline / with the skill. On the final text `57` solved unaided and still lost the
 same two points with the skill, so it moved to `evals-reference/` and the main suite is `31` and
-`43` again: 200 with the skill against 71 without on the final text, about 2.8x. The third slot
+`43` again: 200 with the skill against 65 without on the final text, about 3.1x. The third slot
 stays open until a scenario fails unaided on Tessl and scores 100 with the skill there.
 
 
