@@ -15,8 +15,9 @@ unchanged with two environment variables. On the four scenarios that formed the 
 October 2026, the hosted publish run scored the baseline arm 100 on all four and local baseline
 runs scored 100, 94, 97, and 100, which is what makes the screen usable for placement.
 
-The harness differs from Tessl in three ways. The agent runs in Claude Code with
-`--dangerously-skip-permissions` and 40 turns; Tessl runs its own harness. The grader is Claude
+The harness differs from Tessl in three ways. The agent runs in Claude Code in restricted mode
+(no Bash, no web, file tools confined to the work directory, edits accepted, 40 turns); Tessl runs
+its own harness. The grader is Claude
 Haiku with the scenario's `criteria.json` in the prompt; Tessl grades with its own judge. The
 skill mode copies the skill into `.claude/skills/` and tells the agent to use it; Tessl's
 with-context arm installs the plugin. Expect a few points of drift per scenario on Tessl, in both
@@ -73,7 +74,12 @@ What one run does:
    rerun with `-s` and new run numbers.
 2. Runs `claude -p --model deepseek-flash` with `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
    and the key from the file, `--max-turns 40`, a 15-minute timeout, JSON output saved as
-   `solver.json`.
+   `solver.json`. The solver runs with `--restricted --permission-mode acceptEdits
+   --permission-prompts none`: it has no Bash or web tool, its file tools cannot leave the work
+   directory, and anything that would ask for permission is denied. A scenario prompt from an
+   untrusted contribution therefore cannot read the key file or any other host file through the
+   agent; the key reaches only the DeepSeek API call. The agent cannot compile either, which
+   matches Tessl's judge grading the files as written.
 3. Calls `scripts/local_screen_judge.py`, which sends the task, the checklist from `criteria.json`,
    the files the agent wrote (skipping `.class` files, anything under `.claude/`, and files over
    60,000 bytes, with the API key redacted if the agent copied it anywhere) to the judge, and

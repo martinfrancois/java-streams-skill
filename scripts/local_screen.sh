@@ -89,7 +89,7 @@ $prompt"
     ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic \
     ANTHROPIC_API_KEY="$(cat "$key_file")" \
     timeout 900 claude -p --model deepseek-flash --output-format json \
-      --dangerously-skip-permissions --max-turns 40 \
+      --restricted --permission-mode acceptEdits --permission-prompts none --max-turns 40 \
       "$prompt" > "$run_dir/solver.json" 2> "$run_dir/solver.err" || echo "[$name] run $i: solver exit $?"
   )
   DEEPSEEK_API_KEY_FILE="$key_file" python3 "$repo/scripts/local_screen_judge.py" \
