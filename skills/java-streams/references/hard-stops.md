@@ -16,8 +16,8 @@ Fix these before finalizing:
   `findFirst` and `findAny`, name that `findAny` exception explicitly before discussing parallelism
   or performance.
 - `filter(...).count() > 0` for existence. Use `anyMatch`.
-- `findFirst()` or `findAny()` for a lookup that must fail when more than one element matches.
-  Use `filter(...).limit(2).toList()` and branch on the size for zero, one, and more.
+- `findFirst()` or `findAny()` for a lookup that must fail when more than one element matches;
+  the goal table in SKILL.md has the bounded shape.
 - A collection allocated before the stream chain and filled from its result afterwards, or a list
   collected only to be copied into the returned collection. Collect to the returned type directly;
   when the result is only read, collect to an unmodifiable one.
