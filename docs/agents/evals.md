@@ -265,7 +265,7 @@ Update this section whenever active eval membership or scoring changes.
   duplicates without `findFirst`; hosted baseline 42).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
-  in `evals-reference/` (`09`, `33`, `34`, `37`, `51`) until an explicit scenario clears the floor.
+  in `evals-reference/` (`34`, `51`) and `evals-regression/` until an explicit scenario clears the floor.
 - `31` and `43` were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
   whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the

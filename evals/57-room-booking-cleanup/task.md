@@ -16,14 +16,14 @@ import java.util.List;
 final class RoomBooker {
     record Room(String name, int capacity) {}
     record Request(String roomName, int attendees, String organizer) {}
-    record Booking(Room room, String organizer) {}
+    record Reservation(Room room, String organizer) {}
 
-    List<Booking> confirmed(List<Request> requests, List<Room> rooms) {
-        List<Booking> result = new ArrayList<>();
+    List<Reservation> confirmed(List<Request> requests, List<Room> rooms) {
+        List<Reservation> result = new ArrayList<>();
         for (Request request : requests) {
             Room room = roomNamed(rooms, request.roomName());
             if (room != null && room.capacity() >= request.attendees()) {
-                result.add(new Booking(room, request.organizer()));
+                result.add(new Reservation(room, request.organizer()));
             }
         }
         return Collections.unmodifiableList(result);

@@ -3,8 +3,8 @@
     "invocation": "natural",
     "task_type": "review",
     "evidence_type": "solved_regression",
-    "reference_selection": "Returned from regression after the local DeepSeek V4.1 Flash baseline screen of 2026-10-20 scored it 82 and 88; see evals-reference/NUMBERING.md.",
-    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence."
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift or main-suite generalization evidence.",
+    "regression_selection": "Moved to regression after hosted run 01a15b56-2871-7164-b5d3-19c53180fae6 (2026-10-20) scored 100 in both arms; earlier it was reference coverage: Returned from regression after the local DeepSeek V4.1 Flash baseline screen of 2026-10-20 scored it 82 and 88; see evals-reference/NUMBERING.md."
   },
   "categories": {
     "Creates review artifact": "safety",
