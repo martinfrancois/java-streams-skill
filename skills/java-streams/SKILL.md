@@ -1,15 +1,23 @@
 ---
 name: java-streams
 license: MIT
-description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever writing, reviewing, or refactoring Java code that uses Java streams or collectors, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a stream chain, result mutability, and stream chain layout.
+description: Review Java stream performance advice, especially slow stream mappings, external collection mutation with forEach/add, and whether parallelStream is safe; clean up mutation and write or refactor Java Stream and Collector code. Avoid common stream antipatterns such as materializing just to inspect, sorting before min/max, counting for existence, nested stream collections, unsafe null sorting, multi-line lambdas, and careless findFirst/findAny changes. Use whenever a Java task writes, reviews, or refactors a stream pipeline or a collector, such as stream pipelines, grouping collectors, joining strings, stream first/any element lookup, sorted/limit/distinct stages, primitive stream totals, Optional values inside streams, or parallel streams, including review prompts asking whether a lookup should use findFirst or findAny, lookups that must fail on duplicates, regex splitting inside a stream chain, result mutability, and stream chain layout.
 ---
 
 # Java Streams Skill
 
-Keep behavior identical, including encounter order, exceptions, nulls, side effects, and mutability,
-and stay within the project's Java baseline. Write the requested Java file before explaining; keep provided helper,
-record, and service types in it (nested when requested); add no sibling files, hooks, test seams,
-overloads, caches, retries, or adapters unless asked.
+Keep behavior identical (encounter order, exceptions, nulls, side effects, mutability) and stay
+within the project's Java baseline.
+
+- Write the requested file before explaining. Keep provided helper, record, and service types in
+  it where the prompt put them. Add no sibling files, hooks, test seams, overloads, caches,
+  retries, or adapters unless asked.
+- A requested summary, explanation, or comment goes into that file as a comment above the changed
+  code, and into the final message.
+- A review states the behavior-preserving decision with one safe snippet, in `review.md` when
+  asked (also for rejections). For each change, name the intent it makes clearer (not speed), the
+  behavior it keeps, and what the new code does with each case the old code treated specially,
+  `allMatch` on an empty stream included.
 
 ## Reference Bundle
 
@@ -21,12 +29,6 @@ overloads, caches, retries, or adapters unless asked.
 
 ## Core Workflow
 
-When the prompt asks for a named artifact such as `review.md` or a Java source file, create that
-exact file; do not answer only in chat. When it asks for a summary, an explanation, or a few
-sentences after the code, write them in the final message: code alone is not a complete answer.
-When it asks for a comment in the code, put it in the file. Types the prompt says to copy
-unchanged stay where and as they were.
-
 0. Check the Java baseline first. Use [java-stream-api.md](references/java-stream-api.md) for
    minimum versions and fallbacks; do not emulate unavailable APIs with stateful or multi-line
    lambdas.
@@ -37,16 +39,27 @@ unchanged stay where and as they were.
    | Arbitrary match, all matches equivalent, order never picks the winner | `filter(...).findAny()` |
    | First match by encounter or sorted order, or code that took element `0` | `filter(...).findFirst()`; keep an existing `sorted(...).filter(...).findFirst()` that defines the winner |
    | Existence check | `anyMatch` / `noneMatch` / `allMatch` |
-   | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size for zero, one, and more that takes the one element from that list; no `findFirst`/`findAny` anywhere in that lookup |
+   | Exactly one match, duplicates must fail | `filter(...).limit(2).toList()`, then a `switch` on the size (below); no `findFirst`/`findAny` anywhere in that lookup |
    | Two aggregates over same input (Java 12+) | `Collectors.teeing` |
    | Grouping/indexing | `groupingBy`, `partitioningBy`, or `toMap` with merge/null handling |
+
+   ```java
+   List<Printer> hits = printers.stream().filter(printer -> printer.hostname().equals(host)).limit(2).toList();
+   return switch (hits.size()) {
+       case 0 -> Optional.empty();
+       case 1 -> Optional.of(hits.get(0));
+       default -> throw new IllegalStateException("More than one printer at " + host);
+   };
+   ```
 
    Checkpoint: before writing the pipeline, confirm the chosen terminal returns the requested type
    and that order, duplicates, and nulls in the input cannot change the winner.
 
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
    `teeing`, and primitive terminals. Do not mutate external containers, arrays, counters, or
-   builders from `forEach`; let the stream produce the result directly.
+   builders from `forEach`; let the stream produce the result directly. A loop that returns, or
+   records one thing, as soon as some element matches is an existence check: compute the boolean
+   with `anyMatch`/`noneMatch`, then do the one write in a plain `if` after it.
 
    ```java
    long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
@@ -109,30 +122,22 @@ unchanged stay where and as they were.
        }
    }
    ```
-5. Preserve ordering, mutability, short-circuit behavior, and lambda readability. Keep stream lambdas
-   as short glue or method references. Extract a named helper for a lambda that would branch or
+5. Keep stream lambdas as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
    `Stream<T>` helper). When the prompt limits the change (layout only, no new helpers, one
-   method, the collector calls), keep every operation, its order, and the existing helpers, and
-   change nothing else: two `filter` calls stay two `filter` calls.
+   method, the collector calls), keep every operation, its order, the existing lambdas, and the
+   existing helpers, and add no helper, local, or import: two `filter` calls stay two `filter`
+   calls.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream
    chain, then make the writes in a plain loop or a terminal `forEach` that does nothing else;
    never write from `map` or from a helper inside the chain. A loop that uses its index for
    anything but element access stays a loop, not an `IntStream.range` chain.
-7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering,
-   parallel-safety, and baseline compatibility. Run the marker scan and the parallel-safety
-   conditions from [hard-stops.md](references/hard-stops.md) (no custom pool snippets unless asked),
-   fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
+7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering, and
+   baseline compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md)
+   (no custom pool snippets unless asked), fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
    results; in a scan audit a required hit stays required unless it is explicitly acceptable.
 
-Review output: state the behavior-preserving decision, add one safe snippet, create `review.md`
-when asked (also for rejections), and explain code behavior only. For every change, say why it
-is better (the intent it makes clearer, not speed) and which behavior it keeps: order, early exit,
-exceptions, mutability. For each case the old code treated specially (the step 7 list, plus
-`allMatch` on an empty stream), say what the new code does with it and what would differ if an
-input could take a value it cannot.
-Describe the code, not this workflow: no "skill", "scan", "marker", "hard stop", "checklist",
-"rubric", or "criteria" in a final message, comment, or review unless the user asked about the
-workflow itself.
+Describe the code, never this workflow (no "skill", "scan", "marker", "hard stop", "checklist",
+"rubric", or "criteria" in output) unless the user asked about the workflow itself.
