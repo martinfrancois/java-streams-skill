@@ -32,7 +32,8 @@ key_file = Path(os.environ.get("DEEPSEEK_API_KEY_FILE", Path.home() / "deepseek-
 secret = key_file.read_text().strip() if key_file.is_file() else ""
 files = []
 for path in sorted(work.rglob("*")):
-    if not path.is_file() or path.suffix == ".class" or ".claude" in path.parts:
+    # CLAUDE.md is the harness's copy of the rules bundle, not the agent's work.
+    if not path.is_file() or path.suffix == ".class" or ".claude" in path.parts or path == work / "CLAUDE.md":
         continue
     if path.stat().st_size > 60000:
         continue
