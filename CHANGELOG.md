@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.4](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.3...v1.2.4) (2026-10-21)
+
+
+### Bug Fixes
+
+* **evals:** correct the local-screen summary and 57's explanation item ([5c48cb2](https://github.com/martinfrancois/java-streams-skill/commit/5c48cb22eda5ef06eeed4a10c2f1884720b17ab7))
+* **evals:** rename the 57 record and clear stale metadata ([59e0d66](https://github.com/martinfrancois/java-streams-skill/commit/59e0d664bb2ec524b3649bdbff4e6f7cc33c7cef))
+* **evals:** say what the hosted runs overturned and note 57's prompt change ([8a5e1b0](https://github.com/martinfrancois/java-streams-skill/commit/8a5e1b0f0486bd8d559d9c9aa38859fe2d2e9c3d))
+* **scripts:** run the local solver in restricted mode ([a1b7740](https://github.com/martinfrancois/java-streams-skill/commit/a1b7740f257a629acf4f2204c7101436f24ca284))
+* **skill:** answer what the prompt asks for and keep limited changes limited ([bf15f7d](https://github.com/martinfrancois/java-streams-skill/commit/bf15f7d70b093a856b5a575b6e00470ffd954a27))
+* **skill:** drop the last checklist echoes and the banned words ([3341ced](https://github.com/martinfrancois/java-streams-skill/commit/3341ced9cba22f772faa32f62fa3b80289cd9a5e))
+* **skill:** keep the version gates in the API reference only ([66ceb48](https://github.com/martinfrancois/java-streams-skill/commit/66ceb481c6e49e1bbe3dd84e465b4590ea0da7d5))
+* **skill:** name the Stream API operations in the trigger clause ([ea9aa03](https://github.com/martinfrancois/java-streams-skill/commit/ea9aa034a911cd6099d1739a3a5610cd28a51e33))
+* **skill:** put requested explanations in the file and stop at the prompt's limits ([69566aa](https://github.com/martinfrancois/java-streams-skill/commit/69566aab3789d462bb8af3295583c44a3b18bc7b))
+* **skill:** say the rules in general words ([8d7f778](https://github.com/martinfrancois/java-streams-skill/commit/8d7f7783f8bb244818b14295e046d22d52155328))
+* **skill:** shorten the two sentences the CI review judge names ([f1178a3](https://github.com/martinfrancois/java-streams-skill/commit/f1178a3704240b845ce837f8018245d8b54d4147))
+* **skill:** split the explanation rule into two short bullets ([44e01a5](https://github.com/martinfrancois/java-streams-skill/commit/44e01a5668f705d885a941da7062bea3c2fae731))
+* **skill:** state each delivery rule once ([3f1dafe](https://github.com/martinfrancois/java-streams-skill/commit/3f1dafec3b4ef3ea7ea3f3e963446dfc935b5a84))
+* **skill:** word the explanation and existence-loop rules without criteria echoes ([ac37eb0](https://github.com/martinfrancois/java-streams-skill/commit/ac37eb06a92f1f0f6316a491c2c47c59229eb614))
+
 ## [1.2.3](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.2...v1.2.3) (2026-10-20)
 
 
