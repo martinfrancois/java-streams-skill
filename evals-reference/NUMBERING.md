@@ -215,5 +215,6 @@ change, so the prompt now says only the layout changes; on that prompt
 (`01a15fcb-839a-7063-afd8-92ba84525948`, an earlier wording of the same limit) it scored 85 and
 100. `34`'s identity-key item accepts a key derived inside the key mapper, since the item measures
 that no identity lambda remains; its baseline rose with that, and it stays reference, bimodal
-unaided across the five hosted runs. The other twelve reference scenarios were last run on the
-1.2.4 text, before step 5 changed.
+unaided across the hosted runs. On the final branch text (`01a15fd3-4833-7224-b54b-108bef5ffe81`,
+both arms) `34` scored 100 and 100, `35` 85 and 100. The other twelve reference scenarios were
+last run on the 1.2.4 text, before step 5 changed.
