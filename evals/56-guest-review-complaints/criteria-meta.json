@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "invocation": "natural",
+    "task_type": "cleanup",
+    "evidence_type": "focused_main",
+    "runtime_reference_overlap_rationale": "The task's regex line splitting shares identifiers (Matcher, Pattern, split) with the line-splitting rule and the String.lines row of java-stream-api.md; reported as focused main coverage of that rule, not as broad lift evidence.",
+    "main_eval_selection": "promoted after the 1.2.4 reference run (01a15e1e-5465-766d-a35e-b3c43ba5a1bd) scored it 35 without the skill and 100 with it; bimodal unaided (100 on 2026-10-21's first run, 26 to 35 in three local runs of four), which evals/NUMBERING.md records"
+  },
+  "categories": {
+    "Creates the revised GuestComplaintExtractor.java": "safety",
+    "Preserves extraction order and matching behavior": "safety",
+    "Produces the result from one pipeline": "stream_quality",
+    "Emits zero or one complaint per line with mapMulti": "stream_quality",
+    "Splits lines lazily": "stream_quality",
+    "Keeps the revision focused": "maintainability"
+  }
+}

@@ -63,11 +63,17 @@ the slot for two runs, then solved unaided on the final text and went back to re
 | 2026-10-21 | `01a15c22-abfe-75f7-b8b8-12aa20d18c0a` | 35 / 100 | 45 / 100 | `57`: 51 / 98 (the comment never said request order stays) | text at `c96a02a`, before the third round's wording fixes |
 | 2026-10-21 | `01a15c29-0a0d-73fb-ad4e-7b2802b3331e` | 26 / 100 | 45 / 100 | `57`: 100 / 98 | final text (`afc713c`) |
 | 2026-10-21 | `01a15c34-a10d-7509-af30-6da0b6b57f68` | 20 / 100 | 45 / 100 | | final text (`b4d78d4`, two sentences shorter) |
+| 2026-10-21 | `01a15c4f-0097-701c-a5f7-98824e1b36d8` | 30 / 100 | 45 / 100 | | 1.2.4 text (`3f1dafe`) |
+| 2026-10-21 | `01a15c63-e954-7294-84fa-64e9b0535dee` (1.2.4 publish) | 30 / 100 | 45 / 100 | | 1.2.4 |
+| 2026-10-21 | `01a15e1e-5465-766d-a35e-b3c43ba5a1bd` (reference run) | | | `56`: 35 / 100 | 1.2.4 |
 
 Cells are baseline / with the skill. On the final text `57` solved unaided and still lost the
-same two points with the skill, so it moved to `evals-reference/` and the main suite is `31` and
-`43` again: 200 with the skill against 65 without on the final text, about 3.1x. The third slot
-stays open until a scenario fails unaided on Tessl and scores 100 with the skill there.
+same two points with the skill, so it moved to `evals-reference/`. `56` came back as the third
+scenario after the 1.2.4 reference run scored it 35 without the skill and 100 with it: it is
+bimodal unaided (100 on its first hosted run, 26 to 35 in three local runs of four), it is the
+same failure shape as `31` in another domain, and its skill arm has been 100 on every run. It is
+`focused_main` because its regex splitting shares identifiers with the line-splitting rule. The
+main suite is `31`, `43`, `56`; its publish-time run is recorded here when it exists.
 
 
 All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
@@ -77,7 +83,7 @@ unaided. Explicit variants of the failing natural scenarios, four runs each, sco
 82 (28 to 100). None clears the 30-point floor with a stable mean, so the main suite stays natural
 and the validator now asks for explicit coverage across `evals/` plus `evals-reference/` instead.
 
-Main is two scenarios, 200 checklist points. On 2026-10-20 the local skill arm scored `31`
+Main is three scenarios, 300 checklist points. On 2026-10-20 the local skill arm scored `31`
 100 and `43` 97 (three points lost for a final message that mentioned an internal scan label,
 which the skill text forbids); the hosted runs below replaced that prediction.
 
