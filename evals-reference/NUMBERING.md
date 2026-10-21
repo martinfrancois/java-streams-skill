@@ -173,9 +173,9 @@ rules but before the rule that writes a requested explanation into the file:
 | `44-single-dedup-boundary` | 75 | 100 | |
 | `48-conditional-delimiter-reduction` | 85 | 85 | explanation written in the chat, not in a file |
 | `49-char-predicate-contracts` | 92 | 85 | same |
-| `50-identity-string-reduction` | 42 | 80 | same (now main) |
+| `50-identity-string-reduction` | 42 | 80 | same |
 | `51-sort-after-collect` | 95 | 94 | same |
-| `57-room-booking-cleanup` | 42 | 92 | same |
+| `57-room-booking-cleanup` | 42 | 92 | same (now main) |
 
 Tessl's judge grades the files the agent wrote and never sees its final message. Every "states"
 or "explains" item therefore needs the explanation in the file, which the skill text now says, and
