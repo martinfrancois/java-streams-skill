@@ -35,7 +35,7 @@
     {
       "name": "Explains the changes",
       "max_score": 10,
-      "description": "A comment in the file (or prose after the code) says why each change is clearer and which behavior it keeps: skipping unknown rooms, the ambiguity error, request order, and the unmodifiable result."
+      "description": "A comment in the file (or prose after the code) says for each change what reads better now and names what stays the same: unknown rooms skipped, the ambiguity error, request order, and the unmodifiable result."
     },
     {
       "name": "Keeps the change focused",

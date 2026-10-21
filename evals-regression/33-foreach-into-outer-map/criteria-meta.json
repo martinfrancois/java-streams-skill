@@ -4,7 +4,7 @@
     "task_type": "cleanup",
     "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/42",
-    "reference_selection": "Explicit baseline 97 (95 to 98) in the local DeepSeek V4.1 Flash screen of 2026-10-20 after the prompt became explicit to match its source issue; see evals-reference/NUMBERING.md."
+    "regression_selection": "Moved to regression after hosted run 01a15b56-2871-7164-b5d3-19c53180fae6 (2026-10-20) scored 100 in both arms. Earlier reference note. Explicit baseline 97 (95 to 98) in the local DeepSeek V4.1 Flash screen of 2026-10-20 after the prompt became explicit to match its source issue; see evals-reference/NUMBERING.md."
   },
   "categories": {
     "Creates the revised NewsroomFeedPlanner.java": "safety",

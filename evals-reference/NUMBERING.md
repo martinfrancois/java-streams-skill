@@ -155,8 +155,8 @@ scenarios as they stood after the 1.2.3 release (baseline / with the skill, perc
 | `50-identity-string-reduction` | 45 | 80 | with-skill rerun needed: no explanation after the code |
 | `51-sort-after-collect` | 90 | 90 | with-skill rerun needed: no summary after the code |
 
-The local screen had called four of the seven moved scenarios solved and the other three (`04`,
-`09`, `13`) lift material; the hosted run solved all seven, and the hosted run decides. Five of the seven with-skill misses (`44`, `48`, `49`, `50`, `51`) are the same miss.
+The local screen had called all seven moved scenarios lift material (each dipped under 98 in
+some run); the hosted run solved them in both arms, and the hosted run decides. Five of the seven with-skill misses (`44`, `48`, `49`, `50`, `51`) are the same miss.
 The task asks for a few sentences after the code and the solver returned code only; `34` and `35`
 lost points for going past the scope the prompt set. The skill text now says that a requested
 explanation belongs in the file and that a prompt which limits the change keeps every operation
