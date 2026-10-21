@@ -180,7 +180,7 @@ jobs:
           TESSL_TOKEN_AVAILABLE: ${{ steps.release-pr-tessl-token.outputs.available }}
         run: |
           if [[ "$TESSL_TOKEN_AVAILABLE" == "true" ]]; then
-            tessl review run --workspace martinfrancois --threshold 100 skills/java-streams/SKILL.md
+            tessl review run --workspace martinfrancois --threshold 100 --force skills/java-streams/SKILL.md
           else
             echo "TESSL_TOKEN isn't configured; skipping Tessl skill review."
           fi
