@@ -116,10 +116,12 @@ is faster.
        }
    }
    ```
-5. Keep stream lambdas as short glue or method references. Extract a named helper for a lambda that would branch or
-   wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
-   `Stream<T>` helper). When the prompt limits the change to one concern, one method, or one
-   call, change only that and add nothing the prompt did not ask for.
+5. First read what the prompt allows. When it limits the change to one concern, say the way the
+   code is laid out or a single method, make only that change. Add no method, local, or import,
+   and leave every existing lambda as it is, even one a free cleanup would extract. Otherwise
+   keep stream lambdas as short glue or method references, and extract a named helper for a
+   lambda that would branch or wrap, a merge rule with tie, null, or ordering cases, or a nested
+   collector callback (a `Stream<T>` helper).
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream
