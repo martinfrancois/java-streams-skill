@@ -4,7 +4,7 @@
     "task_type": "cleanup",
     "evidence_type": "solved_regression",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/57",
-    "reference_selection": "Shows whether the agent extracts multi-line stream pipelines out of Optional.map and flatMap lambdas into domain-named helpers while keeping findAny for unique codes."
+    "regression_selection": "Moved to regression after hosted run 01a15b56-2871-7164-b5d3-19c53180fae6 (2026-10-20) scored 100 in both arms. Earlier reference note. Shows whether the agent extracts multi-line stream pipelines out of Optional.map and flatMap lambdas into domain-named helpers while keeping findAny for unique codes."
   },
   "categories": {
     "Creates revised RentalRateCard.java": "safety",
