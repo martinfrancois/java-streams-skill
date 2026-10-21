@@ -182,3 +182,21 @@ Tessl's judge grades the files the agent wrote and never sees its final message.
 or "explains" item therefore needs the explanation in the file, which the skill text now says, and
 the local judge grades the files only as well. `56-guest-review-complaints` arrived here from
 `evals/` after its hosted baseline scored 100 (see `evals/NUMBERING.md`).
+
+## Hosted run against 1.2.4 (2026-10-21)
+
+Both arms, run `01a15e1e-5465-766d-a35e-b3c43ba5a1bd`, all fifteen reference scenarios:
+
+| Scenario | Baseline | With skill | Outcome |
+| --- | --- | --- | --- |
+| `15` 75, `27` 90, `28` 67, `30` 75, `38` 80, `42` 87, `44` 20, `48` 85, `49` 85 | | 100 | stay |
+| `56-guest-review-complaints` | 35 | 100 | promoted to main (see `evals/NUMBERING.md`) |
+| `57-room-booking-cleanup` | 91 | 100 | stays |
+| `50-identity-string-reduction` | 100 | 98 | stays; a point on focus |
+| `51-sort-after-collect` | 94 | 95 | stays; the comment never says the sort moved into the chain |
+| `34-identity-mapper-in-tomap` | 81 | 81 | stays; two private helpers and the flag key folded into a method reference, as on 1.2.3 |
+| `35-one-line-stream-chains` | 80 | 77 | stays; three helpers in a layout-only task, as on 1.2.3 |
+
+`48` and `49`, which had lost their explanation points on 1.2.3, score 100 now that the
+explanation goes into the file. `34` and `35` still extract helpers the prompt forbids; the
+limited-change rule did not hold for them and is the next thing to tune.

@@ -88,3 +88,10 @@ Targeted with-context run on the PR #132 text, `01a15be9-bd19-7480-b70f-306fd019
 scored 65 (kept the zone loop with its early return instead of `anyMatch` plus a plain `if`) and
 `47` 85 (explanation in the chat, not the file). The existence-loop rule and the file-explanation
 rule target both; they are rerun after it.
+
+## Hosted run against 1.2.4 (2026-10-21)
+
+With context only, run `01a15e1e-9150-7008-8eeb-2e3a8625e5ec`: thirty-five of the thirty-seven
+scored 100, including `39` and `47`, which had lost points on 1.2.3. `18-priority-findany-review`
+and `23-collector-order-scan` scored 99 for a review the judge called a little long; their isolated
+rerun is recorded below.
