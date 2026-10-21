@@ -52,7 +52,14 @@ def parse_frontmatter(text: str) -> dict[str, str]:
             raise ValueError(f"frontmatter line {line_number} is not a simple key/value pair")
 
         key, value = key_match.groups()
-        frontmatter[key] = (value or "").strip().strip('"').strip("'")
+        value = (value or "").strip()
+        # YAML reads ": " or " #" inside an unquoted scalar as a nested mapping or a comment,
+        # and tessl plugin lint rejects the file; the frontmatter never needs either.
+        if not value.startswith(('"', "'")) and (": " in value or " #" in value):
+            raise ValueError(
+                f"frontmatter line {line_number}: unquoted value contains ': ' or ' #', which YAML does not parse as text"
+            )
+        frontmatter[key] = value.strip('"').strip("'")
 
     return frontmatter
 
