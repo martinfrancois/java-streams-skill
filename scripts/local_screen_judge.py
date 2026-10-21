@@ -82,14 +82,17 @@ def ask_judge() -> list:
     text = json.loads(out.stdout)["result"].strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1].rsplit("```", 1)[0]
-    return json.loads(text)
+    results = json.loads(text)
+    if not isinstance(results, list) or any(not {"name", "score", "max_score"} <= set(item) for item in results):
+        raise ValueError("judge reply is not a list of scored items")
+    return results
 
 
 try:
     results = ask_judge()
-except json.JSONDecodeError:
-    # The judge sometimes leaves an unescaped quote inside a reasoning string; one more try
-    # is cheaper than a lost solver run.
+except (json.JSONDecodeError, ValueError, KeyError):
+    # The judge sometimes leaves an unescaped quote inside a reasoning string or drops a field;
+    # one more try is cheaper than a lost solver run.
     results = ask_judge()
 assessment = {"variant": variant, "judge": judge_model, "assessmentResults": results}
 (run_dir / "assessment.json").write_text(json.dumps(assessment, indent=2) + "\n")
