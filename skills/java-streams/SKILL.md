@@ -9,16 +9,12 @@ description: Review Java stream performance advice, especially slow stream mappi
 Keep behavior identical (encounter order, exceptions, nulls, side effects, mutability) and stay
 within the project's Java baseline.
 
-- Write the requested file before explaining. Keep provided helper, record, and service types in
-  it where the prompt put them. Add no sibling files, hooks, test seams, overloads, caches,
-  retries, or adapters unless asked.
-- A requested summary, explanation, or comment goes into that file as a comment above the changed
-  code, and into the final message.
-- A review states the behavior-preserving decision with one safe snippet, in `review.md` when
-  asked (also for rejections).
-- Explain each change by the intent it expresses, the behavior it preserves, and how it handles
-  the cases the old code treated specially, such as a match terminal given no elements. Never
-  claim it is faster.
+Write the requested file first, with the provided types where the prompt put them and nothing
+the prompt did not ask for; a requested explanation goes into that file as a comment and into the
+final message. A review (`review.md` when asked, also for rejections) gives the decision with one
+safe snippet. Explain each change by the intent it expresses, the behavior it preserves, and the
+cases the old code treated specially, such as a match terminal given no elements; never claim it
+is faster.
 
 ## Reference Bundle
 
@@ -57,13 +53,12 @@ within the project's Java baseline.
    and that order, duplicates, and nulls in the input cannot change the winner.
 
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, `teeing`, and
-   primitive terminals. Do not mutate external containers, arrays, counters, or
-   builders from `forEach`; let the stream produce the result directly. A loop that stops as soon
-   as some element matches is an existence check for `anyMatch` or `noneMatch`, with what the loop
-   did on the match placed after it.
+   primitive terminals; let the stream produce the result instead of a `forEach` that fills a
+   container or counter. A loop that stops as soon as some element matches is an existence check
+   for `anyMatch` or `noneMatch`, with what the loop did on the match placed after it.
 
    ```java
-   long overdue = orders.stream().filter(Order::isOverdue).count();   // not forEach + counter++
+   long overdue = orders.stream().filter(Order::isOverdue).count();
    ```
 
    - Implementation: write the direct stream result; prefer
@@ -95,7 +90,6 @@ within the project's Java baseline.
      `\\r\\n`.
 
    ```java
-   // flatten Optional values instead of filter(Optional::isPresent).map(Optional::get)
    optionals.stream().flatMap(Optional::stream).collect(Collectors.toList());
    ```
 4. Choose accumulation/collectors by result semantics: use `reduce(identity, op)` for immutable
@@ -134,8 +128,6 @@ within the project's Java baseline.
    anything but element access stays a loop.
 7. Verify changed branches for empty inputs, one element, duplicates, nulls, ordering, and
    baseline compatibility. Run the marker scan from [hard-stops.md](references/hard-stops.md)
-   (no custom pool snippets unless asked), fix hits, and re-scan. Report findings as facts about the code, never as scan or marker
-   results; in a scan audit, required hits stay required.
-
-Describe the code, never this workflow (no "skill", "scan", "marker", "hard stop", "checklist",
-"rubric", or "criteria" in output) unless the user asked about the workflow itself.
+   (no custom pool snippets unless asked), fix hits, and re-scan. In output, describe the code,
+   never this workflow: no "skill", "scan", "marker", "hard stop", "checklist", "rubric", or
+   "criteria" unless the user asked about the workflow itself.
