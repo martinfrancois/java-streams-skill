@@ -136,6 +136,10 @@ release-readiness.
   tessl review run --threshold 100 skills/java-streams/SKILL.md
   ```
 
+  Tessl caches a review per skill text, and the judge varies by a few points from run to run, so
+  the gates in CI and in the publish script pass `--force`: a text that once scored 97 would
+  otherwise return 97 on every rerun. Use `--force` locally too when a score has to be fresh.
+
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
   `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
   Any change that could affect hosted lift, baseline score, with-context score, skill activation, runtime skill behavior, active eval tasks, active eval criteria, or active eval membership must be made in a separate commit. Label it as lift-sensitive in the PR summary and include a revert strategy.
