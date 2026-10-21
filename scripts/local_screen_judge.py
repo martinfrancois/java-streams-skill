@@ -61,17 +61,29 @@ when the description is clearly met by the artifacts. Partial credit is allowed.
 
 Reply with only a JSON array, one object per checklist item in order:
 [{{"name": "...", "score": <number>, "max_score": <number>, "reasoning": "<one sentence>"}}]
+Inside "reasoning" use no double quotes; quote identifiers with backticks instead.
 """
-out = subprocess.run(
-    ["claude", "-p", "--model", judge_model, "--output-format", "json", prompt],
-    capture_output=True, text=True, cwd=str(run_dir), check=False,
-)
-if out.returncode != 0:
-    sys.exit(f"judge failed: {out.stderr[-500:]}")
-text = json.loads(out.stdout)["result"].strip()
-if text.startswith("```"):
-    text = text.split("\n", 1)[1].rsplit("```", 1)[0]
-results = json.loads(text)
+
+
+def ask_judge() -> list:
+    out = subprocess.run(
+        ["claude", "-p", "--model", judge_model, "--output-format", "json", prompt],
+        capture_output=True, text=True, cwd=str(run_dir), check=False,
+    )
+    if out.returncode != 0:
+        sys.exit(f"judge failed: {out.stderr[-500:]}")
+    text = json.loads(out.stdout)["result"].strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1].rsplit("```", 1)[0]
+    return json.loads(text)
+
+
+try:
+    results = ask_judge()
+except json.JSONDecodeError:
+    # The judge sometimes leaves an unescaped quote inside a reasoning string; one more try
+    # is cheaper than a lost solver run.
+    results = ask_judge()
 assessment = {"variant": variant, "judge": judge_model, "assessmentResults": results}
 (run_dir / "assessment.json").write_text(json.dumps(assessment, indent=2) + "\n")
 earned = sum(item["score"] for item in results)
