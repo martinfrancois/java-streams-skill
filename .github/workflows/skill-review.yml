@@ -58,4 +58,4 @@ jobs:
 
       - name: Review skill
         if: ${{ steps.inputs.outputs.changed == 'true' && env.TESSL_TOKEN_AVAILABLE == 'true' }}
-        run: tessl review run --workspace martinfrancois --threshold 100 skills/java-streams/SKILL.md
+        run: tessl review run --workspace martinfrancois --threshold 100 --force skills/java-streams/SKILL.md

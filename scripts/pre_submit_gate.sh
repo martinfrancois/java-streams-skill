@@ -504,7 +504,7 @@ run_quality_review() {
   fi
 
   set +e
-  output="$(tessl review run "${args[@]}" --threshold "$threshold" "$skill_path" 2>&1)"
+  output="$(tessl review run "${args[@]}" --threshold "$threshold" --force "$skill_path" 2>&1)"
   status=$?
   set -e
 
