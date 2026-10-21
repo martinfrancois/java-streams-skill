@@ -284,12 +284,12 @@ Update this section whenever active eval membership or scoring changes.
   skill-context-dependent.
 - Hosted runs against 1.2.3 on 2026-10-20 (both arms for reference, with context for
   regression; run IDs in the suite `NUMBERING.md` files) confirmed every local placement. The
-  with-skill arm lost points on nine scenarios, seven of them for returning code without the
+  with-skill arm lost points on nine scenarios, six of them for returning code without the
   explanation the task asked for; the skill text change that followed targets that, and those
   scenarios are rerun targeted before the next release.
-- Hosted evidence for the current main suite, 2026-10-20, default solver, both variants: 200 with
-  context against 86 without (`31` 26 to 100, `43` 60 to 100), about 2.3x. The run ID is in
-  `evals/NUMBERING.md`; the suite's hosted runs are tabled there.
+- Hosted evidence for `31` and `43`, 2026-10-20 and 2026-10-21, default solver, both variants:
+  26 to 100 and 60 to 100 on both runs; `57` scored 42 without the skill on 2026-10-21. The runs
+  are tabled in `evals/NUMBERING.md`, which also records the run that confirms the three together.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
   numbers that justified each move.

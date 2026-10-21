@@ -156,10 +156,11 @@ scenarios as they stood after the 1.2.3 release (baseline / with the skill, perc
 | `51-sort-after-collect` | 90 | 90 | with-skill rerun needed: no summary after the code |
 
 The local screen had called the seven moved scenarios solved and the others lift material, which
-matches. Six of the seven with-skill misses are the same shape: the task asks for a few sentences
-after the code and the solver returned code only, so the skill text now says that a requested
-explanation belongs in the final message and that a prompt which limits the change (layout only,
-no new helpers) keeps every operation as it is.
+matches. Five of the seven with-skill misses (`44`, `48`, `49`, `50`, `51`) are the same shape:
+the task asks for a few sentences after the code and the solver returned code only; `34` and `35`
+lost points for going past the scope the prompt set. The skill text now says that a requested
+explanation belongs in the file and that a prompt which limits the change keeps every operation
+as it is.
 
 ## Targeted hosted run on the PR #132 text (2026-10-21)
 
