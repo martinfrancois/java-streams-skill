@@ -73,7 +73,8 @@ scenario after the 1.2.4 reference run scored it 35 without the skill and 100 wi
 bimodal unaided (100 on its first hosted run, 26 to 35 in three local runs of four), it is the
 same failure shape as `31` in another domain, and its skill arm has been 100 on every run. It is
 `focused_main` because its regex splitting shares identifiers with the line-splitting rule. The
-main suite is `31`, `43`, `56`; its publish-time run is recorded here when it exists.
+main suite is `31`, `43`, `56`; the 1.2.5 publish-time run is recorded here when it exists. (The
+empty release commit on PR #134 was dropped by the rebase merge, so this note carries it.)
 
 
 All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
