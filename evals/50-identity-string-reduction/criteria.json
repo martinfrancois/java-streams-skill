@@ -25,7 +25,7 @@
     {
       "name": "States the null and intent reasoning",
       "max_score": 20,
-      "description": "The response or a short code comment states that String.concat(null) throws NullPointerException while joining() appends the text \"null\", and that the rewrite is safe because renderLine always returns a non-null string (an empty string or a String.format result) or throws. It gives clearer intent as the reason for the change and does not claim a measured or guaranteed speedup as the justification. Award 10 if the null difference is missing but the rest is present, and 0 if the only stated reason is performance."
+      "description": "A comment in the file (or prose after the code) states that String.concat(null) throws NullPointerException while joining() appends the text \"null\", and that the rewrite is safe because renderLine always returns a non-null string (an empty string or a String.format result) or throws. The stated reason for the change is readability or intent (what the code says), not speed; any wording that names what the pipeline expresses counts. Award 10 if the null difference is missing but the rest is present, and 0 if the only stated reason is performance."
     },
     {
       "name": "Keeps the cleanup focused",

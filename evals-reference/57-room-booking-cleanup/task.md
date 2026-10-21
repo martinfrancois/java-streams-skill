@@ -3,9 +3,10 @@
 Create `RoomBooker.java` with the revised class. Assume Java 17.
 
 This class confirms meeting room requests for an office floor. It works and passed review, but a
-teammate asked whether it could read better. Revise it where that makes the code clearer and keep
-its behavior: a request for a room name that matches no room is skipped, a name that matches more
-than one room is an error, and callers cannot modify the returned list.
+teammate asked whether it could read better. Revise it where that makes the code clearer, say in a
+comment why each change is clearer, and keep its behavior: a request for a room name that matches no
+room is skipped, a name that matches more than one room is an error, and callers cannot modify the
+returned list.
 
 ```java
 import java.util.ArrayList;

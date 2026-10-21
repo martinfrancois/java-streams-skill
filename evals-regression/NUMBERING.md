@@ -83,3 +83,8 @@ targets them.
 
 `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved here from `evals-reference/` after run
 `01a15b56-2871-7164-b5d3-19c53180fae6` scored each 100 without context and 100 with context.
+
+Targeted with-context run on the PR #132 text, `01a15be9-bd19-7480-b70f-306fd0197f64`: `39`
+scored 65 (kept the zone loop with its early return instead of `anyMatch` plus a plain `if`) and
+`47` 85 (explanation in the chat, not the file). The existence-loop rule and the file-explanation
+rule target both; they are rerun after it.
