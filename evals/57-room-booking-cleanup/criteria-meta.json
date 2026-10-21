@@ -3,7 +3,7 @@
     "invocation": "natural",
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
-    "reference_selection": "Shows whether a fill-then-freeze loop becomes one collecting pipeline and whether a lookup that must fail on duplicates stays free of findFirst; local DeepSeek V4.1 Flash baseline 52, 96, 98, 100 over four runs, so it stays reference coverage."
+    "main_eval_selection": "promoted from reference after the hosted both-arms run of 2026-10-21 scored it 42 without the skill and the final skill text scored 100 and 99 locally; its hosted confirmation is in evals/NUMBERING.md"
   },
   "categories": {
     "Creates coherent Java 17 artifact": "safety",

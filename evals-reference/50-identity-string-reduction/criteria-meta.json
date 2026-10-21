@@ -4,8 +4,7 @@
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/62",
-    "reference_selection": "Shows whether the agent recognizes reduce(\"\", String::concat) as joining() and proves non-null mapped values, since the two treat null differently, without adding delimiters, filters, or speed claims.",
-    "main_eval_selection": "promoted from reference after two hosted both-arms runs scored the baseline 45 and 42 (2026-10-20 and 2026-10-21); the with-skill misses were the explanation the task asks for, which the skill now writes into the file"
+    "reference_selection": "Two hosted baselines of 45 and 42 make it lift material, but the skill arm still misses the null-difference explanation in one local run of two on the final text, so it stays reference until the skill arm is steady."
   },
   "categories": {
     "Creates revised StatementExport.java": "safety",

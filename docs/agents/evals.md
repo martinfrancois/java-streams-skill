@@ -260,9 +260,9 @@ Update this section whenever active eval membership or scoring changes.
 - Natural activation subset: 3 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
   the result from one pipeline with lazy lines and `mapMulti` instead of filling a list from
   `forEach`), `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
-  predicate instead of a loop that throws), and `50-identity-string-reduction` (Java 17 cleanup:
-  `Collectors.joining` instead of a string reduction with an empty-start branch, promoted after
-  two hosted baselines under 50).
+  predicate instead of a loop that throws), and `57-room-booking-cleanup` (Java 17 cleanup: one
+  collecting pipeline instead of a fill-then-freeze loop, and a lookup that must fail on
+  duplicates without `findFirst`; hosted baseline 42).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
   in `evals-reference/` (`09`, `33`, `34`, `37`, `51`) until an explicit scenario clears the floor.
@@ -274,8 +274,8 @@ Update this section whenever active eval membership or scoring changes.
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
 - Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
-  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `51`, `56` (guest reviews,
-  bimodal unaided), and `57` (room bookings). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
+  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `56` (guest reviews,
+  bimodal unaided). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
   to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
 - Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
   scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3

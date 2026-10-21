@@ -42,14 +42,15 @@ scenarios whose baseline sits at least 30 points below the with-context ceiling:
 | --- | --- | --- | --- |
 | `31-line-to-record-extraction` (natural) | 6 | mean 30, range 20 to 35 | fills a mutable list from a `forEach` or a loop; never one pipeline, never `mapMulti` |
 | `43-reject-if-any-validator` (natural) | 6 | mean 69, range 48 to 100 | keeps the `for` loop with `throw` inside in four runs of six, `anyMatch` in the other two |
-| `50-identity-string-reduction` (natural) | hosted, 2 | 45 and 42 | folds the lines with `reduce("", String::concat)` and keeps the empty-start branch |
+| `57-room-booking-cleanup` (natural) | hosted, 1 | 42 | fills a list in a loop and freezes it; keeps or writes a `findFirst` lookup where duplicates must fail |
 
 `56-guest-review-complaints` was drafted on 2026-10-20 as a second line-extraction task in a new
 domain and screened at 26 to 35 unaided in three runs of four, with 100 in the fourth. Its hosted
 both-arms run (`01a15be9-9a93-7157-84cf-7393ea2023b6`, 2026-10-21) landed on the 100 branch, so
-it misses the 30-point floor and moved to `evals-reference/`. `50` took its place: both hosted
-reference runs scored its baseline under 50, and its with-skill misses were only the explanation
-the task asks for, which the skill text now writes into the file.
+it misses the 30-point floor and moved to `evals-reference/`. `50-identity-string-reduction` was
+the first replacement (hosted baselines 45 and 42) but its skill arm still drops to 85 in one
+local run of two on the final text, on the explanation item, so it waits in reference. `57` took
+the slot: hosted baseline 42, local skill arm 100 and 99 on the final text.
 
 ## Hosted runs
 
@@ -58,7 +59,7 @@ the task asks for, which the skill text now writes into the file.
 | 2026-10-20 | `01a159c4-b7c4-72b6-a3cb-72706a19e7d4` (1.2.3 publish) | 26 / 100 | 60 / 100 | | 1.2.3 |
 | 2026-10-21 | `01a15be9-9a93-7157-84cf-7393ea2023b6` | 26 / 100 | 60 / 100 | 100 / 100 | PR #132, before the file-explanation rule |
 
-Cells are baseline / with the skill. The run that confirms `50` in this suite is added here when
+Cells are baseline / with the skill. The run that confirms `57` in this suite is added here when
 it exists.
 
 Both are natural. The suite used to require one explicit scenario as well, and the screen shows why
