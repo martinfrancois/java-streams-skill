@@ -75,7 +75,7 @@ run before a release claim.
 
 ## Hosted runs against 1.2.3 (2026-10-20)
 
-With context only, run `01a15b56-5d17-77e8-bace-caf566877685`, default solver: twenty-eight of
+With context only, run `01a15b56-5d17-77e8-bace-caf566877685`, default solver. Twenty-eight of
 the thirty scenarios scored 100. `39-predicate-loop-audit` scored 94 (rewrote the indexed loop
 as `IntStream.range` although its index feeds the message) and `47-direct-immutable-array-mapping`
 85 (no explanation after the code). Both are rerun targeted after the skill text change that

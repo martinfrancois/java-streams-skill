@@ -50,7 +50,7 @@ both-arms run (`01a15be9-9a93-7157-84cf-7393ea2023b6`, 2026-10-21) landed on the
 it misses the 30-point floor and moved to `evals-reference/`. `50-identity-string-reduction` was
 the first replacement (hosted baselines 45 and 42) but its skill arm still drops to 85 in one
 local run of two on the final text, on the explanation item, so it waits in reference. `57` took
-the slot: hosted baseline 42, local skill arm 100 and 99 on the final text.
+the slot, with a hosted baseline of 42 and a local skill arm of 100 and 99 on the final text.
 
 ## Hosted runs
 
@@ -62,7 +62,7 @@ the slot: hosted baseline 42, local skill arm 100 and 99 on the final text.
 Cells are baseline / with the skill. The run that confirms `57` in this suite is added here when
 it exists.
 
-Both are natural. The suite used to require one explicit scenario as well, and the screen shows why
+All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
 none qualifies under this solver: naming `$java-streams` in the prompt primes it to write streams
 unaided. Explicit variants of the failing natural scenarios, four runs each, scored `43` 98 (95 to
 100), `30` 100, `44` 99, `35` 92 (82 to 100), `45` 76 (37 to 100), `31` 79 (35 to 100), and `28`

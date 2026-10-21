@@ -3,8 +3,8 @@
     "invocation": "natural",
     "task_type": "review",
     "evidence_type": "solved_regression",
-    "reference_selection": "Focused reference coverage for preserving priority ordering when reviewing findFirst versus findAny changes.",
-    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift."
+    "runtime_reference_overlap_rationale": "Allowed only because this is reference-suite focused coverage, not ordinary broad lift.",
+    "regression_selection": "Moved to regression after hosted run 01a15b56-2871-7164-b5d3-19c53180fae6 (2026-10-20) scored 100 in both arms; earlier it was reference coverage: Focused reference coverage for preserving priority ordering when reviewing findFirst versus findAny changes."
   },
   "categories": {
     "Creates review artifact": "safety",
