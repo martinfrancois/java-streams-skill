@@ -35,14 +35,15 @@ and the 1.2.2 publish run scored all four 100 without context and 100 with conte
 screen agreed (`01` 100, `02` 94, `03` 97, `04` 100 without the skill), which is the classifier's
 regression rule.
 
-Numbers `31` and `43` were promoted from `evals-reference/` because they are the only screened
-scenarios whose baseline sits at least 30 points below the with-context ceiling:
+Numbers `31` and `43` were promoted from `evals-reference/` on 2026-10-20 because they were the
+only screened scenarios whose baseline sat at least 30 points below the with-context ceiling;
+`57` joined on 2026-10-21 from its hosted run:
 
 | Scenario | Runs | Without skill | What the solver does unaided |
 | --- | --- | --- | --- |
 | `31-line-to-record-extraction` (natural) | 6 | mean 30, range 20 to 35 | fills a mutable list from a `forEach` or a loop; never one pipeline, never `mapMulti` |
 | `43-reject-if-any-validator` (natural) | 6 | mean 69, range 48 to 100 | keeps the `for` loop with `throw` inside in four runs of six, `anyMatch` in the other two |
-| `57-room-booking-cleanup` (natural) | hosted, 1 | 42 | fills a list in a loop and freezes it; keeps or writes a `findFirst` lookup where duplicates must fail |
+| `57-room-booking-cleanup` (natural) | hosted, 1 | 42 on the prompt before it asked for a comment (that item scored 0 of 10, so the baseline on the current prompt can be up to 52) | fills a list in a loop and freezes it; keeps or writes a `findFirst` lookup where duplicates must fail |
 
 `56-guest-review-complaints` was drafted on 2026-10-20 as a second line-extraction task in a new
 domain and screened at 26 to 35 unaided in three runs of four, with 100 in the fourth. Its hosted
@@ -69,10 +70,9 @@ unaided. Explicit variants of the failing natural scenarios, four runs each, sco
 82 (28 to 100). None clears the 30-point floor with a stable mean, so the main suite stays natural
 and the validator now asks for explicit coverage across `evals/` plus `evals-reference/` instead.
 
-Main is three scenarios, 300 checklist points.
-scored `31` 100 and `43` 97 (three points lost for a final message that mentioned an internal
-scan label, which the skill text forbids). The local prediction for the main suite is about
-200 with the skill against 99 without, roughly 2x, to be confirmed by a hosted run.
+Main is three scenarios, 300 checklist points. On 2026-10-20 the local skill arm scored `31`
+100 and `43` 97 (three points lost for a final message that mentioned an internal scan label,
+which the skill text forbids); the hosted runs below replaced that prediction.
 
 ### With the skill, locally (2026-10-20)
 
