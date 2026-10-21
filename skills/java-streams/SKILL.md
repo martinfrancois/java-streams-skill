@@ -15,9 +15,10 @@ within the project's Java baseline.
 - A requested summary, explanation, or comment goes into that file as a comment above the changed
   code, and into the final message.
 - A review states the behavior-preserving decision with one safe snippet, in `review.md` when
-  asked (also for rejections). For each change, say what it makes clearer and never claim it is faster,
-  which behavior it keeps, and what the new code does with each case the old code treated
-  specially, including what a match terminal returns on an empty stream.
+  asked (also for rejections).
+- Explain each change by what it makes clearer, which behavior it keeps, and how it handles the
+  cases the old code treated specially, such as a match terminal on an empty stream. Never claim
+  it is faster.
 
 ## Reference Bundle
 
