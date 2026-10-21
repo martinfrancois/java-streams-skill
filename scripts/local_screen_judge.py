@@ -10,7 +10,9 @@ can be rerun on its own to re-grade a run with another judge model:
 local_screen.sh passes all four; standalone runs default to haiku and "local".
 
 The DeepSeek key named by DEEPSEEK_API_KEY_FILE (default ~/deepseek-api-key) is
-replaced with [redacted] in everything sent to the judge.
+replaced with [redacted] in everything sent to the judge. The judge sees the files the
+agent wrote, as Tessl's judge does; set LOCAL_SCREEN_JUDGE_MESSAGE=1 to add the final
+message.
 """
 import json
 import os
@@ -39,7 +41,9 @@ for path in sorted(work.rglob("*")):
         text = text.replace(secret, "[redacted]")
     files.append(f"### {path.relative_to(work)}\n```\n{text}\n```")
 artifacts = "\n\n".join(files) or "(no files written)"
-final_message = str(solver.get("result", ""))
+# Tessl's judge grades only the files the agent wrote; it never sees the final message. Match
+# that by default, and include the message only when LOCAL_SCREEN_JUDGE_MESSAGE=1.
+final_message = str(solver.get("result", "")) if os.environ.get("LOCAL_SCREEN_JUDGE_MESSAGE") == "1" else "(not shown to the judge; grade the files)"
 if secret:
     final_message = final_message.replace(secret, "[redacted]")
 checklist = json.dumps(criteria["checklist"], indent=2)
