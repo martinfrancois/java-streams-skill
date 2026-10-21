@@ -69,7 +69,7 @@ unaided. Explicit variants of the failing natural scenarios, four runs each, sco
 82 (28 to 100). None clears the 30-point floor with a stable mean, so the main suite stays natural
 and the validator now asks for explicit coverage across `evals/` plus `evals-reference/` instead.
 
-Main is two scenarios, 200 checklist points, no weight multipliers. One local skill-mode run each
+Main is three scenarios, 300 checklist points.
 scored `31` 100 and `43` 97 (three points lost for a final message that mentioned an internal
 scan label, which the skill text forbids). The local prediction for the main suite is about
 200 with the skill against 99 without, roughly 2x, to be confirmed by a hosted run.

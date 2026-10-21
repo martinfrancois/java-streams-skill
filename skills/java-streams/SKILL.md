@@ -15,9 +15,9 @@ within the project's Java baseline.
 - A requested summary, explanation, or comment goes into that file as a comment above the changed
   code, and into the final message.
 - A review states the behavior-preserving decision with one safe snippet, in `review.md` when
-  asked (also for rejections). For each change, name the intent it makes clearer (not speed), the
-  behavior it keeps, and what the new code does with each case the old code treated specially,
-  `allMatch` on an empty stream included.
+  asked (also for rejections). For each change, say what it makes clearer (never promise speed),
+  which behavior it keeps, and what the new code does with each case the old code treated
+  specially, including what a match terminal returns on an empty stream.
 
 ## Reference Bundle
 
@@ -125,9 +125,8 @@ within the project's Java baseline.
 5. Keep stream lambdas as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
    `Stream<T>` helper). When the prompt limits the change (layout only, no new helpers, one
-   method, the collector calls), keep every operation, its order, the existing lambdas, and the
-   existing helpers, and add no helper, local, or import: two `filter` calls stay two `filter`
-   calls.
+   method, the collector calls), keep every operation, its order, and the existing lambdas and
+   helpers; add nothing the prompt did not ask for.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream
