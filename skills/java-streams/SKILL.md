@@ -15,7 +15,7 @@ within the project's Java baseline.
 - A requested summary, explanation, or comment goes into that file as a comment above the changed
   code, and into the final message.
 - A review states the behavior-preserving decision with one safe snippet, in `review.md` when
-  asked (also for rejections). For each change, say what it makes clearer (never promise speed),
+  asked (also for rejections). For each change, say what it makes clearer and never claim it is faster,
   which behavior it keeps, and what the new code does with each case the old code treated
   specially, including what a match terminal returns on an empty stream.
 
@@ -52,7 +52,7 @@ within the project's Java baseline.
    };
    ```
 
-   Checkpoint: before writing the pipeline, confirm the chosen terminal returns the requested type
+   Checkpoint: before writing the chain, confirm the chosen terminal returns the requested type
    and that order, duplicates, and nulls in the input cannot change the winner.
 
 2. Use intent-encoding terminals: `anyMatch`, `count`, `joining`, `min`/`max`, Java 12+
@@ -125,8 +125,7 @@ within the project's Java baseline.
 5. Keep stream lambdas as short glue or method references. Extract a named helper for a lambda that would branch or
    wrap, a merge rule with tie, null, or ordering cases, or a nested collector callback (a
    `Stream<T>` helper). When the prompt limits the change to one concern, one method, or one
-   call, keep every operation, its order, and the existing lambdas and helpers; add nothing the
-   prompt did not ask for.
+   call, change only that and add nothing the prompt did not ask for.
 6. Keep imperative code when it is the clearer boundary for stateful output, checked IO,
    mutation-heavy logic, or complex early exits. Writes to an external system (an API post, a
    database or file write, a message send) are their own step. Gather what they need with a stream

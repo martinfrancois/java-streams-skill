@@ -3,7 +3,7 @@
     "invocation": "natural",
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
-    "main_eval_selection": "promoted from reference after the hosted both-arms run of 2026-10-21 scored it 42 without the skill and the final skill text scored 100 and 99 locally; its hosted confirmation is in evals/NUMBERING.md"
+    "main_eval_selection": "hosted both-arms run of 2026-10-21 scored 42 without the skill on the prompt before it asked for a comment (the explanation item scored 0 of 10) and the final skill text scored 100 and 99 locally; the hosted run on the current prompt is in evals/NUMBERING.md"
   },
   "categories": {
     "Creates coherent Java 17 artifact": "safety",

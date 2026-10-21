@@ -283,7 +283,8 @@ Update this section whenever active eval membership or scoring changes.
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
 - Hosted runs against 1.2.3 on 2026-10-20 (both arms for reference, with context for
-  regression; run IDs in the suite `NUMBERING.md` files) confirmed every local placement. The
+  regression; run IDs in the suite `NUMBERING.md` files) placed every scenario; the local screen
+  had called seven of the moved scenarios lift material, and the hosted run solved them. The
   with-skill arm lost points on nine scenarios, six of them for returning code without the
   explanation the task asked for; the skill text change that followed targets that, and those
   scenarios are rerun targeted before the next release.
