@@ -200,3 +200,20 @@ Both arms, run `01a15e1e-5465-766d-a35e-b3c43ba5a1bd`, all fifteen reference sce
 `48` and `49`, which had lost their explanation points on 1.2.3, score 100 now that the
 explanation goes into the file. `34` and `35` still extract helpers the prompt forbids; the
 limited-change rule did not hold for them and is the next thing to tune.
+
+## Targeted runs for the limited-change rule (2026-10-21)
+
+`34` and `35` had scored 81 and 77 with the skill on the 1.2.4 reference run for helpers added
+in tasks that limit the change. Two runs on the 1.2.5 text, both arms:
+`01a15fb7-a160-7069-bed8-ba384445a559` scored `34` 80 and 81, `35` 80 and 98;
+`01a15fbf-0681-7064-ac2b-8b939ede1ca0` scored `34` 100 and 99, `35` 86 and 100. The hosted solver
+extracts a helper on some runs and not others; the local screen (100 and 99) did not reproduce it.
+With the limit-first rule in step 5 (`01a15fc3-b5de-70e9-a9a8-cdf5d9e57b82`), `34` scored 99
+unaided and 100 with the skill, `35` 83 and 95, with one helper and two filters merged into it.
+`35`'s prompt had asked for a readability cleanup while its checklist scores a layout-only
+change, so the prompt now says only the layout changes; on that prompt
+(`01a15fcb-839a-7063-afd8-92ba84525948`, an earlier wording of the same limit) it scored 85 and
+100. `34`'s identity-key item accepts a key derived inside the key mapper, since the item measures
+that no identity lambda remains; its baseline rose with that, and it stays reference, bimodal
+unaided across the five hosted runs. The other twelve reference scenarios were last run on the
+1.2.4 text, before step 5 changed.

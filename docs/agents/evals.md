@@ -275,8 +275,8 @@ Update this section whenever active eval membership or scoring changes.
   correctly unaided.
 - Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
   issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `57` (room
-  bookings, bimodal unaided). On the 1.2.4 reference run `34` and `35` still lost points for
-  helpers the prompt forbade; the other thirteen scored 100 with the skill. `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
+  bookings, bimodal unaided). `34` and `35` reached 100 with the skill after the limit-first rule
+  and `35`'s layout-only prompt; the other twelve were last run on the 1.2.4 text. `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
   to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
 - Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
   scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3
