@@ -290,8 +290,9 @@ Update this section whenever active eval membership or scoring changes.
   explanation the task asked for; the skill text change that followed targets that, and those
   scenarios are rerun targeted before the next release.
 - Hosted evidence for `31` and `43`, 2026-10-20 and 2026-10-21, default solver, both variants:
-  30 to 100 and 45 to 100 on the 1.2.4 publish run, and `56` 35 to 100 on the 1.2.4 reference run;
-  the run IDs are tabled in `evals/NUMBERING.md`. The runs
+  the 1.2.5 publish run scored 295 with the skill against 110 without (`43` at 95 for one
+  forbidden word in a comment, 100 on its isolated rerun); the run IDs are tabled in
+  `evals/NUMBERING.md`. The runs
   are tabled in `evals/NUMBERING.md`, which also records the run that confirms the three together.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
