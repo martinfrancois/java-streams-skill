@@ -99,7 +99,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-for arg in "${extra_args[@]}"; do
+for arg in ${extra_args[@]+"${extra_args[@]}"}; do
   case "$arg" in
     --variant|--variant=*|--skip-baseline|--skip-baseline=*)
       echo "Do not pass --variant or --skip-baseline; scripts/run_eval_suite.sh chooses variants by suite." >&2
@@ -155,7 +155,7 @@ if [[ "$suite" == "main" && "${#scenarios[@]}" -eq 0 ]]; then
 
   (
     cd "$repo_root"
-    tessl eval run "${variant_args[@]}" "${skill_args[@]}" "${freshness_args[@]}" ${extra_args[@]+"${extra_args[@]}"} .
+    tessl eval run ${variant_args[@]+"${variant_args[@]}"} "${skill_args[@]}" "${freshness_args[@]}" ${extra_args[@]+"${extra_args[@]}"} .
   )
   exit 0
 fi
@@ -227,5 +227,5 @@ echo "Eval mode: $variant_label"
 
 (
   cd "$repo_root"
-  tessl eval run "${variant_args[@]}" "${skill_args[@]}" "${freshness_args[@]}" ${extra_args[@]+"${extra_args[@]}"} .
+  tessl eval run ${variant_args[@]+"${variant_args[@]}"} "${skill_args[@]}" "${freshness_args[@]}" ${extra_args[@]+"${extra_args[@]}"} .
 )

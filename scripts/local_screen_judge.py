@@ -43,7 +43,10 @@ for path in sorted(work.rglob("*")):
 artifacts = "\n\n".join(files) or "(no files written)"
 # Tessl's judge grades only the files the agent wrote; it never sees the final message. Match
 # that by default, and include the message only when LOCAL_SCREEN_JUDGE_MESSAGE=1.
-final_message = str(solver.get("result", "")) if os.environ.get("LOCAL_SCREEN_JUDGE_MESSAGE") == "1" else "(not shown to the judge; grade the files)"
+if os.environ.get("LOCAL_SCREEN_JUDGE_MESSAGE") == "1":
+    final_message = str(solver.get("result", ""))
+else:
+    final_message = "(not shown to the judge; grade the files)"
 if secret:
     final_message = final_message.replace(secret, "[redacted]")
 checklist = json.dumps(criteria["checklist"], indent=2)
