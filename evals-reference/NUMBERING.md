@@ -176,7 +176,7 @@ rules but before the rule that writes a requested explanation into the file:
 | `49-char-predicate-contracts` | 92 | 85 | same |
 | `50-identity-string-reduction` | 42 | 80 | same |
 | `51-sort-after-collect` | 95 | 94 | same |
-| `57-room-booking-cleanup` | 42 | 92 | same (now main) |
+| `57-room-booking-cleanup` | 42 | 92 | same; later 46 / 100, 51 / 98, and 100 / 98 on the final text, so it stays here |
 
 Tessl's judge grades the files the agent wrote and never sees its final message. Every "states"
 or "explains" item therefore needs the explanation in the file, which the skill text now says, and

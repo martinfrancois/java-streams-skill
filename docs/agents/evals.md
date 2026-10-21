@@ -256,13 +256,12 @@ benchmark claims, or scoring rules.
 
 Update this section whenever active eval membership or scoring changes.
 
-- Main eval set: 3 active scenarios, 300 total checklist points, no weight multipliers.
-- Natural activation subset: 3 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
+- Main eval set: 2 active scenarios, 200 total checklist points, no weight multipliers.
+- Natural activation subset: 2 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
   the result from one pipeline with lazy lines and `mapMulti` instead of filling a list from
   `forEach`), `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
-  predicate instead of a loop that throws), and `57-room-booking-cleanup` (Java 17 cleanup: one
-  collecting pipeline instead of a fill-then-freeze loop, and a lookup that must fail on
-  duplicates without `findFirst`; hosted baseline 42).
+  predicate instead of a loop that throws). `57-room-booking-cleanup` held a third slot for two
+  runs on 2026-10-21 and went back to reference when it solved unaided on the final text.
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
   in `evals-reference/` (`34`, `51`) and `evals-regression/` until an explicit scenario clears the floor.
@@ -273,9 +272,9 @@ Update this section whenever active eval membership or scoring changes.
   coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
-  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `56` (guest reviews,
-  bimodal unaided). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
+- Reference suite: 15 scenarios, 1500 total checklist points. `15`, `27`, `28` plus the
+  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, `56` (guest reviews,
+  bimodal unaided), and `57` (room bookings, bimodal unaided). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
   to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
 - Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
   scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3
@@ -289,8 +288,8 @@ Update this section whenever active eval membership or scoring changes.
   explanation the task asked for; the skill text change that followed targets that, and those
   scenarios are rerun targeted before the next release.
 - Hosted evidence for `31` and `43`, 2026-10-20 and 2026-10-21, default solver, both variants:
-  26 to 100 and 60 to 100, then 28 to 100 and 40 to 100; `57` scored 42 and 46 without the skill
-  and 100 with it on 2026-10-21. The runs
+  26 to 100 and 45 to 100 on the final text (run `01a15c29-0a0d-73fb-ad4e-7b2802b3331e`), about
+  2.8x. The runs
   are tabled in `evals/NUMBERING.md`, which also records the run that confirms the three together.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening

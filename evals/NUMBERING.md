@@ -36,8 +36,8 @@ screen agreed (`01` 100, `02` 94, `03` 97, `04` 100 without the skill), which is
 regression rule.
 
 Numbers `31` and `43` were promoted from `evals-reference/` on 2026-10-20 because they were the
-only screened scenarios whose baseline sat at least 30 points below the with-context ceiling;
-`57` joined on 2026-10-21 from its hosted run:
+only screened scenarios whose baseline sat at least 30 points below the with-context ceiling
+(`57` held the third slot for two runs on 2026-10-21):
 
 | Scenario | Runs | Without skill | What the solver does unaided |
 | --- | --- | --- | --- |
@@ -51,7 +51,7 @@ both-arms run (`01a15be9-9a93-7157-84cf-7393ea2023b6`, 2026-10-21) landed on the
 it misses the 30-point floor and moved to `evals-reference/`. `50-identity-string-reduction` was
 the first replacement (hosted baselines 45 and 42) but its skill arm still drops to 85 in one
 local run of two on the final text, on the explanation item, so it waits in reference. `57` took
-the slot, with a hosted baseline of 42 and a local skill arm of 100 and 99 on the final text.
+the slot for two runs, then solved unaided on the final text and went back to reference.
 
 ## Hosted runs
 
@@ -61,8 +61,13 @@ the slot, with a hosted baseline of 42 and a local skill arm of 100 and 99 on th
 | 2026-10-21 | `01a15be9-9a93-7157-84cf-7393ea2023b6` | 26 / 100 | 60 / 100 | 100 / 100 | PR #132, before the file-explanation rule |
 | 2026-10-21 | `01a15c15-6f3e-7661-abcf-e2d03b80bef8` (`57` in place of `56`) | 28 / 100 | 40 / 100 | `57`: 46 / 100 | PR #132 text at commit `c9064c6`, before the second review round's skill fixes |
 | 2026-10-21 | `01a15c22-abfe-75f7-b8b8-12aa20d18c0a` | 35 / 100 | 45 / 100 | `57`: 51 / 98 (the comment never said request order stays) | text at `c96a02a`, before the third round's wording fixes |
+| 2026-10-21 | `01a15c29-0a0d-73fb-ad4e-7b2802b3331e` | 26 / 100 | 45 / 100 | `57`: 100 / 98 | final text (`afc713c`) |
 
-Cells are baseline / with the skill. The run on the final text is added when it exists.
+Cells are baseline / with the skill. On the final text `57` solved unaided and still lost the
+same two points with the skill, so it moved to `evals-reference/` and the main suite is `31` and
+`43` again: 200 with the skill against 71 without on the final text, about 2.8x. The third slot
+stays open until a scenario fails unaided on Tessl and scores 100 with the skill there.
+
 
 All three are natural. The suite used to require one explicit scenario as well, and the screen shows why
 none qualifies under this solver: naming `$java-streams` in the prompt primes it to write streams
@@ -71,7 +76,7 @@ unaided. Explicit variants of the failing natural scenarios, four runs each, sco
 82 (28 to 100). None clears the 30-point floor with a stable mean, so the main suite stays natural
 and the validator now asks for explicit coverage across `evals/` plus `evals-reference/` instead.
 
-Main is three scenarios, 300 checklist points. On 2026-10-20 the local skill arm scored `31`
+Main is two scenarios, 200 checklist points. On 2026-10-20 the local skill arm scored `31`
 100 and `43` 97 (three points lost for a final message that mentioned an internal scan label,
 which the skill text forbids); the hosted runs below replaced that prediction.
 
