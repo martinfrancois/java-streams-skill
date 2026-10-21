@@ -11,6 +11,9 @@ If the baseline is unclear, prefer Java 8-compatible stream code or state the as
 | API or feature | Minimum Java | Notes |
 | --- | ---: | --- |
 | `Collection.stream()` / `Stream` | 8 | Sequential stream operation chain. |
+| `Collectors.toUnmodifiableSet()` / `toUnmodifiableList()` | 10 | Unmodifiable results; on Java 8 and 9 wrap with `Collections.unmodifiableSet`. |
+| `String.lines()` | 11 | Lazy line stream for `\n` and `\r\n` only; `split("\\R")` or `Pattern.splitAsStream` for other terminators. |
+| `switch` expression | 14 | For the zero, one, more branch after a bounded lookup; use `if` chains before Java 14. |
 | `parallelStream()` / `.parallel()` | 8 | Uses common fork-join pool; not async and not a default optimization. |
 | `filter`, `map`, `flatMap`, `peek` | 8 | `peek` is for diagnostics; do not rely on it for required side effects. |
 | `findFirst`, `findAny` | 8 | `findFirst` preserves encounter-order semantics; `findAny` is for equivalent matches. |
