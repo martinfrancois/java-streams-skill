@@ -4,7 +4,7 @@
     "task_type": "cleanup",
     "evidence_type": "ordinary_lift",
     "issue": "https://github.com/martinfrancois/java-streams-skill/issues/45",
-    "reference_selection": "Shows whether a readability cleanup wraps multi-operation stream chains one operation per line with .stream() on the source line while leaving a one-operation chain on one line."
+    "reference_selection": "Shows whether a layout-only cleanup wraps multi-operation stream chains one operation per line with .stream() on the source line while leaving a one-operation chain on one line."
   },
   "categories": {
     "Creates revised BranchLoanSummary.java": "safety",

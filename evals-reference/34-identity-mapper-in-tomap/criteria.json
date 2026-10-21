@@ -15,7 +15,7 @@
     {
       "name": "Names identity key mappers",
       "max_score": 35,
-      "description": "Every key mapper that returns its input unchanged uses Function.identity(): the berth label key in berthCodesByLabel and the flag key in the callsPerFlag collector, for example toMap(Function.identity(), flag -> 1, Integer::sum, TreeMap::new) or groupingBy(Function.identity(), TreeMap::new, summingInt(flag -> 1)). Deduct fully if either key mapper is still written as x -> x, or if a custom identity helper replaces java.util.function.Function.identity()."
+      "description": "No key mapper that returns its input unchanged is written as a lambda: the berth label key in berthCodesByLabel uses Function.identity(), and the flag key in callsPerFlag either uses Function.identity() after a map step that derives the flag or derives the flag inside the key mapper as a one-expression lambda. Score 0 if a label -> label or flag -> flag lambda remains, or if a new helper exists only to return its argument."
     },
     {
       "name": "Names identity value mappers",

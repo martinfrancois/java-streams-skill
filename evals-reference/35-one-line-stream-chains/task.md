@@ -3,8 +3,8 @@
 Create `BranchLoanSummary.java` with the revised class. Assume Java 17.
 
 The library's lending service builds its nightly branch report from this class. The logic is
-correct and has tests, but reviewers keep saying the methods are hard to read in a diff. Clean the
-class up for readability.
+correct and has tests, but reviewers keep saying the methods are hard to read in a diff. Change
+only how the code is laid out; the logic stays as it is.
 
 ```java
 import java.util.Comparator;
