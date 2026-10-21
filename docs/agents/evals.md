@@ -260,8 +260,9 @@ Update this section whenever active eval membership or scoring changes.
 - Natural activation subset: 3 scenarios. `31-line-to-record-extraction` (Java 21 cleanup: build
   the result from one pipeline with lazy lines and `mapMulti` instead of filling a list from
   `forEach`), `43-reject-if-any-validator` (Java 17 cleanup: one `anyMatch` with a named
-  predicate instead of a loop that throws), and `56-guest-review-complaints` (Java 21 cleanup in
-  another domain with the same failure shape as `31`, added after the 1.2.3 release).
+  predicate instead of a loop that throws), and `50-identity-string-reduction` (Java 17 cleanup:
+  `Collectors.joining` instead of a string reduction with an empty-start branch, promoted after
+  two hosted baselines under 50).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
   in `evals-reference/` (`09`, `33`, `34`, `37`, `51`) until an explicit scenario clears the floor.
@@ -273,8 +274,8 @@ Update this section whenever active eval membership or scoring changes.
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
 - Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
-  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `57` (room
-  bookings, added after the 1.2.3 release). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
+  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `51`, `56` (guest reviews,
+  bimodal unaided), and `57` (room bookings). `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
   to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
 - Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
   scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3
@@ -288,7 +289,7 @@ Update this section whenever active eval membership or scoring changes.
   scenarios are rerun targeted before the next release.
 - Hosted evidence for the current main suite, 2026-10-20, default solver, both variants: 200 with
   context against 86 without (`31` 26 to 100, `43` 60 to 100), about 2.3x. The run ID is in
-  `evals/NUMBERING.md`. `56` joins the suite with local evidence only until its hosted run.
+  `evals/NUMBERING.md`; the suite's hosted runs are tabled there.
 - Scenario movement notes in `evals/NUMBERING.md`, `evals-reference/NUMBERING.md`, and
   `evals-regression/NUMBERING.md` preserve the classification rationale, with the local screening
   numbers that justified each move.

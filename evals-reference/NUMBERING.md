@@ -160,3 +160,24 @@ matches. Six of the seven with-skill misses are the same shape: the task asks fo
 after the code and the solver returned code only, so the skill text now says that a requested
 explanation belongs in the final message and that a prompt which limits the change (layout only,
 no new helpers) keeps every operation as it is.
+
+## Targeted hosted run on the PR #132 text (2026-10-21)
+
+Both arms, run `01a15be9-b008-7663-ae35-46b15b2aff38`, on the skill text with the answer-shape
+rules but before the rule that writes a requested explanation into the file:
+
+| Scenario | Baseline | With skill | What the skill arm lost |
+| --- | --- | --- | --- |
+| `34-identity-mapper-in-tomap` | 82 | 94 | two private helpers beyond the stated scope; the flag key folded into a method reference |
+| `35-one-line-stream-chains` | 72 | 98 | `Predicate.not` with a new import and two locals in a layout-only task |
+| `44-single-dedup-boundary` | 75 | 100 | |
+| `48-conditional-delimiter-reduction` | 85 | 85 | explanation written in the chat, not in a file |
+| `49-char-predicate-contracts` | 92 | 85 | same |
+| `50-identity-string-reduction` | 42 | 80 | same (now main) |
+| `51-sort-after-collect` | 95 | 94 | same |
+| `57-room-booking-cleanup` | 42 | 92 | same |
+
+Tessl's judge grades the files the agent wrote and never sees its final message. Every "states"
+or "explains" item therefore needs the explanation in the file, which the skill text now says, and
+the local judge grades the files only as well. `56-guest-review-complaints` arrived here from
+`evals/` after its hosted baseline scored 100 (see `evals/NUMBERING.md`).

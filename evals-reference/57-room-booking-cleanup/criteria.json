@@ -2,13 +2,45 @@
   "context": "The skill should turn a fill-then-freeze loop into one pipeline that collects an unmodifiable list and keep the fail-on-ambiguity lookup free of findFirst.",
   "type": "weighted_checklist",
   "checklist": [
-    {"name": "Creates coherent Java 17 artifact", "max_score": 5, "description": "Returns complete Java 17-compatible RoomBooker code with the three records and both behaviors intact."},
-    {"name": "Preserves behavior", "max_score": 10, "description": "Unknown room names are skipped, an ambiguous name throws IllegalStateException with the same message, capacity is compared the same way, the request order is kept, and the returned list cannot be modified."},
-    {"name": "Collects the confirmed list in one pipeline", "max_score": 25, "description": "confirmed is one stream pipeline over the requests whose terminal collects the result (toList or an unmodifiable collector); no list is allocated first and filled from a loop or forEach."},
-    {"name": "No freeze after fill", "max_score": 15, "description": "Does not keep Collections.unmodifiableList or List.copyOf around a list that a loop or forEach filled; the pipeline's terminal produces the unmodifiable list."},
-    {"name": "Ambiguity lookup without findFirst", "max_score": 20, "description": "The room lookup detects more than one match with a bounded stream (filter plus limit(2) collected, then a branch on the size) or an equally direct shape, and uses no findFirst or findAny for a lookup that must fail on duplicates."},
-    {"name": "Named steps instead of block lambdas", "max_score": 10, "description": "Multi-statement logic lives in named helpers or method references; no lambda in the pipeline contains more than one expression."},
-    {"name": "Explains the changes", "max_score": 10, "description": "The final message says why each change is clearer and which behavior it keeps (skipping, the ambiguity error, order, immutability)."},
-    {"name": "Keeps the change focused", "max_score": 5, "description": "Adds no new public types, caching, overloads, or behavior beyond the cleanup."}
+    {
+      "name": "Creates coherent Java 17 artifact",
+      "max_score": 5,
+      "description": "Returns complete Java 17-compatible RoomBooker code with the three records and both behaviors intact."
+    },
+    {
+      "name": "Preserves behavior",
+      "max_score": 10,
+      "description": "Unknown room names are skipped, an ambiguous name throws IllegalStateException with the same message, capacity is compared the same way, the request order is kept, and the returned list cannot be modified."
+    },
+    {
+      "name": "Collects the confirmed list in one pipeline",
+      "max_score": 25,
+      "description": "confirmed is one stream pipeline over the requests whose terminal collects the result (toList or an unmodifiable collector); no list is allocated first and filled from a loop or forEach."
+    },
+    {
+      "name": "No freeze after fill",
+      "max_score": 15,
+      "description": "Does not keep Collections.unmodifiableList or List.copyOf around a list that a loop or forEach filled; the pipeline's terminal produces the unmodifiable list."
+    },
+    {
+      "name": "Ambiguity lookup without findFirst",
+      "max_score": 20,
+      "description": "The room lookup detects more than one match with a bounded stream (filter plus limit(2) collected, then a branch on the size) or an equally direct shape, and uses no findFirst or findAny for a lookup that must fail on duplicates."
+    },
+    {
+      "name": "Named steps instead of block lambdas",
+      "max_score": 10,
+      "description": "Multi-statement logic lives in named helpers or method references; no lambda in the pipeline contains more than one expression."
+    },
+    {
+      "name": "Explains the changes",
+      "max_score": 10,
+      "description": "A comment in the file (or prose after the code) says why each change is clearer and which behavior it keeps: skipping unknown rooms, the ambiguity error, request order, and the unmodifiable result."
+    },
+    {
+      "name": "Keeps the change focused",
+      "max_score": 5,
+      "description": "Adds no new public types, caching, overloads, or behavior beyond the cleanup."
+    }
   ]
 }
