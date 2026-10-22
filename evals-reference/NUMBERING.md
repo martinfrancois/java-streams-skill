@@ -218,3 +218,34 @@ that no identity lambda remains; its baseline rose with that, and it stays refer
 unaided across the hosted runs. On the final branch text (`01a15fd3-4833-7224-b54b-108bef5ffe81`,
 both arms) `34` scored 100 and 100, `35` 85 and 100. The other twelve reference scenarios were
 last run on the 1.2.4 text, before step 5 changed.
+
+## Hosted run against 1.2.6, cut off (2026-10-21)
+
+Both arms, run `01a1604b-2bd0-72ea-8ba4-9b192e3ddab3` ended as failed when the organization's Tessl credits ran out (the account switched to
+`blocked: true` mid-run). The cells that finished, baseline and with the skill, every with-skill
+cell with the skill activated:
+
+| Scenario | Baseline | With skill |
+| --- | --- | --- |
+| `15` | 73 | 100 |
+| `27` | not run | 100 |
+| `28` | 67 | 100 |
+| `30` | 75 | not run |
+| `34` | not run | 100 |
+| `35` | 85 | 100 |
+| `38` | 80 | 100 |
+| `42` | not run | 100 |
+| `44` | 75 | 90, no comment naming where duplicates are removed |
+| `48` | 100 | 100 |
+| `49` | 85 | 100 |
+| `50` | 60 | 100 |
+| `51` | 100 | not run |
+| `57` | 51 | 98, the comment did not name request order |
+
+`48` scored 100 unaided here and 85 on two earlier runs; it stays reference.
+
+`44` lost the same 10 points with the skill on the cut-off 1.2.6 run and in three local runs of
+three: its checklist asks for a comment naming where duplicates are removed, but its prompt never
+asked for one, and Tessl's judge reads only the files. The prompt now asks for that comment.
+`41` (regression) scored 99 (96 to 100) in three local runs with the skill, so its hosted 65 was a
+single slip; its isolated hosted rerun waits for the credits.
