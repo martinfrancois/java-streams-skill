@@ -95,3 +95,13 @@ With context only, run `01a15e1e-9150-7008-8eeb-2e3a8625e5ec`: thirty-five of th
 scored 100, including `39` and `47`, which had lost points on 1.2.3. `18-priority-findany-review`
 and `23-collector-order-scan` scored 99 for a review the judge called a little long; their isolated
 rerun is recorded below.
+
+## Hosted run against 1.2.6, cut off (2026-10-21)
+
+With context, run `01a1604b-699b-701c-bfb8-c75313a61d67`, ended as failed when the organization's
+Tessl credits ran out. Thirty-two of the thirty-seven scenarios finished, every one with the skill
+activated. Twenty-eight scored 100. `22` and `40` scored 99 and `54` 299 of 300, each for a point
+on focus or length. `41-equivalent-match-lookup` scored 65: it kept `findAny` for one lookup but
+rewrote `dockByCode` as `filter(...).limit(2).toList()` with indexed access, the bounded lookup
+the skill's goal table shows for lookups that must fail on duplicates. Here duplicates are
+equivalent, so `findAny` was right. `14`, `20`, `32`, `52`, and `53` did not run.
