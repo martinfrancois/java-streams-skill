@@ -40,3 +40,4 @@ Rules:
   and its display name.
 - The catalog's `formats` list must be unmodifiable.
 - Do not mutate `entries`, change the three records, or add dependencies or public types.
+- Say in a short code comment where duplicate formats are handled.
