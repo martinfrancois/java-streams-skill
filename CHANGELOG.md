@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.6...v1.2.7) (2026-10-24)
+
+
+### Bug Fixes
+
+* **evals:** ask 44's prompt for the comment its checklist scores ([216fc5c](https://github.com/martinfrancois/java-streams-skill/commit/216fc5cead0b7074c96655950ef6f6c726f64aee))
+
 ## [1.2.6](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.5...v1.2.6) (2026-10-21)
 
 
