@@ -10,8 +10,8 @@ install_commitlint() {
   printf '{"private":true}\n' > "$commitlint_home/package.json"
   cp commitlint.config.cjs "$commitlint_home/commitlint.config.cjs"
   pnpm --dir "$commitlint_home" add --silent --ignore-scripts \
-    @commitlint/cli@21.2.3 \
-    @commitlint/config-conventional@21.2.3
+    @commitlint/cli@21.2.4 \
+    @commitlint/config-conventional@21.2.4
   COMMITLINT_BIN="$commitlint_home/node_modules/.bin/commitlint"
   COMMITLINT_CONFIG="$commitlint_home/commitlint.config.cjs"
   export COMMITLINT_BIN COMMITLINT_CONFIG
