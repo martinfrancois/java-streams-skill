@@ -2,6 +2,11 @@
 
 Thanks for helping improve the Java Streams Skill.
 
+**Coffee on me.** If you've had a pull request merged here and we meet in person, at a conference or
+anywhere else, tell me your GitHub handle and I'll buy you a coffee or a drink. It's one per person,
+however many pull requests you've made. It's a thank-you, not payment: the project doesn't pay for
+contributions or offer bounties.
+
 This project helps AI coding agents write, review, and clean up Java Stream and Collector code
 without common stream antipatterns. You don't need maintainer access or a Tessl workspace to make
 most useful contributions.
