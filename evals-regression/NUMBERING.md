@@ -105,3 +105,17 @@ on focus or length. `41-equivalent-match-lookup` scored 65: it kept `findAny` fo
 rewrote `dockByCode` as `filter(...).limit(2).toList()` with indexed access, the bounded lookup
 the skill's goal table shows for lookups that must fail on duplicates. Here duplicates are
 equivalent, so `findAny` was right. `14`, `20`, `32`, `52`, and `53` did not run.
+
+## Hosted run against 1.2.6, the rest (2026-11-01)
+
+With context, run `01a198fc-2816-72f0-a778-f556ea5db2a1`, the five scenarios the cut-off run never
+reached (`14`, `20`, `32`, `52`, `53`) and an isolated rerun of `41`. All six scored 100 with the
+skill activated, so `41`'s 65 on the cut-off run was a single slip, as its three local runs had
+suggested.
+
+`51-sort-after-collect` moved here from `evals-reference/` as `solved_regression` after run
+`01a1990c-22c8-716a-a705-6f4efaae51b1` scored it 100 in both arms on its revised prompt and
+checklist (the reason is in `evals-reference/NUMBERING.md`).
+
+Every regression scenario now has a with-context result on 1.2.6: thirty-five of the thirty-eight
+at 100, `22` and `40` at 99 and `54` at 299 of 300, each for one point on focus or length.

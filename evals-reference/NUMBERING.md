@@ -248,4 +248,32 @@ cell with the skill activated:
 three: its checklist asks for a comment naming where duplicates are removed, but its prompt never
 asked for one, and Tessl's judge reads only the files. The prompt now asks for that comment.
 `41` (regression) scored 99 (96 to 100) in three local runs with the skill, so its hosted 65 was a
-single slip; its isolated hosted rerun waits for the credits.
+single slip; its isolated hosted rerun on 2026-11-01 scored 100 (see `evals-regression/NUMBERING.md`).
+
+## Hosted runs against 1.2.6, the rest (2026-11-01)
+
+Both arms, run `01a198fb-fc37-76e7-a5b6-dcac48570dc8`, the scenarios the cut-off run left without a
+with-skill cell (`30`, `51`) and `44` on its new prompt, every with-skill cell with the skill
+activated:
+
+| Scenario | Baseline | With skill |
+| --- | --- | --- |
+| `30` | 75 | 100 |
+| `44` | 20 | 100 |
+| `51` | 90 | 96 |
+
+`30` and `44` stay here. `51` lost points on its explanation item in every hosted run (90 on 1.2.3,
+94 on the PR #132 text, 95 on 1.2.4, 96 here) and the baseline lost the same item. Its prompt asked
+for a summary after the code, which the solver writes in the chat, where Tessl's judge never looks,
+and its checklist wanted the summary to say the sort moved so the result is not mutated after
+collection, a reason the prompt never asked for. Asking for the summary in a code comment alone
+left that item at 6 or 7 of 10 in three local runs per arm, and asking also why the new form is
+clearer did not change it. The prompt now asks for the summary in a comment in the file, and the
+item scores what the prompt asks: what changed and why the results are the same, including stable
+ties. Local screen: 99 (98 to 100) with the skill, 98 (97 to 99) unaided, three runs each. Hosted
+rerun `01a1990c-22c8-716a-a705-6f4efaae51b1`, both arms, scored 100 and 100, so `51` moved to
+`evals-regression/` as `solved_regression`.
+
+Every reference scenario now has a with-skill result on 1.2.6 at 100 except `57` (98, its comment
+did not name request order), which scored 100 with the skill on 1.2.4 and 98 or 100 on earlier
+runs.

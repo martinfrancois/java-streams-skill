@@ -53,4 +53,5 @@ Behavior to keep:
 - A null task or a task with a null service due date must still fail with a
   NullPointerException.
 
-After the code, summarize in a few sentences what you changed and why the results are the same.
+Summarize in a short comment in `DepotMaintenancePlanner.java` what you changed and why the results
+are the same.
