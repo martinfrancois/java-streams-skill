@@ -265,7 +265,7 @@ Update this section whenever active eval membership or scoring changes.
   because its regex splitting shares identifiers with a runtime rule).
 - Explicit invocation subset: none. Every explicit candidate lost its lift in the local screen
   because the skill's name in the prompt primes the solver to use streams; explicit coverage lives
-  in `evals-reference/` (`34`, `51`) and `evals-regression/` until an explicit scenario clears the floor.
+  in `evals-reference/` (`34`) and `evals-regression/` until an explicit scenario clears the floor.
 - `31` and `43` were chosen on 2026-10-20 from a local baseline screen against DeepSeek V4.1
   Flash, the model behind the current Tessl default solver. They are the only screened scenarios
   whose baseline sits at least 30 points under 100 and whose task shares no identifiers with the
@@ -273,14 +273,14 @@ Update this section whenever active eval membership or scoring changes.
   coverage). The former main scenarios (bounded
   `Gatherers.mapConcurrent` and `teeing`) moved to regression because that solver writes them
   correctly unaided.
-- Reference suite: 14 scenarios, 1400 total checklist points. `15`, `27`, `28` plus the
-  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, `51`, and `57` (room
-  bookings, bimodal unaided). `34` and `35` reached 100 with the skill after the limit-first rule
-  and `35`'s layout-only prompt; the other twelve were last run on the 1.2.4 text. `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved
-  to regression after the hosted reference run against 1.2.3 scored each 100 in both arms.
-- Regression suite: 37 scenarios, 4580 total checklist points, including the four former main
-  scenarios as `52` to `55` and the seven scenarios the hosted reference run against 1.2.3
-  solved in both arms. Every scenario that was already there before 2026-10-20 was rescreened
+- Reference suite: 13 scenarios, 1300 total checklist points. `15`, `27`, `28` plus the
+  issue-derived `30`, `34`, `35`, `38`, `42`, `44`, `48`, `49`, `50`, and `57` (room bookings,
+  bimodal unaided). Every one has a with-skill result on 1.2.6, all 100 except `57` at 98.
+  `04`, `08`, `09`, `13`, `33`, `37`, and `45` moved to regression after the hosted reference run
+  against 1.2.3 scored each 100 in both arms, and `51` after its 1.2.6 rerun did.
+- Regression suite: 38 scenarios, 4680 total checklist points, including the four former main
+  scenarios as `52` to `55`, the seven scenarios the hosted reference run against 1.2.3
+  solved in both arms, and `51`. Every scenario that was already there before 2026-10-20 was rescreened
   locally and stays only because its baseline was 98 to 100 in every run or because it is
   skill-context-dependent.
 - Hosted runs against 1.2.3 on 2026-10-20 (both arms for reference, with context for

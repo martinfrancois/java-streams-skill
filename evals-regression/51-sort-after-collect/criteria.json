@@ -25,7 +25,7 @@
     {
       "name": "Explains without speed promises",
       "max_score": 10,
-      "description": "The summary says the sort moved into the pipeline so the method builds its result without mutating the collected list afterwards, and notes that sorted() keeps ties in encounter order for this sequential ordered stream. Deduct fully if it claims that sorted() is guaranteed to be faster, calls the comparator fewer times, or avoids buffering all elements."
+      "description": "The summary comment says what changed (the loops and the sort of the collected list became one stream pipeline that filters, sorts, and collects) and why the results are the same, including that sorted() keeps ties in encounter order for this ordered stream. Deduct fully if it claims that sorted() is guaranteed to be faster, calls the comparator fewer times, or avoids buffering all elements."
     },
     {
       "name": "Keeps the refactor focused",
