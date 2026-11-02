@@ -6,5 +6,4 @@ python3 scripts/validate_eval_criteria.py evals evals-reference evals-regression
 python3 -m py_compile scripts/*.py
 bash -n scripts/*.sh
 tessl plugin lint .
-tessl review run --threshold 100 --force skills/java-streams/SKILL.md
 tessl plugin publish --dry-run .

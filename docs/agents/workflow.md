@@ -136,9 +136,11 @@ release-readiness.
   tessl review run --threshold 100 skills/java-streams/SKILL.md
   ```
 
-  Tessl caches a review per skill text, and the judge varies by a few points from run to run, so
-  the gates in CI and in the publish script pass `--force`: a text that once scored 97 would
-  otherwise return 97 on every rerun. Use `--force` locally too when a score has to be fresh.
+  No CI workflow runs this review, publish included. Each run costs 10 Tessl credits, and the
+  judge has scored unchanged text anywhere from 94 to 100, so a CI gate would mean paying for
+  re-rolls. Run it by hand whenever the skill text changes. Tessl caches a review per skill text,
+  so a text that once scored 97 returns 97 on every rerun; pass `--force` when a score has to be
+  fresh.
 
 - Pull request titles and commits must use Conventional Commits. Release Please uses them to update
   `CHANGELOG.md`, `.tessl-plugin/plugin.json`, and GitHub releases.
@@ -162,7 +164,7 @@ release-readiness.
   `.tessl-plugin/plugin.json` as `v<version>`.
   Release Please PRs created or updated with `GITHUB_TOKEN` may not trigger ordinary `pull_request`
   workflows, so `.github/workflows/release-please.yml` also posts the required release-PR
-  `Commitlint`, `Validate skill and plugin`, and `Tessl skill review` statuses. Prefer the Release Please `pr` output for
+  `Commitlint` and `Validate skill and plugin` statuses. Prefer the Release Please `pr` output for
   those statuses, and fall back to the existing pending release PR only when Release Please emits no
   PR output because the PR was unchanged.
 - When the maintainer asks for a release, keep Release Please as the source of truth. Do not edit

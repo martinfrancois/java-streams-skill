@@ -51,7 +51,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^\\.github/workflows/(?:ci|commitlint|publish-tessl|release-please|skill-review)\\.yml$/"
+        "/^\\.github/workflows/(?:ci|commitlint|publish-tessl|release-please)\\.yml$/"
       ],
       "matchStrings": [
         "version:\\s*[\"']?(?<currentValue>\\d+\\.\\d+\\.\\d+)[\"']?"
