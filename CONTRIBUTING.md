@@ -86,6 +86,9 @@ If you change the skill text or reference files, also run:
 tessl review run --threshold 100 skills/java-streams/SKILL.md
 ```
 
+CI doesn't run this review. Each run costs 10 Tessl credits, so it runs by hand when the skill
+text changes.
+
 If you have Tessl access, run the publish dry-run:
 
 ```bash
