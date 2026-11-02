@@ -16,8 +16,8 @@ wording.
 - The README may say agents that support skill auto-selection, such as Codex and Claude Code, can
   select the skill from context.
 - Install examples should use `martinfrancois/java-streams`.
-- Treat public docs as release-ready even while the GitHub repository is still private. Keep the
-  Tessl badge and published-install wording unless the maintainer explicitly asks to hide them.
+- Treat public docs as release-ready. Keep the Tessl badge and published-install wording unless the
+  maintainer explicitly asks to hide them.
 - Keep a table of contents after the intro and before `Getting Started`.
 - Avoid fixed benchmark claims unless they match the latest hosted eval run.
 - When discussing evals, distinguish main eval lift scenarios, reference/candidate scenarios, and
