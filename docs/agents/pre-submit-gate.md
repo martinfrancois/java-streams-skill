@@ -218,10 +218,10 @@ Common usage:
 
 ```bash
 scripts/pre_submit_gate.sh --plan-only
-scripts/pre_submit_gate.sh --focus main:02-delivery-appointments-mapconcurrent
+scripts/pre_submit_gate.sh --focus regression:53-delivery-appointments-mapconcurrent
 scripts/pre_submit_gate.sh --plan-only --run-broad
 scripts/pre_submit_gate.sh --run-broad --base-ref origin/main
-scripts/internal_pr_readiness.sh --targeted --focus reference:05-parallel-cpu-review
+scripts/internal_pr_readiness.sh --targeted --focus regression:05-parallel-cpu-review
 scripts/internal_pr_readiness.sh --full --base-ref origin/main --auto-continue
 ```
 

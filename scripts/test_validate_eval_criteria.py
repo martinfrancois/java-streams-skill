@@ -159,6 +159,18 @@ record Registration(String email, boolean optedIn, boolean waitlisted) {}
 """
 
 
+def write_risk_probes(root: Path, *entries: str) -> None:
+    probes = root / "docs" / "agents" / "eval-risk-probes.txt"
+    probes.parent.mkdir(parents=True, exist_ok=True)
+    probes.write_text("# Fixture risk probes.\n" + "".join(f"{entry}\n" for entry in entries), encoding="utf-8")
+
+
+def write_regression_shipment(root: Path) -> Path:
+    return write_scenario(
+        root, "evals-regression", "20-shipment-review", shipment_task(), evidence_type="solved_regression"
+    )
+
+
 class ValidateEvalCriteriaTests(unittest.TestCase):
     def run_validator(self, root: Path, *paths: Path) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
@@ -338,6 +350,57 @@ class ValidateEvalCriteriaTests(unittest.TestCase):
             )
             result = self.run_validator(root, scenario)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_risk_probe_in_its_suite_passes(self) -> None:
+        temp, root = self.with_repo()
+        with temp:
+            scenario = write_regression_shipment(root)
+            write_risk_probes(root, "regression:20-shipment-review  # trailing comment")
+            result = self.run_validator(root, scenario)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_risk_probe_after_suite_move_fails(self) -> None:
+        temp, root = self.with_repo()
+        with temp:
+            scenario = write_regression_shipment(root)
+            write_risk_probes(root, "reference:20-shipment-review")
+            result = self.run_validator(root, scenario)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "eval-risk-probes.txt:2: risk probe 'reference:20-shipment-review' has no scenario directory "
+            "evals-reference/20-shipment-review",
+            result.stderr,
+        )
+
+    def test_risk_probe_path_outside_its_suite_fails(self) -> None:
+        temp, root = self.with_repo()
+        with temp:
+            scenario = write_regression_shipment(root)
+            (root / "evals-reference").mkdir()
+            write_risk_probes(root, "reference:../evals-regression/20-shipment-review")
+            result = self.run_validator(root, scenario)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "risk probe 'reference:../evals-regression/20-shipment-review' has no scenario directory", result.stderr
+        )
+
+    def test_risk_probe_with_unknown_suite_fails(self) -> None:
+        temp, root = self.with_repo()
+        with temp:
+            scenario = write_regression_shipment(root)
+            write_risk_probes(root, "regressions:20-shipment-review")
+            result = self.run_validator(root, scenario)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("names unknown suite 'regressions'", result.stderr)
+
+    def test_risk_probe_without_suite_fails(self) -> None:
+        temp, root = self.with_repo()
+        with temp:
+            scenario = write_regression_shipment(root)
+            write_risk_probes(root, "20-shipment-review")
+            result = self.run_validator(root, scenario)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("risk probe '20-shipment-review' is not a suite:scenario entry", result.stderr)
 
 
 if __name__ == "__main__":

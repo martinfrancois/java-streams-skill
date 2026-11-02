@@ -13,7 +13,7 @@ Runs hosted Tessl evals with the repository's variant policy:
 
 Examples:
   scripts/run_eval_suite.sh main -- --label "main check"
-  scripts/run_eval_suite.sh reference 05-parallel-cpu-review -- --label "targeted reference"
+  scripts/run_eval_suite.sh reference 15-session-roster-indexes -- --label "targeted reference"
   scripts/run_eval_suite.sh regression -- --label "regression safety"
   scripts/run_eval_suite.sh main -- --agent claude:claude-sonnet-4-6 --label "representative model check"
 

@@ -19,7 +19,7 @@ This is an internal, non-plugin skill for maintainer workflow:
 
 Examples:
   scripts/internal_pr_readiness.sh --plan
-  scripts/internal_pr_readiness.sh --targeted --focus reference:05-...
+  scripts/internal_pr_readiness.sh --targeted --focus regression:05-...
   scripts/internal_pr_readiness.sh --full
 USAGE
 }

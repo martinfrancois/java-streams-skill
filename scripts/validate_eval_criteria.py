@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from eval_impact import SUITE_DIRS
+
 
 ANSWER_KEY_MARKERS = (
     "Eval Cases",
@@ -128,6 +130,7 @@ SCENARIO_REFERENCE_FILES = (
     Path("evals-regression/README.md"),
 )
 SCENARIO_REFERENCE_DIRS = (Path("docs"),)
+RISK_PROBE_FILE = Path("docs/agents/eval-risk-probes.txt")
 AGENT_DOC_FORBIDDEN_EXTERNAL_HISTORY_PATTERNS = (
     re.compile(r"\bissue\s+#?\d+\b", re.IGNORECASE),
     re.compile(r"\bpr\s+#?\d+\b", re.IGNORECASE),
@@ -673,6 +676,34 @@ def validate_agent_docs_self_contained() -> list[str]:
     return failures
 
 
+def validate_risk_probes() -> list[str]:
+    # scripts/pre_submit_gate.sh silently skips entries it cannot parse and hands the rest to
+    # run_eval_suite.sh, so a scenario moved to another suite would only fail mid-gate.
+    failures: list[str] = []
+    if not RISK_PROBE_FILE.exists():
+        return failures
+    lines = RISK_PROBE_FILE.read_text(encoding="utf-8").splitlines()
+    for line_number, line in enumerate(lines, start=1):
+        entry = line.split("#", 1)[0].strip()
+        if not entry:
+            continue
+        location = f"{RISK_PROBE_FILE}:{line_number}"
+        suite, separator, scenario = entry.partition(":")
+        if not separator or not suite or not scenario:
+            failures.append(f"{location}: risk probe {entry!r} is not a suite:scenario entry")
+        elif suite not in SUITE_DIRS:
+            failures.append(
+                f"{location}: risk probe {entry!r} names unknown suite {suite!r}; "
+                f"use one of {', '.join(SUITE_DIRS)}"
+            )
+        elif "/" in scenario or not (Path(SUITE_DIRS[suite]) / scenario).is_dir():
+            failures.append(
+                f"{location}: risk probe {entry!r} has no scenario directory "
+                f"{SUITE_DIRS[suite]}/{scenario}"
+            )
+    return failures
+
+
 def validate_numbering(root: Path) -> list[str]:
     failures: list[str] = []
     if not root.exists():
@@ -775,6 +806,7 @@ def main() -> int:
     failures.extend(validate_scenario_path_references())
     failures.extend(validate_runtime_references())
     failures.extend(validate_agent_docs_self_contained())
+    failures.extend(validate_risk_probes())
 
     if failures:
         for failure in failures:
