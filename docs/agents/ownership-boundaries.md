@@ -35,9 +35,10 @@ scripts/run_composed_eval.sh ../java-streams-skill main
 ```
 
 The main suite is required whenever either package changes runtime text; run `reference` and
-`regression` too when the change touches review wording or when budget allows. The companion
-repository owns the runner and runs the check before its releases; this repository runs it when
-its own runtime changes. Local validation alone doesn't satisfy this check.
+`regression` too when the change touches review wording. After other changes, run them too unless
+Tessl blocks hosted runs; going past the monthly credit allowance is no reason to skip them. The
+companion repository owns the runner and runs the check before its releases; this repository runs
+it when its own runtime changes. Local validation alone doesn't satisfy this check.
 
 ## References
 

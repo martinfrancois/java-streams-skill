@@ -6,6 +6,8 @@ Use this to run eval scenarios against the model behind Tessl's default solver o
 machine, for one to two cents a run, before spending Tessl credits. It covers setup, the commands,
 how to read the output, and how to tune the skill against it. It does not replace hosted runs:
 benchmark claims, release-readiness claims, and the registry score still come from Tessl.
+It runs first only when the user chose it or once Tessl blocks hosted runs; the ask step is in
+[Local Baseline Screening](evals.md#local-baseline-screening).
 
 ## Why This Works
 
@@ -132,6 +134,9 @@ and ranges. Do not present them as hosted evidence anywhere.
 5. When every main scenario scores 100 with the skill locally, run the main suite on Tessl with
    both variants (`scripts/run_eval_suite.sh main`) as the hosted confirmation, and follow
    [Evals](evals.md) for what the hosted result must show before a release.
+   The loop runs first only when the user chose a local screen or Tessl blocks hosted runs (see
+   [Local Baseline Screening](evals.md#local-baseline-screening)); while Tessl blocks them, this
+   hosted confirmation is still owed.
 
 ## References
 

@@ -210,9 +210,9 @@ run exists, the local screen at 98 to 100 in every run (the local judge takes a 
 focus items in otherwise correct runs). Keep clean low-delta but still diagnostic scenarios in
 `evals-reference/`.
 
-When adding a new scenario, screen it locally first (`scripts/local_screen.sh`, see
-`docs/agents/local-screening.md`), place it from that screen, and confirm the placement from an
-isolated hosted run when credits allow:
+When adding a new scenario, you can screen it locally first (`scripts/local_screen.sh`, see
+`docs/agents/local-screening.md`) and place it from that screen. Confirm the placement from an
+isolated hosted run:
 
 1. Put ordinary candidate scenarios in `evals-reference/`. Put skill-context-dependent scenarios
    that require exact skill-provided text, commands, procedures, checklists, headers, or bundled
