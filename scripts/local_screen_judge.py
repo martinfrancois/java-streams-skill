@@ -74,9 +74,11 @@ Inside "reasoning" use no double quotes; quote identifiers with backticks instea
 
 
 def ask_judge() -> list:
+    # The prompt goes on stdin: a large work directory can exceed
+    # the per-argument size limit of execve.
     out = subprocess.run(
-        ["claude", "-p", "--model", judge_model, "--output-format", "json", prompt],
-        capture_output=True, text=True, cwd=str(run_dir), check=False,
+        ["claude", "-p", "--model", judge_model, "--output-format", "json"],
+        input=prompt, capture_output=True, text=True, cwd=str(run_dir), check=False,
     )
     if out.returncode != 0:
         sys.exit(f"judge failed: {out.stderr[-500:]}")
