@@ -2,8 +2,8 @@
 
 ## Scope
 
-Use this when editing GitHub metadata, release readiness docs, package metadata, public docs, or repo
-topics.
+Use this when editing GitHub metadata, release readiness docs, package metadata, public docs, repo
+topics, or the CodeQL code scanning settings.
 
 ## Rules
 
@@ -30,6 +30,26 @@ topics.
   `skills/java-streams/references/`. Do not add a `skills` field or migrate to `tile.json` unless
   those pinned CLI checks or current official docs prove the active skill is not included,
   discoverable, or publishable.
+
+## CodeQL Code Scanning
+
+- CodeQL runs through GitHub's default setup, which lives in the repository settings, not in a
+  workflow file. It scans `actions` and `python` only.
+- JavaScript/TypeScript scanning is off. The only JavaScript file is `commitlint.config.cjs`, which
+  commitlint loads in the commitlint workflow and the skill never ships. On pull requests CodeQL
+  extracts only the changed files, so a pull request that changes YAML files but not that config
+  makes the JavaScript job log "Only found JavaScript or TypeScript files that were empty or
+  contained syntax errors."
+- Check the setting from a clone with
+  `gh api repos/{owner}/{repo}/code-scanning/default-setup -q .languages`.
+- When a JavaScript or TypeScript file other than CI-only config is added, such as a script or a
+  file the skill ships, turn the language on:
+
+  ```bash
+  gh api -X PATCH repos/{owner}/{repo}/code-scanning/default-setup \
+    -f state=configured -f 'languages[]=actions' -f 'languages[]=javascript-typescript' \
+    -f 'languages[]=python'
+  ```
 
 ## References
 
