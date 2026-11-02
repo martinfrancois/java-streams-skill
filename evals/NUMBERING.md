@@ -122,6 +122,34 @@ recommends main for both (deltas 74 and 40 points against the 30-point floor). T
 sits close to the local screen (26 against 30, 60 against 69), which is the second time the screen
 tracked Tessl.
 
+## Rewrite narration out of the file (2026-11-03)
+
+In the 1.2.7 publish run, `01a19cd7-d150-7224-9404-ac16bc31f2d8`, `56-guest-review-complaints`
+scored 99 with the skill: "Keeps the revision focused" gave 4 of 5 for a class-level Javadoc that
+walked through the rewrite, plus method-level Javadoc. The `56` task asks for no explanation.
+The commit `fix(skill): keep unrequested rewrite narration out of the file` names such a Javadoc as
+something the prompt did not ask for. Its first wording, which this local screen measured, put a
+requested explanation into the file "as a comment where the prompt asks for it"; the final wording
+is in "Hosted checks on the rewrite-narration rule" below.
+
+Local screen, skill arm (DeepSeek V4.1 Flash, Haiku judge, not hosted evidence). The last column
+counts runs whose Java files contain any `/** ... */` block; the local judge did not dock the one
+narrating Javadoc, so that column is the signal for `56`. `44`, `51`, and `57` ask for a comment,
+so they show whether a requested explanation survives.
+
+| Scenario | 1.2.7 text: runs, score | New text: runs, score | Runs with Javadoc, 1.2.7 / new text |
+| --- | --- | --- | --- |
+| `56-guest-review-complaints` | 12, 100 in all | 12, 100 (97 to 100) | 1 (nine lines narrating the rewrite) / 0 |
+| `31-line-to-record-extraction` | not rerun | 4, 100 in all | not rerun / 0 |
+| `43-reject-if-any-validator` | 4, 100 in all | 4, 100 in all | 0 / 0 |
+| `44-single-dedup-boundary` (reference) | 4, 100 in all | 4, 100 in all | 0 / 0 |
+| `51-sort-after-collect` (regression) | 4, 85 (46 to 99) | 4, 99 (98 to 100) | 0 / 0 |
+| `57-room-booking-cleanup` (reference) | 4, 97 (94 to 99) | 4, 97 (96 to 97) | 0 / 0 |
+
+On both texts, `57` loses points on "Explains the changes" for comments that do not say request
+order is kept, and `51` on "Explains without speed promises" for a summary that skips a detail.
+The `46` for `51` on the 1.2.7 text kept `List.sort` after the collect.
+
 ## `56` rescored after 1.2.7 (2026-11-08)
 
 `56` lost one point with the skill in the 1.2.7 publish run, on "Keeps the revision focused": the
