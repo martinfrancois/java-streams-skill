@@ -11,10 +11,10 @@ topics, or the CodeQL code scanning settings.
 - Current preferred wording: "Help AI coding agents use Java Streams and Collectors well in new code,
   review, and cleanup without replacing one antipattern with another."
 - The GitHub repository is public.
-- For OSS-readiness work, `.tessl-plugin/plugin.json` should be public-ready with
-  `"private": false`; this does not publish the plugin by itself.
-- Do not run a real `tessl plugin publish` until the maintainer explicitly asks for that release
-  step.
+- The Tessl plugin is published and public; `.tessl-plugin/plugin.json` has `"private": false`.
+- Never run a real `tessl plugin publish` yourself. Releases publish through
+  `.github/workflows/publish-tessl.yml` when Release Please creates the tag. Publish dry-runs are
+  allowed.
 - Use the maximum useful number of relevant discoverability topics.
 - Before calling the repo OSS-ready, check for a license, no private/secret references, a
   user-focused README, contributor docs, passing lint, and benchmark claims that match current

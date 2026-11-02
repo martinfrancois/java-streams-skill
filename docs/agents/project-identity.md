@@ -11,8 +11,9 @@ Use this when naming the repository, skill, package, workspace, or public source
 - Tessl package name: `martinfrancois/java-streams`.
 - Tessl workspace: `martinfrancois`.
 - The GitHub repository is public.
-- The Tessl plugin manifest is public-ready with `"private": false`; keep it that way unless the
-  maintainer asks to return to private package metadata.
+- The Tessl plugin is published on the registry as public, from `.tessl-plugin/plugin.json` with
+  `"private": false`. Tessl calls making a plugin public irreversible, so keep `"private": false`
+  and never set it back to `true`.
 - The repository should remain open-source ready: MIT license, security policy, contributor
   docs, public-safe README, public-safe metadata, and no private transcript or secret references.
 - If `tessl project repair` cannot relink this checkout and the Tessl project needs to be
