@@ -53,7 +53,7 @@ Options:
   --reset-evidence      Clear the evidence cache before planning.
   --ignore-evidence     Do not skip scenarios already recorded as passing.
   --focus <scope:scenario>
-                        Add a manual focus scenario, e.g. main:02-delivery...
+                        Add a manual focus scenario, e.g. regression:53-delivery...
                         Useful when runtime text changed without scenario-scoped
                         eval edits.
   --auto-continue       Skip confirm prompts between hosted stages.
@@ -62,7 +62,7 @@ Options:
 Examples:
   scripts/pre_submit_gate.sh --base-ref origin/main --plan-only
   scripts/pre_submit_gate.sh --run-broad
-  scripts/pre_submit_gate.sh --focus main:02-delivery-appointments-mapconcurrent
+  scripts/pre_submit_gate.sh --focus regression:53-delivery-appointments-mapconcurrent
 USAGE
 }
 
