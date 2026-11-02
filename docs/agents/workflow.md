@@ -226,8 +226,8 @@ release-readiness.
   runtime-context commit, reuse those run IDs; otherwise run them before reporting the release as
   complete. The completion report must state the main release eval run plus the reference and
   regression run IDs, or link the GitHub issue that records why the remaining checks are blocked.
-- Keep the GitHub repository private until the maintainer explicitly asks to make it public. Still
-  keep docs, metadata, license, security policy, and contribution workflow open-source ready.
+- The GitHub repository is public. Keep docs, metadata, license, security policy, and contribution
+  workflow open-source ready.
 - Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real
   Tessl publish unless the maintainer explicitly asks for publication.
 - For maintainer-requested automation tasks where the user has asked for GitHub state, commit and
