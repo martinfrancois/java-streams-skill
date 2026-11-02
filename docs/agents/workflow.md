@@ -230,8 +230,10 @@ release-readiness.
   regression run IDs, or link the GitHub issue that records why the remaining checks are blocked.
 - The GitHub repository is public. Keep docs, metadata, license, security policy, and contribution
   workflow open-source ready.
-- Keep `.tessl-plugin/plugin.json` public-ready with `"private": false`, but do not run a real
-  Tessl publish unless the maintainer explicitly asks for publication.
+- The Tessl plugin is published and public; keep `"private": false` in
+  `.tessl-plugin/plugin.json`. Never run a real `tessl plugin publish` yourself; only
+  `.github/workflows/publish-tessl.yml` publishes, from a Release Please tag or a dispatch that
+  martinfrancois approved.
 - For maintainer-requested automation tasks where the user has asked for GitHub state, commit and
   push finished changes.
 
