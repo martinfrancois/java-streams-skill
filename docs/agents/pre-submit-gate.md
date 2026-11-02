@@ -52,8 +52,11 @@ run the same budget-aware sequence every time.
   session logs before explaining the cause. When a Codex tool call started the process, state that
   directly with the timestamp, command, and evidence path instead of softening it as merely
   unintentional.
-- If Tessl eval access is blocked (auth/rate-limit/service error), stop at that stage and record exact
-  blocked commands; do not claim release-readiness without completion evidence or a blocker note.
+- If Tessl eval access is blocked (auth/rate-limit/service error, `credits.blocked: true`, or a run
+  refused with "run out of credits"), stop at that stage and record exact blocked commands. Going
+  past the monthly credit allowance (`credits.overLimit: true`) is not a block. While blocked, the
+  local screen (`scripts/local_screen.sh`) is the fallback, but hosted confirmation is still owed,
+  so do not claim release-readiness without completion evidence or a blocker note.
 
 ## Cost-aware sequencing
 
@@ -122,7 +125,8 @@ Budget estimate for this repo (useful for planning):
   `reference` 6 times 2, and `regression` 19 times 1. Budget optimizations may remove duplicate or
   stale reruns, but must not remove required scenario coverage or required variants.
 - Before a reset-day run, calculate the remaining floor from current evidence and compare it with
-  available budget. If the remaining floor is small and targeted evidence is already clean, prefer
+  the daily rate-limit budget left; monthly credits don't count, because only a Tessl block stops
+  hosted runs. If the remaining floor is small and targeted evidence is already clean, prefer
   balanced batches to finish quickly instead of continuing with single-scenario broad probes.
 
 Postmortem rule:
