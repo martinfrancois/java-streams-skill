@@ -9,12 +9,13 @@ description: Review Java stream performance advice, especially slow stream mappi
 Keep behavior identical (encounter order, exceptions, nulls, side effects, mutability) and stay
 within the project's Java baseline.
 
-Write the requested file first, with the provided types where the prompt put them and nothing
-the prompt did not ask for; a requested explanation goes into that file as a comment and into the
-final message. A review (`review.md` when asked, also for rejections) gives the decision with one
-safe snippet. Explain each change by the intent it expresses, the behavior it preserves, and the
-cases the old code treated specially, such as a match terminal given no elements; never claim it
-is faster.
+Write the requested file first, with the provided types where the prompt put them and nothing the
+prompt did not ask for, such as a Javadoc that narrates the rewrite. A requested explanation goes
+into that file as a comment where the prompt asks for it, and into the final message; it says what
+changed and why, not the history of the rewrite. A review (`review.md` when asked, also for
+rejections) gives the decision with one safe snippet. Explain each change by the intent it
+expresses, the behavior it preserves, and the cases the old code treated specially, such as a match
+terminal given no elements; never claim it is faster.
 
 ## Reference Bundle
 
