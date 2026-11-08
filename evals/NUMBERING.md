@@ -68,6 +68,9 @@ the slot for two runs, then solved unaided on the final text and went back to re
 | 2026-10-21 | `01a15e1e-5465-766d-a35e-b3c43ba5a1bd` (reference run) | | | `56`: 35 / 100 | 1.2.4 |
 | 2026-10-21 | `01a15e43-919a-74cc-b164-4b531fbc73f3` (1.2.5 publish) | 30 / 100 | 45 / 95 | 35 / 100 | 1.2.5 |
 | 2026-10-21 | `01a15e4b-428e-7644-aa82-47abb9268bc1` (`43` isolated rerun) | | 45 / 100 | | 1.2.5 |
+| 2026-11-02 | `01a19cd7-d150-7224-9404-ac16bc31f2d8` (1.2.7 publish) | 30 / 100 | 45 / 100 | 35 / 99 | 1.2.7 |
+| 2026-11-08 | `01a1ba84-1c96-7452-91a3-3a4fa58746b9` (`56` rescore) | | | 25 / 100 | 1.2.7 |
+| 2026-11-08 | `01a1ba84-28cc-7744-b0e0-7655ec700c0d` (`56` rescore) | | | 35 / 100 | 1.2.7 |
 
 Cells are baseline / with the skill. On the final text `57` solved unaided and still lost the
 same two points with the skill, so it moved to `evals-reference/`. `56` came back as the third
@@ -118,3 +121,19 @@ Suite: 200 with the skill against 86 without, a lift of about 2.3x. `scripts/cla
 recommends main for both (deltas 74 and 40 points against the 30-point floor). The hosted baseline
 sits close to the local screen (26 against 30, 60 against 69), which is the second time the screen
 tracked Tessl.
+
+## `56` rescored after 1.2.7 (2026-11-08)
+
+`56` lost one point with the skill in the 1.2.7 publish run, on "Keeps the revision focused": the
+solver added a class-level Javadoc that narrated the rewrite, plus method-level Javadoc. That run
+set the registry listing to Impact 99. Two targeted reruns on the same text (#162, rows above)
+scored 100 with the skill activated, and neither rewritten `GuestComplaintExtractor` has a Javadoc
+block. One has a block comment above `complaints` that explains the rewrite (reading order,
+`String.lines()` in place of `split`, null and blank texts); the other has four line comments. The
+judge took no point for either. One run also wrote a test file with a class Javadoc, which the item
+doesn't judge. So the 99 was a one-off, and the next release's publish run rescores the listing.
+
+Draft PR #163 names the narrating Javadoc in the skill text. It stays a draft without its hosted
+checks: one narrating Javadoc in three hosted runs on the 1.2.7 text, and in one of twelve local
+runs, is too rare to justify a skill text change that has to rerun every suite. If the next publish
+run loses the point again, #163's checks run then.
