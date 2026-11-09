@@ -165,3 +165,29 @@ Draft PR #163 names the narrating Javadoc in the skill text. It stays a draft wi
 checks: one narrating Javadoc in three hosted runs on the 1.2.7 text, and in one of twelve local
 runs, is too rare to justify a skill text change that has to rerun every suite. If the next publish
 run loses the point again, #163's checks run then.
+
+## Hosted checks on the rewrite-narration rule (2026-11-09)
+
+The 1.2.7 listing still showed Impact 99 from `56`'s lost point. On 2026-11-09 martinfrancois asked
+for every registry entry at 100 before the organization's Tessl grant ends on 2026-12-02, through
+this change, so its checks ran before the next publish instead of after a second loss. The full
+main, reference, and regression runs below cover the targeted scope `pre_submit_gate.sh` printed.
+A forced skill review of the final text scored 100 (`01a1bea8-ac36-7191-87e3-3ae3b90d601f`).
+
+The first wording put a requested explanation into the file only "where the prompt asks for it".
+On it, `48` left its requested explanation out of the file (85 in reference run
+`01a1be66-3282-73b9-94fb-aa8e30d77373`), `41` scored 65 in regression run
+`01a1be66-6c9e-7180-887d-5107270a723a`, and the composition run
+`01a1be6f-f3b6-74d5-a2eb-385f34baddcb` scored `43` at 50 for keeping the original loop. The final
+text drops that condition. Every run below is on
+the final text, with the skill activated in every with-skill cell.
+
+| Scenario | Without context | With context |
+| --- | --- | --- |
+| `31-line-to-record-extraction` | 28 | 100 |
+| `43-reject-if-any-validator` | 45 | 100 |
+| `56-guest-review-complaints` | 35 | 100 |
+
+Run `01a1be73-3777-7610-90f0-d62eb8f7bd19`: 108 without the skill against 300 with it, about 2.78x.
+The composition check from java-functional-style-skill `a44d37f` scored all three 100 with both
+skills activated in `01a1be78-40ba-76cf-98b5-1aefcc54aa52`.

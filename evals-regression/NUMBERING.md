@@ -119,3 +119,15 @@ checklist (the reason is in `evals-reference/NUMBERING.md`).
 
 Every regression scenario now has a with-context result on 1.2.6: thirty-five of the thirty-eight
 at 100, `22` and `40` at 99 and `54` at 299 of 300, each for one point on focus or length.
+
+## Regression on the rewrite-narration rule (2026-11-09)
+
+With context on the final text of #163, run `01a1be8e-4e25-760a-905d-89e8f6f9c59b`, skill activated
+in every cell: thirty-seven of the thirty-eight scored 100. `45-nested-streams-in-optional-chain`
+scored 95, losing points on "Uses domain-named helpers" for a generic `hasText(String)` helper. Over
+nine runs on this text it scored 100 in two (95 to 100), and over eight on the released 1.2.7 text
+in five (96 to 100), every miss on the same item. Runs on this text: that run,
+`01a1be73-1511-7775-881b-3655a3aa8b39`, `01a1be78-2b40-73ee-8fa7-1d6252663203`, and
+`01a1be96-f964-724e-bfa2-0254ff7bfc5d`; on 1.2.7: `01a1be80-765d-742b-97ec-00dcbe016447` and
+`01a1be97-2103-7581-aff9-7afbe83b6062`. Nine and eight runs can't separate those rates with
+confidence, and #163 changes no helper-naming text, so the skill text stays. #171 tracks `45`.
