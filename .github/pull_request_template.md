@@ -87,6 +87,8 @@ explain why.
 
 ## Review Checklist
 
+- [ ] There is an issue for this change, and I've been assigned to it. (Small fixes such as bug fixes, typos or docs improvements don't need an issue. Features need an issue approved in Discussions first.)
+- [ ] No other open PR addresses this issue.
 - [ ] The change is scoped to the sections, skill files, evals, or workflows described above.
 - [ ] Validation that applies to this change is checked above, or any unavailable check is explained.
 - [ ] If Java stream guidance changed, Java baseline compatibility plus ordering, null handling, and parallelism were considered.

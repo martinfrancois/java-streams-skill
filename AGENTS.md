@@ -23,4 +23,5 @@ that correction durable in the relevant file under `docs/agents/`.
 - [Eval Guidance](docs/agents/evals.md)
 - [Local Screening With DeepSeek](docs/agents/local-screening.md)
 - [Public Metadata And OSS Readiness](docs/agents/public-metadata.md)
+- [Contributing For Someone Else](docs/agents/contributing-for-someone-else.md)
 - [Maintaining Agent Docs](docs/agents/maintaining-agent-docs.md)
