@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.7...v1.2.8) (2026-11-09)
+
+
+### Bug Fixes
+
+* **skill:** keep unrequested rewrite narration out of the file ([ae02c0a](https://github.com/martinfrancois/java-streams-skill/commit/ae02c0a34c526408ecb411282d5cc3dcbdf41b6b))
+
 ## [1.2.7](https://github.com/martinfrancois/java-streams-skill/compare/v1.2.6...v1.2.7) (2026-11-02)
 
 
