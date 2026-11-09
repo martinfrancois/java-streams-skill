@@ -3,6 +3,9 @@ contact_links:
   - name: Security vulnerability
     url: https://github.com/martinfrancois/java-streams-skill/security/advisories/new
     about: Report suspected vulnerabilities privately instead of opening a public issue.
+  - name: Propose a feature
+    url: https://github.com/martinfrancois/java-streams-skill/discussions/categories/ideas
+    about: Feature ideas start in Discussions. Once a feature is approved there, I open an issue for it that you can claim with /take.
   - name: Question or support discussion
     url: https://github.com/martinfrancois/java-streams-skill/discussions
     about: Ask for help with installation, expected behavior, or how to use the skill.

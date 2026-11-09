@@ -3,6 +3,9 @@ description: Suggest a change to skill behavior, evals, docs, metadata, or contr
 title: "feat: "
 labels: ["enhancement"]
 body:
+  - type: markdown
+    attributes:
+      value: New ideas start in the [Ideas discussions](https://github.com/martinfrancois/java-streams-skill/discussions/categories/ideas). Once I approve a feature there, I open an issue for it with this form, and you can claim the issue with `/take`.
   - type: textarea
     id: problem
     attributes:
