@@ -277,3 +277,20 @@ rerun `01a1990c-22c8-716a-a705-6f4efaae51b1`, both arms, scored 100 and 100, so 
 Every reference scenario now has a with-skill result on 1.2.6 at 100 except `57` (98, its comment
 did not name request order), which scored 100 with the skill on 1.2.4 and 98 or 100 on earlier
 runs.
+
+## Reference on the rewrite-narration rule (2026-11-09)
+
+Both arms on the final text of #163, run `01a1be8e-11a3-7527-b380-406ba356c5ec`, skill activated in
+every with-skill cell: twelve of thirteen scored 100 with the skill. `49-char-predicate-contracts`
+scored 97, three points short on "States the vacuous truth and UTF-16 reasoning"; its isolated
+rerun `01a1be97-06a9-75e2-8a95-92609bba8152` scored 100 and 100.
+
+`50` and `57` also scored 100 there, but not in every run on this text. In
+`01a1be73-05b3-7719-b8c5-c12b930f8d21`, `01a1be78-1d2d-73e1-b052-12a659ac833a`, and that run, `50`
+scored 65, 100, 90, and 100 and `57` 98, 100, 97, and 100. On the released 1.2.7 text, run
+`01a1be80-68fe-71bc-9624-70714fb9ab26`, `50` scored 89, 100, and 100 and `57` 98, 97, and 99. Every
+`57` miss on both texts loses points on "Explains the changes", and `50`'s 90 and 89 on "States the
+null and intent reasoning" (the 89 also on "Keeps the cleanup focused"). `50`'s 65 is different:
+it rewrote `renderLine` around `mapMulti` and lost "Concatenates with the joining collector",
+which no 1.2.7 run lost, so it can't be ruled out as an effect of #163. Its isolated rerun scored
+100 and 90, the full run 100. #171 tracks both scenarios.
